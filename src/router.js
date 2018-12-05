@@ -1,6 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import DefaultLayout from './layouts/Default.vue'
+import Home from './views/Home1.vue'
+import hall from './views/hall.vue'
+import send from './views/send.vue'
+import mylist from './views/mylist.vue'
+import recordHair from './views/record-hair.vue'
+import recordThis from './views/record-this.vue'
+import recordClosed from './views/record-closed.vue'
 
 Vue.use(Router)
 
@@ -8,16 +15,44 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      component: DefaultLayout,
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: Home
+        },
+        {
+          path: '/hall',
+          name: 'hall',
+          component: hall
+        },
+        {
+          path: '/send',
+          name: 'send',
+          component: send
+        },
+        {
+          path: '/mylist',
+          name: 'mylist',
+          component: mylist
+        },
+        {
+          path: '/record-hair',
+          name: 'record-hair',
+          component: recordHair
+        },
+        {
+          path: '/record-this',
+          name: 'record-this',
+          component: recordThis
+        },
+        {
+          path: '/record-closed',
+          name: 'record-closed',
+          component: recordClosed
+        },
+      ]
     }
   ]
 })
