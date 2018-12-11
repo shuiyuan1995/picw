@@ -4,10 +4,10 @@ import Eos from 'eosjs';
 ScatterJS.plugins(new ScatterEOS());
 export let scatter = ScatterJS.scatter;
 
-let chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
-let eosIp = "35.197.130.214";
-let eosPort = 8888;
-let protocol = "http";
+let chainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906";
+let eosIp = "nodes.get-scatter.com";
+let eosPort = 443;
+let protocol = "https";
 const network = {
 	blockchain: 'eos',
 	protocol: protocol,
@@ -19,6 +19,9 @@ const network = {
 let scatterEos = scatter.eos(network, Eos);
 let identity = null;
 let currentAccount = null;
+function hasScatter() {
+	return scatter !== undefined;
+}
 
 /**
  * 登陆
@@ -26,6 +29,10 @@ let currentAccount = null;
  * code 001 未连接钱包，请链接钱包
  */
 export function eoslogin(gameName) {
+	if (!hasScatter()) {
+		alert('scatter required');
+		return;
+	}
 	return new Promise((resolve, reject) => {
 		scatter.connect(gameName).then((val) => {
 			if(!val){
