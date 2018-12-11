@@ -2,8 +2,11 @@
   .boxlist
     width 10.04rem
     cursor pointer
+  .baoright
+    align-self flex-end
+    // float right
   .over
-    opacity 0.5
+    opacity 0.6
   .sendname
     font-size 12px
     margin-bottom 0.32rem
@@ -20,6 +23,7 @@
       height: 2.58rem;
       background #f99c3b
       align-items center
+      flex-wrap nowrap
       img 
         width: 1.54rem;
         height: 1.9rem;
@@ -39,30 +43,34 @@
 </style>
 
 <template>
-  <div class="boxlist" :class="item.none?'over':''" @click="go">
-    <p class="sendname">{{item.name}} <span class="time">( {{timer}} )</span></p>
+  <div class="boxlist" :class="{'over':item.none||item.isgo,'baoright':item.name == infos.name}" @click="go">
+    <p class="sendname">{{item.name}} <span class="time">({{timer}})</span></p>
     <div class="box">
       <div class="box-top flex">
-        <img src="../common/images/bao.png">
-        <div>
-          <p>{{thislang.baotxt}}</p>
-          <p>{{thislang.baotxt1}}</p>
+        <img v-if="item.none||item.isgo" src="../common/images/bao1.png">
+        <img v-else src="../common/images/bao.png">
+        <div class="bao">
+          <p>尾数:{{item.num}}</p>
+          <p>{{item.none?'红包已领完':(item.isgo?'红包已领取':thislang.baotxt1)}}</p>
         </div>
       </div>
-      <div class="box-bottom">{{thislang.baotxt2}}：{{item.num}}</div>
+      <div class="box-bottom">PickOwn红包</div>
     </div>
   </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters,mapMutations} from 'vuex'
 import { date } from 'quasar'
-import {selectPacket} from '../scattereos'
+import {selectPacket,getjin} from '../scattereos'
 import {post} from '../api'
 export default {
   props:{
     item:{
       type:Object
+    },
+    index:{
+      type:Number
     }
   },
   data(){
@@ -72,21 +80,103 @@ export default {
   },
   methods:{
     go(){
-      // this.$q.loading.show()
-      // selectPacket("wenbo",Number(this.item.packetId),"qizhan","5JqRdMU696xCvtFoMutNBz88N9Q7EdX42W4Hy9rp9VPhxug7jJN").then((data)=>{
-      //   this.$q.loading.hide()
-      //   console.log(data)
-      // }).catch(e => {
-      //   this.$q.loading.hide()
-      //   console.log(e)
-      // });
-
-    }
+      console.log("红包列表",this.item)
+      // 判断登录
+      if(this.infos.name.length == 0){
+        alert('请先登录')
+        return false
+      }
+      // 判断是否领完或已领取
+      console.log('qudao',this.infos.B_name,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`)
+      if(this.item.none || Number(this.item.isgo) == 1){
+        this.$router.push({
+          name: 'record-this',
+          params: {
+            txId:this.item.txId
+          }
+        })
+        return false
+      }
+      this.$q.loading.show()
+      // 抢红包
+      console.log('抢的参数',this.infos.name,Number(this.item.packetId),"qizhan","eosio.token",`${Number(this.item.eos).toFixed(4)} EOS`,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`)
+      selectPacket(this.infos.name,Number(this.item.packetId),"qizhan", "eosio.token", `${Number(this.item.eos).toFixed(4)} EOS`,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`).then((val)=>{
+        console.log(val)
+        // 查询余额
+        getjin('EOS').then((val)=>{
+          this.setinfo({eos:parseFloat(val[0])})
+        })
+        let item = {}
+        // 判断是否为最后一个
+        if(val.isLast == '1'){
+          item = {
+            index:this.packages.this,
+            index1:this.index,
+            data:{
+              none:1,
+              isgo:1
+            }
+          }
+        }else{
+          item = {
+            index:this.packages.this,
+            index1:this.index,
+            data:{
+              isgo:1
+            }
+          }
+        }
+        this.setpackdata(item)
+        this.$q.loading.hide()
+        let data = {
+          token:this.$q.sessionStorage.get.item('token'),
+          userid:this.$q.sessionStorage.get.item('userid'),
+          outid:this.item.txId,
+          eosid:val.packetId,
+          blocknumber:val.block_num,
+          income_sum:(val.packetAmount/10000).toFixed(4),
+          is_chailei:val.isBomb,
+          reward_type:val.isLuck,
+          reward_sum:(val.luckyAmount/10000).toFixed(4),
+          addr:this.infos.B_name,
+          isnone:val.isLast,
+          isgo:1,
+          own:(val.own/10000).toFixed(4),
+          newPrizePool:(val.newPrizePool/10000).toFixed(4)
+        }
+        let win = {
+          print:(val.packetAmount/10000).toFixed(4),
+          is_chailei:val.isBomb,
+          reward:val.isLuck,
+          rewardsum:(val.luckyAmount/10000).toFixed(4),
+          num:this.item.num,
+          eos:this.item.eos,
+          packetId:Number(this.item.packetId),
+          outid:this.item.txId,
+          own:(val.own/10000).toFixed(4)
+        }
+        // 展示抢红包结果
+        this.$emit('myshow',win)
+        // 上传结果
+        post('/income_packet',data).then((val)=>{
+          console.log(val)
+        }) 
+      }).catch(e => {
+        this.$q.loading.hide()
+        getjin()
+        console.log(e)
+      });
+    },
+    ...mapMutations({
+      setpackdata:'SET_PACKDATA',
+      setinfo:'SET_INFO',
+    }),
   },
   computed:{
     ...mapGetters([
-      "thislang"
+      "thislang","infos","packages"
     ]),
+    // 转换时间
     timer(){
       return date.formatDate(this.item.time, 'HH:mm:ss')
     }

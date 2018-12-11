@@ -207,7 +207,7 @@
     <div class="sendbtn flex">
       <div class="send">
         <p>累计发红包</p>
-        <p>{{leifan}}</p>
+        <p>{{infos.info.out_packet_count}}</p>
         <!-- <transition
           enter-active-class="animated fadeInUp"
           leave-active-class="animated fadeOutUp"
@@ -218,7 +218,7 @@
       <button class="btn" @click="changepage">{{thislang.sendbtn}}</button>
       <div class="send">
         <p class="icon" @click="openrule(false)">{{thislang.lucky}}</p>
-        <p>{{jiangchin.toFixed(4)}}</p>
+        <p>{{infos.info.xinyunjiangchi}}</p>
       </div>
     </div>
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
@@ -270,8 +270,6 @@ export default {
       listH:[],// 可选红包高度
       outn:0,
       itemH:0,//单个红包高度
-      leifan:0,
-      jiangchin:0,
     }
   },
   methods:{
@@ -289,8 +287,6 @@ export default {
     },
     //点击滚动到目标
     scrollto(i){
-      // console.log(i)
-      // return false
       // 确认目标
       let total = i - this.itemH
       console.log(total)
@@ -401,7 +397,7 @@ export default {
     ]),
     // 当前房间红包筛选
     thelists(){
-      return this.packages.data[this.packages.this] || 0
+      return this.packages.data[this.packages.this]
     },
     // 所有可抢红包
     golist(){
@@ -418,37 +414,12 @@ export default {
       })
       return arr
     },
-    // 累计发红包
-    leifa(){
-      return this.infos.info.out_packet_count
-    },
-    jiangchi(){
-      return this.infos.info.xinyunjiangchi
-    }
   },
   watch:{
     // 监听列表信息
     thelists(){
       this.scrollbottom()
     },
-    leifa(newnum){
-      let setI2 = setInterval(()=>{
-        if(this.leifan<newnum){
-          this.leifan += 1
-        }else{
-          clearInterval(setI2)
-        }
-      },10000/newnum)
-    },
-    jiangchi(newnum){
-      let setI3 = setInterval(()=>{
-        if(newnum > this.jiangchin){
-          this.jiangchin += 0.0001
-        }else{
-          clearInterval(setI3)
-        }
-      },10000/(newnum*10000))
-    }
   }
 }
 </script>

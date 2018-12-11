@@ -21,26 +21,38 @@
 
 <template>
   <div class="head flex">
-    <span @click="close">关闭</span>
+    <span @click="close">{{thislang.close}}</span>
     <span class="title">{{title}}</span>
-    <span @click="recordpage">红包记录</span>
+    <span @click="recordpage">{{jiang?thislang.record:''}}</span>
   </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 export default {
   props:{
+    // 标题
     title:{
       type:String,
-      default:'EOS红包'
+    },
+    // 右侧是否展示
+    jiang:{
+      type:Boolean,
+      default:true
     }
   },
+  computed:{
+    ...mapGetters([
+      "thislang"
+    ]),
+  },
   methods:{
+    // 收发红包选择
     recordpage(){
       this.$q.actionSheet({
         actions: [
           {
-            label: '发红包记录',
+            label: this.thislang.fa,
             handler: () => {
               this.$router.push({
                 path: "/record-hair",
@@ -48,7 +60,7 @@ export default {
             }
           },
           {
-            label: '收红包记录',
+            label: this.thislang.shou,
             handler: () => {
               this.$router.push({
                 path: "/record-closed",

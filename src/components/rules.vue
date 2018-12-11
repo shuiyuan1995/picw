@@ -108,10 +108,6 @@
           <p>奖池的 1 %</p>
         </div>
         <div class="tr flex">
-          <div class="flex"><span>最小奖</span><p><span>0.0001</span></p></div>
-          <p>奖池的 1 %</p>
-        </div>
-        <div class="tr flex">
           <div class="flex"><span>整数</span><p><span>0.1000</span><br /><span>1.6000</span></p></div>
           <p>奖池的 1 %</p>
         </div>
@@ -123,10 +119,6 @@
           <div class="flex"><span>炸弹</span><p><span>0.1111</span><br /><span>0.6666</span></p></div>
           <p>奖池的 3 %</p>
         </div>
-        <div class="tr flex">
-          <div class="flex"><span>最大奖</span><p><span>0.3000</span><br /><span>2.4000</span></p></div>
-          <p>奖池的 5 %</p>
-        </div>
       </div>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
@@ -137,14 +129,18 @@
 import {mapGetters} from 'vuex';
 export default {
   props:{
+    // 背景
     bgc:{
       type:String
     },
+    // 游戏规则或者奖励规则
     therules:{
-      type:Boolean
+      type:Boolean,
+      default:true
     }
   },
   methods:{
+    // 关闭页面
     closein(){
       this.$emit('openrule')
     }

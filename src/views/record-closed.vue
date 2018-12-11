@@ -2,6 +2,10 @@
   .recordHair
     max-width 16rem
     margin  0 auto
+    background #ffffff
+  .smallhead
+    background #c7422f
+    color #ffba41
   .top
     background #f0f0f0 url("../common/images/bg3.jpg") no-repeat top
     background-size 100% auto
@@ -20,7 +24,7 @@
     .tablebox
       margin-top 0.7rem
       li
-        flex 0 0 25%
+        flex 0 0 33%
         margin 0.4rem 0
         p
           color #b2b2b2
@@ -52,97 +56,179 @@
         margin-top 0.16rem
       .num1
         text-align right
+      .txtinfo
+        text-align center
+        span
+          position relative
+          height: 0.82rem;
+          line-height 0.82rem;
+          background-color: #dddddd;
+          display inline-block
+          border-radius: 0.2rem;
+          font-size 0.48rem
+          padding 0 0.28rem 0 0.7rem
+          color: #ffffff;
+          margin-left 0.4rem
+          z-index 0
+        .img1
+          width: 0.82rem;
+          height: 0.68rem;
+          position absolute
+          top 0.04rem
+          left 0.12rem
+          z-index 0
+  .bottomtxt
+    text-align center
+    font-size 0.56rem
+    color #333333
+    margin-top 2.4rem
 </style>
 
 <template>
   <div class="recordHair fullscreen scroll">
-    <record-head class="fixed-top" title="EOS 收包记录"></record-head>
+    <smallhead ref="smallhead" :title="`${thislang.shou}`" class="fixed-top" right="jilui" left="guan"></smallhead>
     <div class="top">
-      <p class="name">Yintao520共获得<br />386个红包</p>
-      <p class="allprice">108.0986EOS</p>
+      <p class="name">{{data.name}}{{thislang.gohuo}}<br />{{data.packetcount}}{{thislang.ge}}</p>
+      <p class="allprice">{{data.packetsum}} EOS</p>
       <ul class="flex tablebox">
         <li>
-          <p>3</p>
-          <p>最大奖</p>
+          <p>{{data.paris}}</p>
+          <p>{{thislang.dui}}</p>
         </li>
         <li>
-          <p>23</p>
-          <p>对子</p>
+          <p>{{data.three}}</p>
+          <p>{{thislang.san}}</p>
         </li>
         <li>
-          <p>6</p>
-          <p>三条</p>
+          <p>{{data.int}}</p>
+          <p>{{thislang.zhen}}</p>
         </li>
         <li>
-          <p>8</p>
-          <p>最小奖</p>
+          <p>{{data.shunzi}}</p>
+          <p>{{thislang.shun}}</p>
         </li>
         <li>
-          <p>12</p>
-          <p>整数</p>
+          <p>{{data.bomb}}</p>
+          <p>{{thislang.zha}}</p>
         </li>
         <li>
-          <p>5</p>
-          <p>顺子</p>
-        </li>
-        <li>
-          <p>15</p>
-          <p>炸弹</p>
-        </li>
-        <li>
-          <p>16</p>
-          <p>踩雷</p>
+          <p>{{data.chailei}}</p>
+          <p>{{thislang.steptitle}}</p>
         </li>
       </ul>
       <span class="time" @click="timer = !timer">{{thisdata}}</span>
     </div>
-    <ul class="bottom">
-      <li :key="index" v-for="(item,index) in 20">
-        <div class="info flex">
+    <ul class="bottom" v-if="data.data&&data.data.length>0">
+      <li :key="index" v-for="(item,index) in data.data">
+        <div class="info flex" @click="golist(item)">
           <div class="left">
-            <p class="name">5EOS</p>
-            <p class="time">12-23 12:27</p>
+            <p class="name">{{item.outpacket_sum}}EOS</p>
+            <p class="time">{{item.created_at}}</p>
           </div>
           <div class="right">
-            <p class="price">0.6587EOS</p>
+            <p class="price">{{item.income_sum}}EOS</p>
             <p class="num1"></p>
           </div>
         </div>
+        <p v-if="item.reward_type>0" class="txtinfo"><span>{{thislang.zhong}}：{{typetxt[item.reward_type]}}，{{thislang.huo}}{{item.reward_sum}} EOS</span></p>
+        <p v-if="item.is_chailei==1" class="txtinfo"><span><img class="img1" src="../common/images/lei.png">{{thislang.steptitle}}，{{thislang.fu}}{{item.outpacket_sum}} EOS</span></p>
       </li>
     </ul>
-    <datetime v-show="timer" @newtime="newtime"></datetime>
+    <p class="bottomtxt" v-else>暂无数据</p>
+    <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
   </div>
 </template>
 
 <script>
-import recordHead from '@/components/recordHead.vue'
+import smallhead from '@/components/smallhead.vue'
 import datetime from '@/components/datetime.vue'
 import { date } from 'quasar'
+import {mapGetters} from 'vuex';
+import {post} from '../api'
 export default {
+  created(){
+    if(this.infos.name.length == 0){
+      alert('请先登录')
+      this.$router.push('/')
+      return false
+    }
+    this.getinfo()
+  },
   data(){
     return{
       model:new Date(),//时间
-      timer:false //时间选择展示
+      timer:false, //时间选择展示
+      data:{},  //列表
+      timej:{} //时间区间
     }
   },
   components: {
-    "record-head":recordHead,
+    smallhead,
     datetime
   },
   methods:{
     // 获取新时间
     newtime(newtime){
       if(newtime){
+        let time = date.formatDate(newtime, 'X')
+        this.getinfo(time)
         this.model = newtime
       }
       this.timer = false
+    },
+    golist(item){
+      this.$router.push({
+        name: 'record-this',
+        params: {
+          txId:item.outblocknumber
+        }
+      })
+    },
+    // 获取列表信息
+    getinfo(time){
+      let data = {}
+      if(time){
+        data = {
+          token:this.$q.sessionStorage.get.item('token'),
+          userid:this.$q.sessionStorage.get.item('userid'),
+          time:time
+        }
+      }else{
+        data = {
+          token:this.$q.sessionStorage.get.item('token'),
+          userid:this.$q.sessionStorage.get.item('userid')
+        }
+      }
+      post('/my_income_packet',data).then((val)=>{
+        // console.log(val)
+        this.data = val
+        if(Object.keys(val.data).length != 0){
+          this.data.data = val.data.map((val,i)=>{
+          return {
+            ...val,
+            created_at:date.formatDate(val.created_at*1000, 'HH:mm:ss')
+          }
+        })
+        }
+        this.timej = {
+          first:val.last_time*1000,
+          last:val.max_time*1000
+        }
+      })
     }
   },
   computed:{
     // 时间转换
     thisdata(){
       return  `${date.formatDate(this.model, 'MM')}月${date.formatDate(this.model, 'DD')}日`
-    }
+    },
+    // 奖励类型判断
+    typetxt(){
+      return ['',this.thislang.dui,this.thislang.san,this.thislang.small,this.thislang.zhen,this.thislang.shun,this.thislang.si,this.thislang.big]
+    },
+    ...mapGetters([
+      "thislang","infos"
+    ]),
   }
 }
 </script>

@@ -11,7 +11,7 @@ import 'quasar-extras/material-icons'
 import Quasar from 'quasar'
 import './common/styl/index.styl'
 // import './common/font/font.css'
-import './common/font/iconfont.css'
+// import './common/font/iconfont.css'
 
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'

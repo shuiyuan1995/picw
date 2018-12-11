@@ -10,7 +10,7 @@ const mutations = {
   [types.SET_PACKAGE](state,data) {
     if(data.index || data.index == 0){
       if(state.packages.data[data.index]){
-        state.packages.data[data.index] = [...state.packages.data[data.index],data.data]
+        state.packages.data[data.index].push(data.data)
       }else{
         state.packages.data[data.index][0] = data.data
       }
@@ -24,21 +24,20 @@ const mutations = {
   [types.SET_PACKIA](state,i) {
     state.packages.all = i
   },
-  [types.SET_CHANGE](state,obj) {
-    state.change = {
-      ...state.change,
+  [types.SET_INFO](state,obj) {
+    state.info = {
+      ...state.info,
       ...obj
     }
   },
-  [types.SET_INFO](state,obj) {
-    if(typeof obj[0] == 'number') {
-      state.info.newmore[obj[0]] = obj[1]
-    }else{
-      state.info = {
-        ...state.info,
-        ...obj
-      }
+  [types.SET_PACKDATA](state,obj) {
+    state.packages.data[obj.index][obj.index1] = {
+      ...state.packages.data[obj.index][obj.index1],
+      ...obj.data
     }
+  },
+  [types.SET_PACKDATAL](state,obj) {
+    state.packages.data[obj.index] = obj.data
   },
 };
 

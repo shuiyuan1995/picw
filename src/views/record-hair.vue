@@ -2,8 +2,12 @@
   .recordHair
     max-width 16rem
     margin  0 auto
+    background #ffffff
   .fixed-top
     z-index 999
+  .smallhead
+    background #c7422f
+    color #ffba41
   .top
     background url("../common/images/bg3.jpg") no-repeat top
     background-size 100% 100%
@@ -55,58 +59,84 @@
         margin-top 0.16rem
       .num1
         text-align right
+    .more
+      position absolute
+      bottom 0
+      text-align center
+      font-size 0.64rem
+  .bottomtxt
+    text-align center
+    font-size 0.56rem
+    color #333333
+    margin-top 2.4rem
 </style>
 
 <template>
-  <div class="recordHair fullscreen scroll" :class="$q.platform.is.desktop?'desktop':''">
-    <record-head class="fixed-top" :class="$q.platform.is.desktop?'desktop':''" title="EOS 发包记录"></record-head>
+  <div class="recordHair fullscreen scroll" ref="myscroll" @click="$refs.smallhead.open()">
+    <smallhead ref="smallhead" :title="`${thislang.fa}`" class="fixed-top" right="jilui" left="guan"></smallhead>
     <div class="top">
-      <p class="name">Yintao520共发出</p>
-      <p class="allprice">108.0986EOS</p>
+      <p class="name">{{data.name}}{{thislang.issued}}</p>
+      <p class="allprice">{{data.outpacketsum}}EOS</p>
       <ul class="flex tablebox">
         <li>
-          <p>192</p>
-          <p>发出红包</p>
+          <p>{{data.outpacketcount}}</p>
+          <p>{{thislang.fabao}}</p>
         </li>
         <li>
-          <p>8</p>
-          <p>收获踩雷</p>
+          <p>{{data.chaileicount}}</p>
+          <p>{{thislang.shoucai}}</p>
         </li>
       </ul>
       <span class="time" @click="timer = !timer">{{thisdata}}</span>
     </div>
-    <ul class="bottom">
-      <li :key="index" v-for="(item,index) in 20">
-        <div class="info flex">
+    <ul class="bottom" v-if="data.data && data.data.length>0">
+      <li :key="index" v-for="(item,index) in data.data">
+        <!-- <div class="info flex" @click="$router.push(`/record-this/${Number(item.eosid)}`)"> -->
+        <div class="info flex" @click="golist(item)">
           <div class="left">
-            <p class="name">5EOS</p>
-            <p class="time">12-23 12:27</p>
+            <p class="name">{{item.issus_sum}}EOS</p>
+            <p class="time">{{item.created_at}}</p>
           </div>
           <div class="right">
-            <p class="price">0.6587EOS</p>
-            <p class="num1">10/10</p>
+            <p class="price">10/10</p>
+            <p class="num1"></p>
           </div>
         </div>
       </li>
+      <li class="more" v-show="more">到底了</li>
     </ul>
-    <datetime v-show="timer" @newtime="newtime"></datetime>
+    <p class="bottomtxt" v-else>暂无数据</p>
+    <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
   </div>
 </template>
 
 <script>
-import recordHead from '@/components/recordHead.vue'
+import smallhead from '@/components/smallhead.vue'
 import datetime from '@/components/datetime.vue'
 import { date } from 'quasar'
 import {mapGetters} from 'vuex';
+import {post} from '../api'
 export default {
+  created(){
+    // 判断登录
+    if(this.infos.name.length == 0){
+      alert('请先登录')
+      this.$router.push('/')
+      return false
+    }
+    this.getinfo()
+  },
   data(){
     return{
       model:new Date(),//时间
-      timer:false//时间选择展示
+      timer:false,//时间选择展示
+      data:[], //列表
+      timej:{}, //时间区间
+      more:false 
     }
   },
   components: {
-    "record-head":recordHead,
+    smallhead,
     datetime
   },
   methods:{
@@ -114,8 +144,50 @@ export default {
     newtime(newtime){
       if(newtime){
         this.model = newtime
+        let time = date.formatDate(newtime, 'X')
+        this.getinfo(time)
       }
       this.timer = false
+    },
+    golist(item){
+      this.$router.push({
+        name: 'record-this',
+        params: {
+          txId:item.blocknumber
+        }
+      })
+    },
+    // 获取列表信息
+    getinfo(time){
+      let data = {}
+      if(time){
+        data = {
+          token:this.$q.sessionStorage.get.item('token'),
+          userid:this.$q.sessionStorage.get.item('userid'),
+          time:time
+        }
+      }else{
+        data = {
+          token:this.$q.sessionStorage.get.item('token'),
+          userid:this.$q.sessionStorage.get.item('userid')
+        }
+      }
+      post('/my_issus_packet',data).then((val)=>{
+        console.log(val)
+        this.data = val
+        if(Object.keys(val.data).length != 0){
+          this.data.data = val.data.map((val,i)=>{
+            return {
+              ...val,
+              created_at:date.formatDate(val.created_at*1000, 'HH:mm:ss')
+            }
+          })
+        }
+        this.timej = {
+          first:val.last_time*1000,
+          last:val.max_time*1000
+        }
+      })
     }
   },
   computed:{
@@ -124,7 +196,7 @@ export default {
       return  `${date.formatDate(this.model, 'MM')}月${date.formatDate(this.model, 'DD')}日`
     },
     ...mapGetters([
-      "thislang"
+      "thislang","infos"
     ])
   }
 }

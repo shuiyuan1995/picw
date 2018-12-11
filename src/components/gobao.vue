@@ -4,9 +4,9 @@
     z-index 999
   .gobao
     width: 13.4rem;
-    min-height: 15.76rem;
-    background #d65c44 url("../common/images/baobottom.png") no-repeat bottom
-    background-size 100%
+    min-height: 17.02rem;
+    background url("../common/images/bg3.png") no-repeat bottom
+    background-size 100% 100%
     z-index 1000
     align-items center
     justify-content space-between
@@ -17,39 +17,42 @@
       align-items center
       justify-content center
       flex-wrap nowrap
+      padding-bottom 1.6rem
     .baobottom
-      padding-bottom 0.96rem
+      padding-bottom 1.44rem
       text-align center
       margin-top 0.8rem
-    .title
-      margin 1.04rem 0 0.4rem;
-      font-size: 1.44rem;
-      color: #ffba41;
-    .h2,.h3
-      font-size: 0.6rem;
-      color: #ffe8c1;
-      padding 0 0.8rem
-      line-height 0.7rem
-    .h2
-      height 2.24rem
-    .h3
-      height 0.5rem
-    img 
-      width: 1.14rem;
-      height: 1.72rem;
-      margin 0 0 0.4rem
-    .money1
-      font-size 0.96rem
-      color: #ffba41;
-    .gobtn
-      width: 11.16rem;
-      background-color #ffe8c1
-      height 1.6rem
-      border-radius 1.84rem
-      font-size 0.64rem
-      color: #d65c44;
+    h2
+      font-size 0.48rem
+      color #ffba41
+      margin-top 1.28rem
+      &:first-of-type
+        margin-top 0rem
+    p
+      font-size 1.64rem
+      margin-top 0.48rem
+      color #ffba41
       font-weight bold
-      margin-top 1.38rem
+    .kuang
+      font-size 1.2rem
+      margin-top 0.4rem
+    .ewai
+      justify-content center
+      flex-wrap nowrap
+      p
+        align-items center
+        margin 0 0.56rem
+        span 
+          margin-top 0.52rem
+          font-size 0.48rem
+          color #666666
+        img
+          height 1.36rem
+          width 1.36rem
+        .lei
+          width: 1.7rem;
+          height: 1.36rem;
+          margin-left 0.8rem
     .share
       position absolute
       color: #ffe8c1;
@@ -59,13 +62,18 @@
       cursor pointer
     .toview
       font-size 0.48rem
-      margin-top 0.8rem
-      color #ffe8c1
+      margin-top 1rem
+      color #666666
       cursor pointer
-    .over
-      color: #ffba41;
-      font-size 0.84rem
-      margin 0.64rem 0 1.08rem
+  .close
+    position absolute
+    color: #ffe8c1;
+    top 0.5rem
+    left 0.8rem
+    font-size 0.72rem
+    cursor pointer
+    &:before
+      font-size 0.72rem
 </style>
 
 <template>
@@ -73,19 +81,27 @@
     <div class="bg fullscreen" @click="$emit('myshow')"></div>
     <div class="gobao fixed-center column">
       <div class="baotop column">
-        <img src="../common/images/icon8.png">
-        <p class="money1" v-if="win[0] != 0">0.0098</p>
-        <p class="title" v-if="win[1] || win[0] == 1">恭喜你!</p>
-        <p class="h3" v-if="win[1]">抽中：对子，将再获得0.0162 EOS</p>
-        <p class="title" v-if="win[0] == 2">糟糕，踩到雷了!</p>
-        <p class="h2" v-if="win[0] == 2">您抢到的EOS尾数=红包的号码<span class="num">6</span>,<br/>{{thislang.results2}}<span>1</span>EOS{{thislang.results3}}<span>1</span>EOS</p>
-        <p class="over" v-if="win[0] == 0">手慢了!红包已被抢完!</p>
+        <h2>恭喜你 , 抢到了</h2>
+        <p>{{win.print}} EOS</p>
+        <h2>挖矿</h2>
+        <p class="kuang">{{win.own}} OWN</p>
       </div>
       <div class="baobottom">
-        <q-btn :label="thislang.ok" class="gobtn" @click="$emit('myshow')"/>
-        <p class="toview" @click="$router.push('/record-this')">查看领取记录>></p>
+        <div class="ewai flex">
+          <p class="column" v-if="win.reward != 0">
+            <img :src="typetxt[win.reward]">
+            <span>+ {{win.rewardsum}}EOS</span>
+          </p>
+          <p class="column" v-if="win.is_chailei == 1">
+            <img class="lei" src="../common/images/lei.png">
+            <span>- {{win.eos}}EOS</span>
+          </p>
+        </div>
+        <p class="toview" @click="golist">{{thislang.kan}}>></p>
+        <!-- <p class="toview" @click="$router.push(`/record-this/${win.packetId}`)">{{thislang.kan}}>></p> -->
       </div>
-      <span class="share icon icon-fenxiang3"></span>
+      <span class="share icon icon-fenxiang3" ></span>
+      <span class="close icon icon-close" @click="$emit('myshow')"></span>
     </div>
   </div>
 </template>
@@ -95,13 +111,33 @@ import {mapGetters} from 'vuex';
 export default {
   props:{
     win:{
-      type:Array
+      type:Object
+    }
+  },
+  data(){
+    return{
+      typetxt:['',require('../common/images/icon2.png'),require('../common/images/icon3.png'),require('../common/images/icon6.png'),require('../common/images/icon4.png'),require('../common/images/icon5.png')]
+    }
+  },
+  methods:{
+    golist(){
+      this.$router.push({
+        name: 'record-this',
+        params: {
+          txId:this.win.outid
+        }
+      })
     }
   },
   computed:{
     ...mapGetters([
-      "thislang"
+      "thislang","infos"
     ]),
+    // 获奖类型判断
+    // typetxt(){
+    //   // return ['','dui','san','zhen','shun','zha']
+    //   // return ['',this.thislang.dui,this.thislang.san,this.thislang.zhen,this.thislang.shun,this.thislang.si]
+    // }
   }
 }
 </script>
