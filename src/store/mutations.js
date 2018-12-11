@@ -37,7 +37,7 @@ const mutations = {
     }
   },
   [types.SET_PACKDATAL](state,obj) {
-    state.packages.data[obj.index] = obj.data
+    state.packages.thisdata = obj
   },
 };
 

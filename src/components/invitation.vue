@@ -77,7 +77,7 @@ export default {
       this.$q.notify({
         message: "复制成功",
         timeout: 100,
-        type: 'positive',
+        color: 'green',
         position:"center"
       })
       this.$emit('invitashow')

@@ -4,16 +4,15 @@ import Eos from 'eosjs';
 ScatterJS.plugins(new ScatterEOS());
 export let scatter = ScatterJS.scatter;
 
-let chainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906";
-let eosIp = "nodes.get-scatter.com";
-let eosPort = 443;
-let protocol = "https";
-const network = {
-	blockchain: 'eos',
-	protocol: protocol,
-	host: eosIp,
-	port: eosPort,
-	chainId: chainId
+let chainId = 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906';
+let endpoint = 'https://mainnet.eoscannon.io';
+let network = {
+    blockchain: 'eos',
+    host: 'mainnet.eoscannon.io',
+    port: 443,
+    chainId: chainId,
+    protocol: "https",
+    httpEndpoint : endpoint,
 };
 
 let scatterEos = scatter.eos(network, Eos);
@@ -35,12 +34,13 @@ export function eoslogin(gameName) {
 	}
 	return new Promise((resolve, reject) => {
 		scatter.connect(gameName).then((val) => {
+			console.log(val,'001')
 			if(!val){
 				reject('001')
 			}
 			open(function () {
 				console.log(`登陆成功：${JSON.stringify(identity)}`);
-				// prizePool("qizhan")
+				// prizePool("pickownowner")
 				resolve(identity)
 			}, function (error) {
 				console.log(`登陆出错：${JSON.stringify(error)}，请关闭重新打开或者刷新本页面`);
@@ -65,26 +65,23 @@ export function eoslogin(gameName) {
 }
 
 function open(successCallback, errorCallbak) {
-	scatter.suggestNetwork(network).then(() => {
-		const requirements = {
-			accounts: [network]
-		};
-		scatter.getIdentity(requirements).then(
-			function (i) {
-				if (!i) {
-					return errorCallbak(null);
-				}
-				identity = i;
-				currentAccount = identity.accounts[0];
-				getjin()
-				console.log(identity.accounts[0].name);
-				successCallback();
-			}
-		).catch(error => {
-			errorCallbak(error);
-		});
+	ScatterJS.scatter.suggestNetwork(network).then(() => {
+			const requirements = {accounts: [network]};
+			ScatterJS.scatter.getIdentity(requirements).then(
+					function (i) {
+							if (!i) {
+									return errorCallbak(null);
+							}
+							identity = i;
+							currentAccount = identity.accounts[0];
+							console.log(identity.accounts[0].name);
+							successCallback();
+					}
+			).catch(error => {
+					errorCallbak(error);
+			});
 	}).catch(error => {
-		errorCallbak(error);
+			errorCallbak(error);
 	});
 }
 
@@ -107,6 +104,7 @@ export function getinfo(cd) {
 		scatterEos.getAccount({
 			account_name: currentAccount.name
 		}).then((val) => {
+			console.log(val)
 			let info = {
 				cpu: Math.round((val.cpu_limit.available / val.cpu_limit.max) * 100),
 				net: Math.round((val.net_limit.available / val.net_limit.max) * 100)
@@ -150,7 +148,8 @@ export function createRedPacket(userName, amount, bomb, contractOwner, tokenName
 			return false;
 
 	return new Promise(function (resolve, reject) {
-			scatterEos.transaction({
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
 					actions: [
 							{
 									account: tokenName,
@@ -181,7 +180,7 @@ export function createRedPacket(userName, amount, bomb, contractOwner, tokenName
 					}
 			}).catch(error => {
 					if (typeof error !== "object" && JSON.parse(error).error.what === 'eosio_assert_message assertion failure') {
-							resolve("余额不足");
+							resolve("交易异常");
 					} else {
 							reject(error.message);
 					}
@@ -253,7 +252,8 @@ export function selectPacket(userName, roomId, contractOwner, tokenName, transfe
 	}
 
 	return new Promise(function (resolve, reject) {
-			scatterEos.transaction({
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
 					actions: [
 							{
 									account: tokenName,
@@ -271,13 +271,12 @@ export function selectPacket(userName, roomId, contractOwner, tokenName, transfe
 							}
 					]
 			}).then(result => {
-					// console.log(result);
 					let consoleString = result.processed.action_traces[0].inline_traces[1].console;
 					if(consoleString.indexOf("{") === -1){
 							reject(consoleString);
 					}
 					if (JSON.parse(consoleString).ERROR !== undefined) {
-						reject(analysisException(JSON.parse(consoleString).ERROR));
+							resolve(analysisException(JSON.parse(consoleString).ERROR));
 					} else {
 							consoleString = consoleString.substring(consoleString.indexOf("{"), consoleString.indexOf("}") + 1);
 							let response = {
@@ -296,7 +295,7 @@ export function selectPacket(userName, roomId, contractOwner, tokenName, transfe
 					}
 			}).catch(error => {
 					if (typeof error !== "object" && JSON.parse(error).error.what === 'eosio_assert_message assertion failure') {
-							reject("余额不足");
+							resolve("交易异常");
 					}else {
 							reject(error.message);
 					}
@@ -326,7 +325,8 @@ export function redPacketList(contractOwner) {
 	}
 	if (typeof contractOwner !== "string" || contractOwner === undefined) return false;
 	return new Promise(function (resolve, reject) {
-			scatterEos.transaction({
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
 					actions: [
 							{
 									account: contractOwner,
@@ -339,7 +339,7 @@ export function redPacketList(contractOwner) {
 							}
 					]
 			}).then(result => {
-					resolve(JSON.parse(result.processed.action_traces[0].console).data);
+					resolve(result.processed.action_traces[0].console);
 			}).catch(e => {
 					reject(e.message)
 			});
@@ -357,7 +357,8 @@ export function prizePool(contractOwner) {
 	}
 	if (typeof contractOwner !== "string" || contractOwner === undefined) return false;
 	return new Promise(function (resolve, reject) {
-			scatterEos.transaction({
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
 					actions: [
 							{
 									account: contractOwner,
@@ -370,7 +371,6 @@ export function prizePool(contractOwner) {
 							}
 					]
 			}).then(result => {
-				console.log("jiangjianchi",result.processed.action_traces[0].console)
 					resolve(result.processed.action_traces[0].console);
 			}).catch(e => {
 					reject(e.message)
@@ -395,7 +395,8 @@ export function withdrawref(user, contractOwner) {
 			return false;
 
 	return new Promise(function (resolve, reject) {
-			scatterEos.transaction({
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
 					actions: [
 							{
 									account: contractOwner,
@@ -457,9 +458,9 @@ export function airdropsInterface(contractOwner) {
 }
 
 /**
-* 查询用户挖矿奖励列表
-* @param contractOwner 建立该合约的账户名(string)
-*/
+ * 查询用户挖矿奖励列表
+ * @param contractOwner 建立该合约的账户名(string)
+ */
 export function getminings(contractOwner) {
 	if (currentAccount == null) {
 			console.log('请先登录');
@@ -469,7 +470,8 @@ export function getminings(contractOwner) {
 			|| contractOwner === undefined)
 			return false;
 	return new Promise(function (resolve, reject) {
-			scatterEos.transaction({
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
 					actions: [
 							{
 									account: contractOwner,
@@ -491,7 +493,7 @@ export function getminings(contractOwner) {
 }
 
 
-// redPacketList('qizhan').then(val =>{
+// redPacketList('pickownowner').then(val =>{
 // 	console.log(val)
 // })
 
@@ -535,14 +537,14 @@ export function getjin(type) {
 
 // }
 
-// selectPacket("wenbo",2,"qizhan").then((val)=>{
+// selectPacket("wenbo",2,"pickownowner").then((val)=>{
 //   console.log(val)
 // }).catch(e=>{
 //   console.log(e+'111')
 // })
-// selectPacket("wenbo",19,"qizhan","5JqRdMU696xCvtFoMutNBz88N9Q7EdX42W4Hy9rp9VPhxug7jJN").then((val)=>{
+// selectPacket("wenbo",19,"pickownowner","5JqRdMU696xCvtFoMutNBz88N9Q7EdX42W4Hy9rp9VPhxug7jJN").then((val)=>{
 //   console.log(val)
 // }).catch(e=>{
 //   console.log(e+'111')
 // })
-// createRedPacket("wenbo", 10000, 5, "qizhan").then(response => console.log(response))
+// createRedPacket("wenbo", 10000, 5, "pickownowner").then(response => console.log(response))

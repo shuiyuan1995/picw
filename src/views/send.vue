@@ -139,12 +139,32 @@ export default {
       // loading
       this.$q.loading.show()
       // 创建红包
-      console.log('发的参数',this.infos.name, this.eosnum[this.packages.this], Number(this.number), "qizhan","eosio.token")
-      createRedPacket(this.infos.name, this.eosnum[this.packages.this], Number(this.number), "qizhan","eosio.token").then(response=>{
+      console.log('发的参数',this.infos.name, this.eosnum[this.packages.this], Number(this.number), "pickownowner","eosio.token")
+      createRedPacket(this.infos.name, this.eosnum[this.packages.this], Number(this.number), "pickownowner","eosio.token").then(response=>{
         console.log(response)
+        // 关闭loading
+        if(!response.packetId||!response.txId){
+          this.$q.loading.hide()
+          this.$q.notify({
+            message: "发送失败",
+            timeout: 100,
+            color: 'green',
+            position:"center"
+          })
+          return false
+        }
         // 查询余额
         getjin('EOS').then((val)=>{
           this.setinfo({eos:parseFloat(val[0])})
+        })
+        // 查询cpu
+        getinfo().then(val=>{
+          this.setinfo({
+            cpu:val.cpu,
+            net:val.net
+          })
+        }).catch(()=>{
+          // console.log("信息获取失败")
         })
         let data = {
           index:this.packages.this,
@@ -169,17 +189,16 @@ export default {
           blocknumber:response.txId,
           addr:this.infos.B_name
         }
-        // 关闭loading
-        this.$q.loading.hide()
         // 向房间展示红包
         this.setpackage(data)
         this.$q.notify({
           message: this.thislang.sendok,
           timeout: 100,
-          type: 'positive',
+          color: 'green',
           position:"center"
         })
         this.$router.push('/')
+        this.$q.loading.hide()
         // 上传红包信息
         post('/issus_packet',data1).then(()=>{
         })
@@ -189,8 +208,19 @@ export default {
         this.$q.notify({
           message: "发送失败",
           timeout: 400,
-          type: 'negative',
+           color: 'red',
           position:"center"
+        })
+        getjin('EOS').then((val)=>{
+          this.setinfo({eos:parseFloat(val[0])})
+        })
+        getinfo().then(val=>{
+          this.setinfo({
+            cpu:val.cpu,
+            net:val.net
+          })
+        }).catch(()=>{
+          // console.log("信息获取失败")
         })
       });
     },

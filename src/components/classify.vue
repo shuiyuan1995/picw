@@ -35,14 +35,14 @@
 </style>
 
 <template>
-  <swiper :options="swiperOption" class="btn-group">
+  <swiper :options="swiperOption" class="btn-group swiper-no-swiping">
     <swiper-slide class="item">
       <button @click="changeE(0)" :class="packages.this == 0?'active':''" class="btn-item">1 EOS</button>
     </swiper-slide>
     <swiper-slide class="item">
       <button @click="changeE(1)" :class="packages.this == 1?'active':''" class="btn-item">5 EOS</button>
     </swiper-slide>
-    <swiper-slide class="item">
+    <!-- <swiper-slide class="item">
       <button @click="changeE(2)" :class="packages.this == 2?'active':''" class="btn-item">10 EOS</button>
     </swiper-slide>
     <swiper-slide class="item">
@@ -53,7 +53,7 @@
     </swiper-slide>
     <swiper-slide class="item">
       <button @click="changeE(5)" :class="packages.this == 5?'active':''" class="btn-item">100 EOS</button>
-    </swiper-slide>
+    </swiper-slide> -->
   </swiper>
 </template>
 
@@ -73,7 +73,7 @@ export default {
   data(){
     return{
       swiperOption: {
-        slidesPerView:3,
+        slidesPerView:2,
         initialSlide: 0
       },
     }

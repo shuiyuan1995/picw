@@ -80,7 +80,6 @@ export default {
   },
   methods:{
     go(){
-      console.log("红包列表",this.item)
       // 判断登录
       if(this.infos.name.length == 0){
         alert('请先登录')
@@ -99,12 +98,30 @@ export default {
       }
       this.$q.loading.show()
       // 抢红包
-      console.log('抢的参数',this.infos.name,Number(this.item.packetId),"qizhan","eosio.token",`${Number(this.item.eos).toFixed(4)} EOS`,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`)
-      selectPacket(this.infos.name,Number(this.item.packetId),"qizhan", "eosio.token", `${Number(this.item.eos).toFixed(4)} EOS`,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`).then((val)=>{
+      console.log('抢的参数',this.infos.name,Number(this.item.packetId),"pickownowner","eosio.token",`${Number(this.item.eos).toFixed(4)} EOS`,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`)
+      selectPacket(this.infos.name,Number(this.item.packetId),"pickownowner", "eosio.token", `${Number(this.item.eos).toFixed(4)} EOS`,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`).then((val)=>{
         console.log(val)
+        if(!val.packetId){
+          this.$q.notify({
+            message: "获取失败",
+            timeout: 100,
+            color: 'green',
+            position:"center"
+          })
+          return false
+        }
         // 查询余额
         getjin('EOS').then((val)=>{
           this.setinfo({eos:parseFloat(val[0])})
+        })
+        // 查询cpu
+        getinfo().then(val=>{
+          this.setinfo({
+            cpu:val.cpu,
+            net:val.net
+          })
+        }).catch(()=>{
+          // console.log("信息获取失败")
         })
         let item = {}
         // 判断是否为最后一个
@@ -163,8 +180,25 @@ export default {
         }) 
       }).catch(e => {
         this.$q.loading.hide()
-        getjin()
+        // 查询余额
+        getjin('EOS').then((val)=>{
+          this.setinfo({eos:parseFloat(val[0])})
+        })
+        getinfo().then(val=>{
+          this.setinfo({
+            cpu:val.cpu,
+            net:val.net
+          })
+        }).catch(()=>{
+          // console.log("信息获取失败")
+        })
         console.log(e)
+        this.$q.notify({
+          message: "获取失败",
+          timeout: 100,
+          color: 'green',
+          position:"center"
+        })
       });
     },
     ...mapMutations({

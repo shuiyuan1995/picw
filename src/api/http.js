@@ -1,8 +1,9 @@
 import axios from "axios";
-import {eosclose} from '../scattereos'
-
 // 环境的切换
-const baseURL = "http://pickown.test/api";
+// const baseURL = "http://pickown.test/api";
+const baseURL = process.env.NODE_ENV !== "production"
+? "http://pickown.test/api"
+: "https://manage.pickown.com/api";
 // const baseURL = "/api";
 // 请求超时时间
 axios.defaults.timeout = 5000;
@@ -33,11 +34,6 @@ export function get(url, params = {}) {
         params: params
       })
       .then(data => {
-        if(data.code == 2003){
-          eosclose()
-          alert("token错误，请重新登录")
-          return false
-        }
         resolve(data);
       })
       .catch(err => reject(err));
@@ -53,11 +49,6 @@ export function post(url, params = {}) {
     axios
       .post(baseURL + url, params)
       .then(data => {
-        if(data.code == 2003){
-          eosclose()
-          alert("token错误，请重新登录")
-          return false
-        }
         resolve(data);
       })
       .catch(err => reject(err));

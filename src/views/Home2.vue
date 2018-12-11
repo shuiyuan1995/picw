@@ -164,7 +164,7 @@
 <template>
   <q-page class="column home no-scroll">
     <div class="nav">
-      <swiper :options="swiperOption" class="btn-group">
+      <swiper :options="swiperOption" class="btn-group swiper-no-swiping">
         <swiper-slide class="item">
           <div @click="changeE(0)" class="btn-item" :class="packages.this == 0?'active':''">1 EOS</div>
           <span v-show="packages.this != 0&&golist[0]>0" class="more">{{golist[0]}}</span>
@@ -173,7 +173,7 @@
           <div @click="changeE(1)" class="btn-item" :class="packages.this == 1?'active':''">5 EOS</div>
           <span v-show="packages.this != 1&&golist[1]>0" class="more">{{golist[1]}}</span>
         </swiper-slide>
-        <swiper-slide class="item">
+        <!-- <swiper-slide class="item">
           <div @click="changeE(2)" class="btn-item" :class="packages.this == 2?'active':''">10 EOS</div>
           <span v-show="packages.this != 2&&golist[2]>0" class="more">{{golist[2]}}</span>
         </swiper-slide>
@@ -188,7 +188,7 @@
         <swiper-slide class="item">
           <div @click="changeE(5)" class="btn-item" :class="packages.this == 5?'active':''">100 EOS</div>
           <span v-show="packages.this != 5&&golist[5]>0" class="more">{{golist[5]}}</span>
-        </swiper-slide>
+        </swiper-slide> -->
       </swiper>
     </div>
     <div class="content">
@@ -207,7 +207,7 @@
     <div class="sendbtn flex">
       <div class="send">
         <p>累计发红包</p>
-        <p>{{infos.info.out_packet_count}}</p>
+        <p>{{Number(infos.info.out_packet_count)}}</p>
         <!-- <transition
           enter-active-class="animated fadeInUp"
           leave-active-class="animated fadeOutUp"
@@ -218,7 +218,7 @@
       <button class="btn" @click="changepage">{{thislang.sendbtn}}</button>
       <div class="send">
         <p class="icon" @click="openrule(false)">{{thislang.lucky}}</p>
-        <p>{{infos.info.xinyunjiangchi}}</p>
+        <p>{{Number(infos.info.xinyunjiangchi).toFixed(4)}}</p>
       </div>
     </div>
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
@@ -253,7 +253,7 @@ export default {
   data(){
     return{
       swiperOption: {
-        slidesPerView:4,
+        slidesPerView:2,
         spaceBetween:10,
         initialSlide: 0
       }, //房间类别切换滑动
@@ -379,9 +379,11 @@ export default {
     // 房间切换
     changeE(i){
       this.setpacki(i)
+      this.setpackdatal(this.packages.data[i])
     },
     ...mapMutations({
       setpacki:'SET_PACKI',
+      setpackdatal:'SET_PACKDATAL',
     }),
     // 滚到底部
     scrollbottom(){
@@ -397,7 +399,7 @@ export default {
     ]),
     // 当前房间红包筛选
     thelists(){
-      return this.packages.data[this.packages.this]
+      return this.packages.thisdata
     },
     // 所有可抢红包
     golist(){

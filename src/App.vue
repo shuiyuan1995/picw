@@ -7,7 +7,7 @@
 
 
 <template>
-  <div id="app" class="scroll no-scroll">
+  <div id="app" v-cloak class="scroll no-scroll">
     <router-view/>
   </div>
 </template>
@@ -27,53 +27,57 @@ export default {
     }
     this.languageAsyn(mydata)
     // 调用可抢红包
-    // get('/get_money_list').then((val)=>{
-    //   console.log(val)
-    //   let newval = val.data
-    //   let newdata = [[],[],[],[],[],[]]
-    //   for(let i =0;i<newval.length;i++){
-    //     let obj = {
-    //       name:newval[i].name,
-    //       packetId:newval[i].packetId,
-    //       txId:newval[i].txId,
-    //       type:1,
-    //       num:newval[i].num,
-    //       eos:newval[i].eos,
-    //       time:newval[i].time*1000,
-    //       none:newval[i].none,
-    //       isgo:0
-    //     }
-    //     if(newdata[newval[i].index]){
-    //       newdata[newval[i].index].push(obj)
-    //     }else{
-    //       newdata[newval[i].index][0] = obj
-    //     }
-    //   }
-    //   console.log(newdata)
-    //   this.setpackage(newdata)
-    // })
+    get('/get_money_list').then((val)=>{
+      console.log(val)
+      let newval = val.data
+      let newdata = [[],[],[],[],[],[]]
+      for(let i =0;i<newval.length;i++){
+        let obj = {
+          name:newval[i].name,
+          packetId:newval[i].packetId,
+          txId:newval[i].txId,
+          type:1,
+          num:newval[i].num,
+          eos:newval[i].eos,
+          time:newval[i].time*1000,
+          none:newval[i].none,
+          isgo:0
+        }
+        if(newdata[newval[i].index]){
+          newdata[newval[i].index].push(obj)
+        }else{
+          newdata[newval[i].index][0] = obj
+        }
+      }
+      console.log(newdata)
+      this.setpackage(newdata)
+      this.setpackdatal(newdata[0])
+    })
   },
   mounted(){
     // 调用socket
-    const socket = io('http://pickown.test:6001');
-    // const socket = io(window.location.origin);
+    const socket = process.env.NODE_ENV !== "production" ? io('http://pickown.test:6001') : io(window.location.origin);
     let self = this
     socket.on('connect',()=>{});
     // 接收红包广播
     socket.on('issus_packet', (val)=>{
       console.log("接收红包",val)
+      const {in_packet_count, in_packet_sum, out_packet_count, transaction_info_count, user_count, xinyunjiangchi} = val.info || {};
       // 更新信息
       let info = {
-        in_packet_count:val.info.in_packet_count,
-        in_packet_sum:val.info.in_packet_sum,
-        out_packet_count:val.info.out_packet_count,
-        transaction_info_count:val.info.transaction_info_count,
-        user_count:val.info.user_count,
-        xinyunjiangchi:val.info.xinyunjiangchi
+        in_packet_count,
+        in_packet_sum,
+        out_packet_count,
+        transaction_info_count,
+        user_count,
+        xinyunjiangchi
       }
       self.setinfo({info:info})
       // 判断是否是自己发的红包
       if(self.infos.name == val.name){
+        return false
+      }
+      if(val.index>this.packages.data.length){
         return false
       }
       let {out_packet} = val
@@ -149,6 +153,7 @@ export default {
       setpackage:'SET_PACKAGE',
       setpackdata:'SET_PACKDATA',
       setinfo:'SET_INFO',
+      setpackdatal:'SET_PACKDATAL',
     }),
   },
   computed:{

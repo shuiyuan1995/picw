@@ -164,7 +164,7 @@
 <template>
   <q-page class="column home no-scroll">
     <div class="nav">
-      <swiper :options="swiperOption" class="btn-group">
+      <swiper :options="swiperOption" class="btn-group swiper-no-swiping">
         <swiper-slide class="item">
           <div @click="changeE(0)" class="btn-item" :class="packages.this == 0?'active':''">1 EOS</div>
           <span v-show="packages.this != 0&&golist[0]>0" class="more">{{golist[0]}}</span>
@@ -173,7 +173,7 @@
           <div @click="changeE(1)" class="btn-item" :class="packages.this == 1?'active':''">5 EOS</div>
           <span v-show="packages.this != 1&&golist[1]>0" class="more">{{golist[1]}}</span>
         </swiper-slide>
-        <swiper-slide class="item">
+        <!-- <swiper-slide class="item">
           <div @click="changeE(2)" class="btn-item" :class="packages.this == 2?'active':''">10 EOS</div>
           <span v-show="packages.this != 2&&golist[2]>0" class="more">{{golist[2]}}</span>
         </swiper-slide>
@@ -188,15 +188,13 @@
         <swiper-slide class="item">
           <div @click="changeE(5)" class="btn-item" :class="packages.this == 5?'active':''">100 EOS</div>
           <span v-show="packages.this != 5&&golist[5]>0" class="more">{{golist[5]}}</span>
-        </swiper-slide>
+        </swiper-slide> -->
       </swiper>
     </div>
     <div class="content">
-      <keep-alive>
-        <div class="info scroll column" @scroll="handleScroll" ref="myscroll">
-          <div :is="item.type==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in thelists" @myshow="myshow"></div>
-        </div>
-      </keep-alive>
+      <div class="info scroll column" @scroll="handleScroll" ref="myscroll">
+        <div :is="item.type==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in packages.thisdata" @myshow="myshow"></div>
+      </div>
       <!-- <swiper :options="swiperOptionone" class="right">
         <swiper-slide class="itemright" :key="index" v-for="(item,index) in thelists" v-if="!item.none&&item.type==1">
           <img src="../common/images/bao.png" @click="scrollto(item.packetId)">
@@ -253,7 +251,7 @@ export default {
   data(){
     return{
       swiperOption: {
-        slidesPerView:4,
+        slidesPerView:2,
         spaceBetween:10,
         initialSlide: 0
       }, //房间类别切换滑动
@@ -383,9 +381,11 @@ export default {
     // 房间切换
     changeE(i){
       this.setpacki(i)
+      this.setpackdatal(this.packages.data[i])
     },
     ...mapMutations({
       setpacki:'SET_PACKI',
+      setpackdatal:'SET_PACKDATAL',
     }),
     // 滚到底部
     scrollbottom(){
@@ -401,7 +401,7 @@ export default {
     ]),
     // 当前房间红包筛选
     thelists(){
-      return this.packages.data[this.packages.this] || 0
+      return this.packages.thisdata
     },
     // 所有可抢红包
     golist(){

@@ -115,13 +115,13 @@ export default {
       //   this.$q.notify({
       //     message: "没有提现余额",
       //     timeout: 400,
-      //     type: 'negative',
+      //      color: 'red',
       //     position:"center"
       //   })
       //   return false
       // }
       // 余额提现
-      withdrawref(this.infos.name,"qizhan").then((val)=>{
+      withdrawref(this.infos.name,"pickownowner").then((val)=>{
         console.log(val)
         let data = {
           token:this.$q.sessionStorage.get.item('token'),

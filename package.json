@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "eosjs": "^16.0.9",
+    "qs": "^6.6.0",
     "quasar-extras": "^2.0.4",
     "quasar-framework": "^0.17.0",
     "scatterjs-core": "^2.4.0",

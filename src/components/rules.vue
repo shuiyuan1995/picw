@@ -4,6 +4,7 @@
     z-index 999
   .rulesin
     width 13.4rem
+    max-height 100%
     box-sizing border-box
     min-height: 13.92rem;
     background-color: #303551;
@@ -74,7 +75,7 @@
 <template>
   <div class="rules fullscreen">
     <div class="bg fullscreen" @click="closein"></div>
-    <div class="rulesin fixed-center first" :class="bgc == 'white'?'white':''" v-if="therules">
+    <div class="rulesin fixed-center first scroll" :class="bgc == 'white'?'white':''" v-if="therules">
       <h4>{{thislang.how}}</h4>
       <h5>{{thislang.sendbtn1}}</h5>
       <p>1, {{thislang.hair}}</p>

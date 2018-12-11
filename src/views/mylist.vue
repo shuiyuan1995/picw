@@ -114,7 +114,7 @@ export default {
       return false
     }else{
       // 获取排行榜列表
-      redPacketList("qizhan").then(val => {
+      redPacketList("pickownowner").then(val => {
         console.log(val)
         this.items2 = val
       })

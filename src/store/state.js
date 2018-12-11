@@ -7,7 +7,8 @@ const state = {
   packages:{
     this:0,
     all:true,
-    data:[[],[],[],[],[],[]]
+    data:[[],[],[],[],[],[]],
+    thisdata:[]
   },
   // 其他数据
   info:{
@@ -17,7 +18,9 @@ const state = {
     info:{},
     eos:0,
     own:0,
-    hui:false
+    hui:false,
+    cpu:0,
+    net:0,
   }
 };
 

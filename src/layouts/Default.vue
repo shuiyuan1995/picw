@@ -219,11 +219,11 @@
       <div class="yue flex">
         <div>
           <p>EOS</p>
-          <p>{{infos.eos.toFixed(4)}}</p>
+          <p>{{infos.eos?Number(infos.eos).toFixed(4):(0).toFixed(4)}}</p>
         </div>
         <div>
           <p>OWN</p>
-          <p>{{infos.own.toFixed(4)}}</p>
+          <p>{{infos.own?Number(infos.own).toFixed(4):(0).toFixed(4)}}</p>
         </div>
       </div>
       <div class="share flex">
@@ -241,21 +241,21 @@
       </ul>
       <div class="statistical smalltop flex">
         <q-knob
-          v-model="model"
+          v-model="infos.cpu"
           :min="0"
           :max="100"
           size="1.52rem"
           class="knob"
           readonly
-        ><p class="knobp">{{model}}%</p><p class="knobp">CPU</p></q-knob>
+        ><p class="knobp">{{infos.cpu}}%</p><p class="knobp">CPU</p></q-knob>
         <q-knob
-          v-model="model1"
+          v-model="infos.net"
           :min="0"
           :max="100"
           size="1.52rem"
           class="knob"
           readonly
-        ><p class="knobp">{{model1}}%</p><p class="knobp">NET</p></q-knob>
+        ><p class="knobp">{{infos.net}}%</p><p class="knobp">NET</p></q-knob>
       </div>
       <ul class="tolanguage smalltop flex">
         <div class="langitem" :class="changeI == 1?'active':''" @click="changeL(1)"><img src="../common/images/icon9.png"></div>
@@ -265,17 +265,17 @@
       <ul class="topbox smalltop flex">
         <li>
           <img src="../common/images/icon12.png">
-          <p>{{infos.info.out_packet_count}}</p>
+          <p>{{Number(infos.info.out_packet_count)}}</p>
           <p>{{thislang.packet}}</p>
         </li>
         <li>
           <img src="../common/images/icon13.png">
-          <p>{{infos.info.transaction_info_count}}</p>
+          <p>{{Number(infos.info.transaction_info_count).toFixed(4)}}</p>
           <p>EOS</p>
         </li>
         <li>
           <img src="../common/images/icon14.png">
-          <p>{{infos.info.user_count}}</p>
+          <p>{{Number(infos.info.user_count)}}</p>
           <p>{{thislang.player}}</p>
         </li>
       </ul>
@@ -336,17 +336,16 @@ export default {
     login(){
       // 判断登录状态
       if(this.islogin){
-        let templist = {
-          index:this.packages.this,
-          data:this.packages.data[this.packages.this]
-        }
-        for(let i = 0;i<templist.data.length;i++){
-          templist.data[i].isgo = 1
+        let pak = this.packages.thisdata
+        let templist = []
+        for(let i = 0;i<pak.length;i++){
+          templist[i] = Object.assign({},pak[i], {
+            isgo:1
+          })
         }
         this.setpackdatal(templist)
         // 登录
         eoslogin('PickOwn').then(val=>{
-          console.log(val)
           this.usename = val.accounts[0].name
           this.islogin = !this.islogin
           // 判断登录人与邀请人是否一致
@@ -358,9 +357,10 @@ export default {
           // 获取userid，token
           let data = {
             name:val.accounts[0].name,
-            publickey:val.accounts[0].publicKey,
-            addr:this.B_name
+            publickey:val.accounts[0].publicKey||val.publicKey,
+            addr:this.B_name || ""
           }
+          console.log(data)
           get('/login',data).then((val)=>{
             this.$q.sessionStorage.set('token', val.data.data.token)
             this.$q.sessionStorage.set('userid', val.data.data.userid)
@@ -368,15 +368,17 @@ export default {
             this.getbaoinfo({userid:val.data.data.userid})
           })
           this.$q.notify({
-            message: this.thislang.loginok,
+            message: '登录成功',
             timeout: 100,
-            type: 'positive',
+            color: 'green',
             position:"center"
           })
           // 获取用户cpu信息
           getinfo().then(val=>{
-            this.model = val.cpu
-            this.model1 = val.net
+            this.setinfo({
+              cpu:val.cpu,
+              net:val.net
+            })
           }).catch(()=>{
             // console.log("信息获取失败")
           })
@@ -400,7 +402,7 @@ export default {
           this.$q.notify({
             message: msg,
             timeout: 100,
-            type: 'negative',
+            color: 'red',
             position:"center"
           })
         })
@@ -408,15 +410,20 @@ export default {
         // 注销
         eosclose()
         this.getbaoinfo({})
-        this.setinfo({eos:0})
-        this.setinfo({own:0})
-        this.setinfo({name:''})
+        this.setinfo({
+          eos:0,
+          own:0,
+          cpu:0,
+          net:0,
+          name:''
+        })
         this.islogin = !this.islogin
         this.downlogin = false
       }
     },
     // 获取红包列表信息
     getbaoinfo(data){
+      console.log("data",data)
       get('/get_money_list',data).then((val)=>{
         console.log(val)
         let newval = val.data
@@ -441,6 +448,7 @@ export default {
         }
         console.log(newdata)
         this.setpackage(newdata)
+        this.setpackdatal(newdata[this.packages.this])
       }) 
     },
     // 打开关闭游戏介绍
@@ -507,7 +515,6 @@ export default {
     openURL
   },
   components:{
-    smallhead,
     invitation,
     rules
   },
