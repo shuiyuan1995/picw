@@ -76,49 +76,49 @@
   <div class="rules fullscreen">
     <div class="bg fullscreen" @click="closein"></div>
     <div class="rulesin fixed-center first scroll" :class="bgc == 'white'?'white':''" v-if="therules">
-      <h4>{{thislang.how}}</h4>
-      <h5>{{thislang.sendbtn1}}</h5>
-      <p>1, {{thislang.hair}}</p>
-      <p>2, {{thislang.hair1}}</p>
-      <p>3, {{thislang.hair2}}</p>
-      <h5>{{thislang.robtitle}}</h5>
-      <p>{{thislang.rob}}</p>
-      <h5>{{thislang.steptitle}}</h5>
-      <p>{{thislang.step}}</p>
-      <h5>{{thislang.watitle}}</h5>
-      <p>{{thislang.wa}}</p>
-      <h5>{{thislang.jiangtitle}}</h5>
-      <p>{{thislang.jiang}}</p>
-      <h5>{{thislang.morerule}}</h5>
+      <h4>{{$t("message.how")}}</h4>
+      <h5>{{$t("message.sendbtn1")}}</h5>
+      <p>1, {{$t("message.hair")}}</p>
+      <p>2, {{$t("message.hair1")}}</p>
+      <p>3, {{$t("message.hair2")}}</p>
+      <h5>{{$t("message.robtitle")}}</h5>
+      <p>{{$t("message.rob")}}</p>
+      <h5>{{$t("message.steptitle")}}</h5>
+      <p>{{$t("message.step")}}</p>
+      <h5>{{$t("message.watitle")}}</h5>
+      <p>{{$t("message.wa")}}</p>
+      <h5>{{$t("message.jiangtitle")}}</h5>
+      <p>{{$t("message.jiang")}}</p>
+      <h5 @click="openu">{{$t("message.morerule")}}</h5>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
     <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''" v-else>
-      <h4>幸运奖池</h4>
-      <p>平台利润的5%奖励给玩家，玩家在游戏中，抽到特定幸运数字，可得到当前奖池比例的奖励。</p>
+      <h4>{{$t("message.lucky")}}</h4>
+      <p>{{$t("message.luckytxt")}}</p>
       <div class="rulebox">
         <div class="title flex">
-          <span>奖项</span>
-          <span>奖金</span>
+          <span>{{$t("message.jiangxiang")}}</span>
+          <span>{{$t("message.prize")}}</span>
         </div>
         <div class="tr flex">
-          <div class="flex"><span>对子</span><p><span>0.0022</span></p></div>
-          <p>奖池的 0.5 %</p>
+          <div class="flex"><span>{{$t("message.dui")}}</span><p><span>0.0022</span></p></div>
+          <p>{{$t("message.jiangchi")}} 0.5 %</p>
         </div>
         <div class="tr flex">
-          <div class="flex"><span>三条</span><p><span>0.0111</span><br /><span>0.2999</span></p></div>
-          <p>奖池的 1 %</p>
+          <div class="flex"><span>{{$t("message.san")}}</span><p><span>0.0111</span><br /><span>0.2999</span></p></div>
+          <p>{{$t("message.jiangchi")}} 1 %</p>
         </div>
         <div class="tr flex">
-          <div class="flex"><span>整数</span><p><span>0.1000</span><br /><span>1.6000</span></p></div>
-          <p>奖池的 1 %</p>
+          <div class="flex"><span>{{$t("message.zhen")}}</span><p><span>0.1000</span><br /><span>1.6000</span></p></div>
+          <p>{{$t("message.jiangchi")}} 1 %</p>
         </div>
         <div class="tr flex">
-          <div class="flex"><span>顺子</span><p><span>0.1234</span><br /><span>0.5678</span></p></div>
-          <p>奖池的 2 %</p>
+          <div class="flex"><span>{{$t("message.shun")}}</span><p><span>0.1234</span><br /><span>0.5678</span></p></div>
+          <p>{{$t("message.jiangchi")}} 2 %</p>
         </div>
         <div class="tr flex">
-          <div class="flex"><span>炸弹</span><p><span>0.1111</span><br /><span>0.6666</span></p></div>
-          <p>奖池的 3 %</p>
+          <div class="flex"><span>{{$t("message.si")}}</span><p><span>0.1111</span><br /><span>0.6666</span></p></div>
+          <p>{{$t("message.jiangchi")}} 3 %</p>
         </div>
       </div>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
@@ -128,6 +128,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
+import { openURL} from "quasar";
 export default {
   props:{
     // 背景
@@ -144,6 +145,9 @@ export default {
     // 关闭页面
     closein(){
       this.$emit('openrule')
+    },
+    openu(){
+      openURL("https://www.pickown.com/Pick_Own_V1.pdf")
     }
   },
   computed:{

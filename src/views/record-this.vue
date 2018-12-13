@@ -98,13 +98,13 @@
 
 <template>
   <div class="recordHair fullscreen scroll" @click="$refs.smallhead.open()">
-    <smallhead ref="smallhead" :title='`${data.outpacketname}的红包`' class="fixed-top" right="jilu"></smallhead>
+    <smallhead ref="smallhead" :title='`${data.outpacketname}${$t("message.debao")}`' :data="data.outpacketname" class="fixed-top" right="jilu"></smallhead>
     <div class="top column">
       <img class="img" src="../common/images/icon.png" />
-      <p class="num">尾数:{{data.outpackettailnumber}}</p>
-      <p class="over" v-if="data.data && data.data.length > 0">已领完</p>
+      <p class="num">{{$t("message.wei")}}:{{data.outpackettailnumber}}</p>
+      <p class="over" v-if="data.data && data.data.length > 0">{{$t("message.linwan")}}</p>
     </div>
-    <div class="center">总共10个，共{{data.outpacketsum}}eos</div>
+    <div class="center">{{$t("message.gong")}}{{data.outpacketsum}}eos</div>
     <ul class="bottom" v-if="data.data&&data.data.length>0">
       <li :key="index" v-for="(item,index) in data.data">
         <div class="info flex">
@@ -122,7 +122,7 @@
         </div>
       </li>
     </ul>
-    <div class="bottomtxt" v-else>抢红包正在进行中，抢完才会公布结果哟！</div>
+    <div class="bottomtxt" v-else>{{$t("message.jinxin")}}</div>
   </div>
 </template>
 
@@ -136,8 +136,8 @@ export default {
     // 获取红包id
     this.packetId = this.$route.params.txId
     let data = {
-      token:this.$q.sessionStorage.get.item('token'),
-      userid:this.$q.sessionStorage.get.item('userid'),
+      token:this.infos.token,
+      userid:this.infos.userid,
       outid:this.packetId
     }
     // 获取当前红包抽奖信息
@@ -166,7 +166,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "thislang"
+      "infos"
     ]),
     // 红包获奖状态判断
     // typetxt(){

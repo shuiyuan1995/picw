@@ -81,9 +81,9 @@
     <div class="bg fullscreen" @click="$emit('myshow')"></div>
     <div class="gobao fixed-center column">
       <div class="baotop column">
-        <h2>恭喜你 , 抢到了</h2>
+        <h2>{{$t("message.goodtitle")}}</h2>
         <p>{{win.print}} EOS</p>
-        <h2>挖矿</h2>
+        <h2>{{$t("message.wakuang")}}</h2>
         <p class="kuang">{{win.own}} OWN</p>
       </div>
       <div class="baobottom">
@@ -97,8 +97,7 @@
             <span>- {{win.eos}}EOS</span>
           </p>
         </div>
-        <p class="toview" @click="golist">{{thislang.kan}}>></p>
-        <!-- <p class="toview" @click="$router.push(`/record-this/${win.packetId}`)">{{thislang.kan}}>></p> -->
+        <p class="toview" @click="golist">{{$t("message.kan")}}>></p>
       </div>
       <span class="share icon icon-fenxiang3" ></span>
       <span class="close icon icon-close" @click="$emit('myshow')"></span>
@@ -131,13 +130,8 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "thislang","infos"
+      "infos"
     ]),
-    // 获奖类型判断
-    // typetxt(){
-    //   // return ['','dui','san','zhen','shun','zha']
-    //   // return ['',this.thislang.dui,this.thislang.san,this.thislang.zhen,this.thislang.shun,this.thislang.si]
-    // }
   }
 }
 </script>

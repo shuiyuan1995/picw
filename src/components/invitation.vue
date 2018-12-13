@@ -54,12 +54,12 @@
   <div class="invitation fullscreen">
     <div class="bg fullscreen" @click.stop="closein"></div>
     <div class="info fixed-center">
-      <h2>立即邀请好友领取奖励</h2>
+      <h2>{{$t("message.yaoqin")}}</h2>
       <div class="conent flex">
         <input type="text" :value="copytxt" id="copyObj">
-        <button @click="copy">复制</button>
+        <button @click="copy">{{$t("message.copy")}}</button>
       </div>
-      <p>当好友透过您专属的连结进入游戏投注后，你可获得平台利润的10%，请于【我的奖励】界面领取。</p>
+      <p>{{$t("message.yaolin")}}</p>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
   </div>

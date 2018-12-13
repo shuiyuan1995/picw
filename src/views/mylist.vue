@@ -76,13 +76,13 @@
 
 <template>
   <q-page class="fullscreen column home">
-    <smallhead :title="thislang.board"></smallhead>
+    <smallhead :title='$t("message.board")'></smallhead>
     <div>
       <div class="listtitle paititle flex">
-        <span>{{thislang.rank}}</span>
-        <span>{{thislang.user}}</span>
-        <span>{{thislang.amount}}</span>
-        <span>{{thislang.prize}}</span>
+        <span>{{$t("message.rank")}}</span>
+        <span>{{$t("message.user")}}</span>
+        <span>{{$t("message.amount")}}</span>
+        <span>{{$t("message.prize")}}</span>
       </div>
       <q-scroll-area class="pailist column" v-if="items2 && items2.length>0">
         <div class="paiitem flex" :key="index" v-for="(item,index) in items2">
@@ -92,7 +92,7 @@
           <p><span>{{(item.prize/10000).toFixed(4)}}</span> EOS</p>
         </div>
       </q-scroll-area>
-      <p class="bottomtxt" v-else>暂无数据</p>
+      <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
     </div>
   </q-page>
 </template>
@@ -103,7 +103,6 @@
 <script>
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters} from 'vuex';
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import {redPacketList} from '../scattereos'
 export default {
   created(){
@@ -114,15 +113,13 @@ export default {
       return false
     }else{
       // 获取排行榜列表
-      redPacketList("pickownowner").then(val => {
+      redPacketList("pickowngames").then(val => {
         console.log(val)
         this.items2 = val
       })
     }
   },
   components: {
-    swiper,
-    "swiper-slide":swiperSlide,
     smallhead
   },
   data(){
@@ -135,7 +132,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "thislang","infos"
+      "infos"
     ]),
   }
 }

@@ -62,23 +62,23 @@
 
 <template>
   <div class="recordHair fullscreen scroll" :class="$q.platform.is.desktop?'desktop':''">
-    <smallhead title='我的奖励'></smallhead>
+    <smallhead :title='$t("message.myjiang")'></smallhead>
     <div class="nav">
-      <div class="nav-item active">邀请奖励</div>
+      <div class="nav-item active">{{$t("message.yaojiang")}}</div>
     </div>
     <div class="center">
       <div class="ren">
-        <p class="txt">累计邀请</p>
+        <p class="txt">{{$t("message.leiyao")}}</p>
         <p class="info"><span>{{data.sum}}</span>人</p>
       </div>
       <div class="jiangold">
-        <p class="txt">累计获得邀请奖励</p>
+        <p class="txt">{{$t("message.leijiang")}}</p>
         <p class="info"><span>{{data.tixian_sum}}</span>EOS</p>
       </div>
       <div class="jiang">
-        <p class="txt">未领取的邀请奖励</p>
+        <p class="txt">{{$t("message.weilinjiang")}}</p>
         <p class="info"><span>{{data.shengyu_sum}}</span>EOS</p>
-        <button class="lin" @click="lin">领取</button>
+        <button class="lin" @click="lin">{{$t("message.lin")}}</button>
       </div>
     </div>
   </div>
@@ -97,8 +97,8 @@ export default {
   },
   created(){
     let data = {
-      token:this.$q.sessionStorage.get.item('token'),
-      userid:this.$q.sessionStorage.get.item('userid')
+      token:this.infos.token,
+      userid:this.infos.userid,
     }
     post('/get_tixian_info',data).then(val => {
       this.data = {
@@ -121,11 +121,11 @@ export default {
       //   return false
       // }
       // 余额提现
-      withdrawref(this.infos.name,"pickownowner").then((val)=>{
+      withdrawref(this.infos.name,"pickowngames").then((val)=>{
         console.log(val)
         let data = {
-          token:this.$q.sessionStorage.get.item('token'),
-          userid:this.$q.sessionStorage.get.item('userid'),
+          token:this.infos.token,
+          userid:this.infos.userid,
           money:(val/10000).toFixed(4)
         }
         post('/post_tixian',data).then((val)=>{

@@ -10,9 +10,10 @@ const mutations = {
   [types.SET_PACKAGE](state,data) {
     if(data.index || data.index == 0){
       if(state.packages.data[data.index]){
-        state.packages.data[data.index].push(data.data)
-      }else{
-        state.packages.data[data.index][0] = data.data
+        state.packages.data[data.index] = [
+          ...state.packages.data[data.index],
+          data.data
+        ]
       }
     }else{
       state.packages.data = data

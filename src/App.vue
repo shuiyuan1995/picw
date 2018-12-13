@@ -15,7 +15,7 @@
 <script>
 import {mapActions,mapMutations,mapGetters} from 'vuex';
 import io from "socket.io-client";
-import data from '@/common/data/data.json'
+import data from '@/common/lang/data.json'
 import {get} from './api'
 import { date } from 'quasar'
 export default {
@@ -28,7 +28,6 @@ export default {
     this.languageAsyn(mydata)
     // 调用可抢红包
     get('/get_money_list').then((val)=>{
-      console.log(val)
       let newval = val.data
       let newdata = [[],[],[],[],[],[]]
       for(let i =0;i<newval.length;i++){
@@ -43,13 +42,13 @@ export default {
           none:newval[i].none,
           isgo:0
         }
-        if(newdata[newval[i].index]){
-          newdata[newval[i].index].push(obj)
-        }else{
-          newdata[newval[i].index][0] = obj
+        if (newdata[newval[i].index]) {
+          newdata[newval[i].index] = [
+            ...newdata[newval[i].index],
+            obj
+          ]
         }
       }
-      console.log(newdata)
       this.setpackage(newdata)
       this.setpackdatal(newdata[0])
     })
@@ -77,7 +76,7 @@ export default {
       if(self.infos.name == val.name){
         return false
       }
-      if(val.index>this.packages.data.length){
+      if(val.index>self.packages.data.length){
         return false
       }
       let {out_packet} = val
@@ -95,17 +94,18 @@ export default {
         }
       }
       self.setpackage(data)
+      self.setpackdatal(self.packages.data[self.packages.this])
     })
     // 接收领完消息
     socket.on('income_packet', function(val) {
-      console.log(val)
+      const {in_packet_count, in_packet_sum, out_packet_count, transaction_info_count, user_count, xinyunjiangchi} = val.data || {}
       let info = {
-        in_packet_count:val.info.in_packet_count,
-        in_packet_sum:val.info.in_packet_sum,
-        out_packet_count:val.info.out_packet_count,
-        transaction_info_count:val.info.transaction_info_count,
-        user_count:val.info.user_count,
-        xinyunjiangchi:val.info.xinyunjiangchi
+        in_packet_count,
+        in_packet_sum,
+        out_packet_count,
+        transaction_info_count,
+        user_count,
+        xinyunjiangchi
       }
       self.setinfo({info:info})
       if(val.type == 2){
@@ -140,6 +140,7 @@ export default {
           }
         }
         self.setpackage(newlist)
+        self.setpackdatal(self.packages.data[self.packages.this])
       }
     })
     socket.on('disconnect', function(){

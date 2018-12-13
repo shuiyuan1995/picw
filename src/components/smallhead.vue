@@ -52,15 +52,15 @@
 
 <template>
   <div class="smallhead flex" @click="open">
-    <span :class="left" v-if="left == 'guan'" @click="$router.push('/')">{{thislang.close}}</span>
+    <span :class="left" v-if="left == 'guan'" @click="$router.push('/')">{{$t("message.close")}}</span>
     <span v-else @click="prev" class="icon icon-Left" v-show="!judge"></span>
     <p>{{title}}</p>
-    <span :class="right" v-if="right == 'jilu'" @click="togojilu">红包记录</span>
+    <span :class="right" v-if="right == 'jilu'" @click="togojilu">{{$t("message.record")}}</span>
     <span :class="right" class="icon icon-moreread" v-else-if="right == 'jilui'" @click.stop="more = !more"></span>
     <q-btn v-else flat dense round aria-label="Menu" class="menu icon icon-menu" @click="menu"/>
     <ul class="more" v-show="more">
-      <li :class="$route.path == '/record-hair'?'active':''" @click="$router.push('/record-hair')">发红包记录</li>
-      <li :class="$route.path == '/record-closed'?'active':''" @click="$router.push('/record-closed')">收红包记录</li>
+      <li :class="$route.path == '/record-hair'?'active':''" @click="$router.push('/record-hair')">{{$t("message.fa")}}</li>
+      <li :class="$route.path == '/record-closed'?'active':''" @click="$router.push('/record-closed')">{{$t("message.shou")}}</li>
     </ul>
     <!-- <span v-show="share" class="icon icon-fenxiang3"></span> -->
   </div>
@@ -81,6 +81,10 @@ export default {
     left:{
       default:true
     },
+    // 数据
+    data:{
+      default:""
+    },
     share:{
       type:Boolean,
       default:false
@@ -99,7 +103,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "infos","thislang"
+      "infos"
     ])
   },
   methods:{
@@ -115,9 +119,10 @@ export default {
       this.more = false
     },
     togojilu(){
-      let str=this.title.substring(0,this.title.length-3)
-      console.log(str)
-      if(str == this.infos.name){
+      if(!data){
+        this.$router.push('/record-hair')
+      }
+      if(data == this.infos.name){
         this.$router.push('/record-hair')
       }else{
         this.$router.push('/record-closed')

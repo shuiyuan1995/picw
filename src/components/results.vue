@@ -75,10 +75,10 @@
 
 <template>
   <div class="results">
-    <p class="sendname"><span class="grey">{{item.name}}</span>的红包已领完，尾数:<span class="red">{{item.num}}</span><span class="grey">({{item.time}})</span></p>
+    <p class="sendname"><span class="grey">{{item.name}}</span>{{$t("message.resultstitle")}}:<span class="red">{{item.num}}</span><span class="grey">({{item.time}})</span></p>
     <div class="resultsbox">
       <div class="title flex">
-        <span>Player</span>
+        <span>{{$t("message.player")}}</span>
         <span>EOS</span>
         <span>OWN</span>
         <span></span>

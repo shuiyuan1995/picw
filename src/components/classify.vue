@@ -4,6 +4,8 @@
     border solid 1px #d2d2d2
     border-radius 0.1rem
     background #ffffff
+  .item
+    width 50%
   .item:not(:last-of-type) .btn-item
     border-right solid 0.02rem #d2d2d2
   .btn-item
