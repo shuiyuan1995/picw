@@ -44,7 +44,9 @@
       cursor pointer
   .bottom
     background #ffffff
+    position relative
     border-top 0.04rem solid #e8e8e8
+    padding-bottom 1.6rem
     li
       border-bottom 0.04rem solid #e8e8e8
       padding 0.68rem 0.8rem
@@ -64,6 +66,9 @@
       bottom 0
       text-align center
       font-size 0.64rem
+      text-align center
+      width 100%
+      padding 10px 0 10px
   .bottomtxt
     text-align center
     font-size 0.56rem
@@ -72,7 +77,7 @@
 </style>
 
 <template>
-  <div class="recordHair fullscreen scroll" ref="myscroll" @click="$refs.smallhead.open()">
+  <div class="recordHair fullscreen scroll" ref="myscroll" @scroll="scrollHandler" @click="$refs.smallhead.open()">
     <smallhead ref="smallhead" :title="`${thislang.fa}`" class="fixed-top" right="jilui" left="guan"></smallhead>
     <div class="top">
       <p class="name">{{data.name}}{{thislang.issued}}</p>
@@ -89,12 +94,13 @@
       </ul>
       <span class="time" @click="timer = !timer">{{thisdata}}</span>
     </div>
-    <ul class="bottom" v-if="data.data && data.data.length>0">
-      <li :key="index" v-for="(item,index) in data.data">
+    <ul class="bottom" v-if="list&&list.length>0">
+      <li :key="index" v-for="(item,index) in list">
+        <!-- <li :key="index" v-for="(item,index) in 15"> -->
         <!-- <div class="info flex" @click="$router.push(`/record-this/${Number(item.eosid)}`)"> -->
         <div class="info flex" @click="golist(item)">
           <div class="left">
-            <p class="name">{{item.issus_sum}}EOS</p>
+            <p class="name">{{item.user.name}}EOS</p>
             <p class="time">{{item.created_at}}</p>
           </div>
           <div class="right">
@@ -103,7 +109,7 @@
           </div>
         </div>
       </li>
-      <li class="more" v-show="more">到底了</li>
+      <li class="more" v-show="more">{{data.meta.current_page>=data.meta.last_page?'到底了':'数据加载中'}}</li>
     </ul>
     <p class="bottomtxt" v-else>暂无数据</p>
     <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
@@ -130,9 +136,12 @@ export default {
     return{
       model:new Date(),//时间
       timer:false,//时间选择展示
-      data:[], //列表
+      data:{}, //信息
+      list:[],//列表
       timej:{}, //时间区间
-      more:false 
+      more:false ,
+      page:0,//页码
+      qingqiu:false //是否在请求数据
     }
   },
   components: {
@@ -159,22 +168,31 @@ export default {
     },
     // 获取列表信息
     getinfo(time){
+      this.qingqiu = true
       let data = {}
       if(time){
         data = {
-          token:this.$q.sessionStorage.get.item('token'),
-          userid:this.$q.sessionStorage.get.item('userid'),
-          time:time
+          token:this.infos.token,
+          userid:this.infos.userid,
+          time:time,
+          page:this.page+1
         }
       }else{
         data = {
-          token:this.$q.sessionStorage.get.item('token'),
-          userid:this.$q.sessionStorage.get.item('userid')
+          token:this.infos.token,
+          userid:this.infos.userid,
+          page:this.page+1
         }
       }
       post('/my_issus_packet',data).then((val)=>{
+        this.qingqiu = false
         console.log(val)
         this.data = val
+        this.list = [
+          ...this.list,
+          ...val.data
+        ]
+        this.page = val.meta.current_page
         if(Object.keys(val.data).length != 0){
           this.data.data = val.data.map((val,i)=>{
             return {
@@ -188,6 +206,20 @@ export default {
           last:val.max_time*1000
         }
       })
+    },
+    scrollHandler(e){
+      console.log(this.$refs.myscroll.scrollHeight-scrollTop-this.$refs.myscroll.offsetHeight < 30)
+      let scrollTop = e.target.pageYOffset || e.target.scrollTop
+      if(this.$refs.myscroll.scrollHeight-scrollTop-this.$refs.myscroll.offsetHeight < 30){
+        this.more = true
+        if(this.qingqiu||this.data.meta.last_page&&this.page>=this.data.meta.last_page){
+          return false
+        }else{
+          this.getinfo()
+        }
+      }else{
+        this.more = false
+      }
     }
   },
   computed:{

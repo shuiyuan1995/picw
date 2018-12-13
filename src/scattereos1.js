@@ -1,23 +1,24 @@
-import ScatterJS from 'scatterjs-core';
-import ScatterEOS from 'scatterjs-plugin-eosjs';
-import Eos from 'eosjs';
-ScatterJS.plugins(new ScatterEOS());
-export let scatter = ScatterJS.scatter;
+// import ScatterJS from 'scatterjs-core';
+// import ScatterEOS from 'scatterjs-plugin-eosjs';
+// import scatter from './common/js/scatter.min.js';
+// import Eos from './common/js/eos.min.js';
+// ScatterJS.plugins(new ScatterEOS());
+// export let scatter = ScatterJS.scatter;
 
 let chainId = 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906';
-let endpoint = 'https://eospro.pickown.com';
+let endpoint = 'http://112.74.36.211:8888';
 let network = {
     blockchain: 'eos',
-		host: 'eospro.pickown.com',
-		port: '',
+    host: '112.74.36.211',
+    port: 8888,
     chainId: chainId,
-    protocol: "https",
+    protocol: "http",
     httpEndpoint : endpoint,
 };
 
 // let scatterEos = scatter.eos(network, Eos);
+let identity = null;
 let currentAccount = null;
-
 function hasScatter() {
 	return scatter !== undefined;
 }
@@ -33,43 +34,65 @@ export function eoslogin(gameName) {
 		return;
 	}
 	return new Promise((resolve, reject) => {
-		ScatterJS.scatter.connect(gameName).then((val) => {
-			if (!val) return alert("连接失败")
-			open(function (identity) {
+		scatter.connect(gameName).then((val) => {
+			console.log(val,'001')
+			if(!val){
+				reject('001')
+			}
+			open(function () {
+				console.log(`登陆成功：${JSON.stringify(identity)}`);
+				// prizePool("pickowngames")
 				resolve(identity)
 			}, function (error) {
 				console.log(`登陆出错：${JSON.stringify(error)}，请关闭重新打开或者刷新本页面`);
 				reject(error)
 			});
+		}).catch(()=>{
+			console.log('002')
 		})
+		// if (currentAccount === null) {
+		// 	ScatterJS.scatter.connect(gameName).then(() => {
+		// 		open(function () {
+		// 			console.log(`登陆成功：${JSON.stringify(identity)}`);
+		// 			resolve(identity)
+		// 		}, function (error) {
+		// 			console.log(`登陆出错：${JSON.stringify(error)}，请关闭重新打开或者刷新本页面`);
+		// 			reject(error)
+		// 		});
+		// 	});
+		// } else {
+		// 	console.log(`登陆成功：${JSON.stringify(identity)}`);
+		// 	resolve(identity)
+		// }
 	})
 }
 
 function open(successCallback, errorCallbak) {
-	ScatterJS.scatter.suggestNetwork(network).then(() => {
-		const requirements = {
-			accounts: [network]
-		};
-		ScatterJS.scatter.getIdentity(requirements)
-			.then((i)=>{
-				// 没有数据返回
-				if (!i) return errorCallbak(null);
-				// 登录成功
-				currentAccount = i.accounts[0];
-				successCallback(i);
-			}
-		).catch(error => {
-			errorCallbak(error);
-		});
+	scatter.suggestNetwork(network).then(() => {
+			const requirements = {accounts: [network]};
+			scatter.getIdentity(requirements).then(
+					function (i) {
+							if (!i) {
+									return errorCallbak(null);
+							}
+							identity = i;
+							currentAccount = identity.accounts[0];
+							console.log(identity.accounts[0].name);
+							successCallback();
+					}
+			).catch(error => {
+					errorCallbak(error);
+			});
 	}).catch(error => {
-		errorCallbak(error);
+			errorCallbak(error);
 	});
 }
+
 /**
  * 注销
  */
 export function eosclose() {
-	ScatterJS.scatter.forgetIdentity();
+	scatter.forgetIdentity();
 }
 
 /**
@@ -81,14 +104,14 @@ export function getinfo(cd) {
 		return false
 	}
 	return new Promise(function (resolve, reject) {
-		let eos = ScatterJS.scatter.eos(network, Eos);
+		let eos = scatter.eos(network, Eos)
 		eos.getAccount({
 			account_name: currentAccount.name
 		}).then((val) => {
-			console.log(val, "cpu")
+			console.log(val)
 			let info = {
-				cpu: Math.round((val.cpu_limit.used / val.cpu_limit.max) * 100),
-				net: Math.round((val.net_limit.used / val.net_limit.max) * 100)
+				cpu: Math.round((val.cpu_limit.available / val.cpu_limit.max) * 100),
+				net: Math.round((val.net_limit.available / val.net_limit.max) * 100)
 			}
 			resolve(info)
 		}).catch(e => {
@@ -149,7 +172,6 @@ export function createRedPacket(userName, amount, bomb, contractOwner, tokenName
 					]
 			}).then(result => {
 					console.log("创建红包成功");
-		console.log(result);
 					let consoleJson = JSON.parse(result.processed.action_traces[0].inline_traces[1].console);
 					if (consoleJson.ERROR !== undefined) {
 							resolve(analysisException(consoleJson.ERROR));
@@ -164,7 +186,7 @@ export function createRedPacket(userName, amount, bomb, contractOwner, tokenName
 					if (typeof error !== "object" && JSON.parse(error).error.what === 'eosio_assert_message assertion failure') {
 							resolve("交易异常");
 					} else {
-							reject(error);
+							reject(error.message);
 					}
 			});
 	});
@@ -172,19 +194,19 @@ export function createRedPacket(userName, amount, bomb, contractOwner, tokenName
 
 function analysisException(e) {
 	if (e === 'NO_ROOM') {
-		return '没有该红包';
+			return '没有该红包';
 	}
 	if (e === 'INVALID_BOMB_NUM') {
-		return '炸弹号码错误';
+			return '炸弹号码错误';
 	}
 	if (e === 'SAME_USER_REF') {
-		return '推荐人与红包发起人相同';
+			return '推荐人与红包发起人相同';
 	}
 	if (e === 'NO_REF') {
-		return '没有该推荐人的信息';
+			return '没有该推荐人的信息';
 	}
 	if (e === 'WITHDRAW_VAL_IS_ZERO') {
-		return '无可提取余额';
+			return '无可提取余额';
 	}
 }
 
@@ -279,20 +301,20 @@ export function selectPacket(userName, roomId, contractOwner, tokenName, transfe
 					if (typeof error !== "object" && JSON.parse(error).error.what === 'eosio_assert_message assertion failure') {
 							resolve("交易异常");
 					}else {
-							reject(error);
+							reject(error.message);
 					}
 			});
 	});
 }
 
-function formatRoomId(roomId) {
+function formatRoomId(roomId){
 	let length = roomId.toString().length;
 	let z = 6 - length;
-	if (z === 1) return "0" + roomId;
-	else if (z === 2) return "00" + roomId;
-	else if (z === 3) return "000" + roomId;
-	else if (z === 4) return "0000" + roomId;
-	else if (z === 5) return "00000" + roomId;
+	if(z === 1) return "0" + roomId;
+	else if(z === 2) return "00" + roomId;
+	else if(z === 3) return "000" + roomId;
+	else if(z === 4) return "0000" + roomId;
+	else if(z === 5) return "00000" + roomId;
 	else return null;
 }
 
@@ -302,27 +324,29 @@ function formatRoomId(roomId) {
  */
 export function redPacketList(contractOwner) {
 	if (currentAccount == null) {
-		console.log('请先登录');
-		return false;
+			console.log('请先登录');
+			return false;
 	}
 	if (typeof contractOwner !== "string" || contractOwner === undefined) return false;
 	return new Promise(function (resolve, reject) {
-		let eos = ScatterJS.scatter.eos(network, Eos);
-		eos.transaction({
-			actions: [{
-				account: contractOwner,
-				name: 'printboard',
-				authorization: [{
-					actor: currentAccount.name,
-					permission: currentAccount.authority
-				}],
-				data: {}
-			}]
-		}).then(result => {
-			resolve(JSON.parse(result.processed.action_traces[0].console).data);
-		}).catch(e => {
-			reject(e.message)
-		});
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
+					actions: [
+							{
+									account: contractOwner,
+									name: 'printboard',
+									authorization: [{
+											actor: currentAccount.name,
+											permission: currentAccount.authority
+									}],
+									data: {}
+							}
+					]
+			}).then(result => {
+					resolve(result.processed.action_traces[0].console);
+			}).catch(e => {
+					reject(e.message)
+			});
 	})
 }
 
@@ -332,27 +356,29 @@ export function redPacketList(contractOwner) {
  */
 export function prizePool(contractOwner) {
 	if (currentAccount == null) {
-		console.log('请先登录');
-		return false;
+			console.log('请先登录');
+			return false;
 	}
 	if (typeof contractOwner !== "string" || contractOwner === undefined) return false;
 	return new Promise(function (resolve, reject) {
-		let eos = ScatterJS.scatter.eos(network, Eos);
-		eos.transaction({
-			actions: [{
-				account: contractOwner,
-				name: 'printpool',
-				authorization: [{
-					actor: currentAccount.name,
-					permission: currentAccount.authority
-				}],
-				data: {}
-			}]
-		}).then(result => {
-			resolve(result.processed.action_traces[0].console);
-		}).catch(e => {
-			reject(e.message)
-		});
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
+					actions: [
+							{
+									account: contractOwner,
+									name: 'printpool',
+									authorization: [{
+											actor: currentAccount.name,
+											permission: currentAccount.authority
+									}],
+									data: {}
+							}
+					]
+			}).then(result => {
+					resolve(result.processed.action_traces[0].console);
+			}).catch(e => {
+					reject(e.message)
+			});
 	})
 }
 
@@ -363,40 +389,42 @@ export function prizePool(contractOwner) {
  */
 export function withdrawref(user, contractOwner) {
 	if (currentAccount == null) {
-		console.log('请先登录');
-		return false;
+			console.log('请先登录');
+			return false;
 	}
-	if (typeof user !== "string" ||
-		typeof contractOwner !== "string" ||
-		user === undefined ||
-		contractOwner === undefined)
-		return false;
+	if (typeof user !== "string"
+			|| typeof contractOwner !== "string"
+			|| user === undefined
+			|| contractOwner === undefined)
+			return false;
 
 	return new Promise(function (resolve, reject) {
-		let eos = ScatterJS.scatter.eos(network, Eos);
-		eos.transaction({
-			actions: [{
-				account: contractOwner,
-				name: 'withdrawref',
-				authorization: [{
-					actor: currentAccount.name,
-					permission: currentAccount.authority
-				}],
-				data: {
-					"user": user
-				}
-			}]
-		}).then(result => {
-			console.log(result);
-			let consoleString = result.processed.action_traces[0].console;
-			if (JSON.parse(consoleString).ERROR !== undefined) {
-				resolve(analysisException(JSON.parse(consoleString).ERROR));
-			} else {
-				resolve(JSON.parse(consoleString).value);
-			}
-		}).catch(e => {
-			reject(e.message)
-		});
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
+					actions: [
+							{
+									account: contractOwner,
+									name: 'withdrawref',
+									authorization: [{
+											actor: currentAccount.name,
+											permission: currentAccount.authority
+									}],
+									data: {
+											"user": user
+									}
+							}
+					]
+			}).then(result => {
+					console.log(result);
+					let consoleString = result.processed.action_traces[0].console;
+					if (JSON.parse(consoleString).ERROR !== undefined) {
+							resolve(analysisException(JSON.parse(consoleString).ERROR));
+					} else {
+							resolve(JSON.parse(consoleString).value);
+					}
+			}).catch(e => {
+					reject(e.message)
+			});
 	})
 }
 
@@ -406,29 +434,31 @@ export function withdrawref(user, contractOwner) {
  */
 export function airdropsInterface(contractOwner) {
 	if (currentAccount == null) {
-		console.log('请先登录');
-		return false;
+			console.log('请先登录');
+			return false;
 	}
-	if (typeof contractOwner !== "string" ||
-		contractOwner === undefined)
-		return false;
+	if (typeof contractOwner !== "string"
+			|| contractOwner === undefined)
+			return false;
 	return new Promise(function (resolve, reject) {
-		let eos = ScatterJS.scatter.eos(network, Eos);
-		eos.transaction({
-			actions: [{
-				account: contractOwner,
-				name: 'airdrops',
-				authorization: [{
-					actor: currentAccount.name,
-					permission: currentAccount.authority
-				}],
-				data: {}
-			}]
-		}).then(result => {
-			resolve(result.processed.action_traces[0].console);
-		}).catch(e => {
-			reject(e.message)
-		});
+		let eos = scatter.eos(network, Eos)
+			eos.transaction({
+					actions: [
+							{
+									account: contractOwner,
+									name: 'airdrops',
+									authorization: [{
+											actor: currentAccount.name,
+											permission: currentAccount.authority
+									}],
+									data: {}
+							}
+					]
+			}).then(result => {
+					resolve(result.processed.action_traces[0].console);
+			}).catch(e => {
+					reject(e.message)
+			});
 	})
 }
 
@@ -438,35 +468,37 @@ export function airdropsInterface(contractOwner) {
  */
 export function getminings(contractOwner) {
 	if (currentAccount == null) {
-		console.log('请先登录');
-		return false;
+			console.log('请先登录');
+			return false;
 	}
-	if (typeof contractOwner !== "string" ||
-		contractOwner === undefined)
-		return false;
+	if (typeof contractOwner !== "string"
+			|| contractOwner === undefined)
+			return false;
 	return new Promise(function (resolve, reject) {
-		let eos = ScatterJS.scatter.eos(network, Eos);
-		eos.transaction({
-			actions: [{
-				account: contractOwner,
-				name: 'getminings',
-				authorization: [{
-					actor: currentAccount.name,
-					permission: currentAccount.authority
-				}],
-				data: {}
-			}]
-		}).then(result => {
-			console.log(result);
-			resolve(result.processed.action_traces[0].console);
-		}).catch(e => {
-			reject(e.message)
-		});
+			let eos = scatter.eos(network, Eos);
+			eos.transaction({
+					actions: [
+							{
+									account: contractOwner,
+									name: 'getminings',
+									authorization: [{
+											actor: currentAccount.name,
+											permission: currentAccount.authority
+									}],
+									data: {}
+							}
+					]
+			}).then(result => {
+					console.log(result);
+					resolve(result.processed.action_traces[0].console);
+			}).catch(e => {
+					reject(e.message)
+			});
 	})
 }
 
 
-// redPacketList('pickownowner').then(val =>{
+// redPacketList('pickowngames').then(val =>{
 // 	console.log(val)
 // })
 
@@ -477,8 +509,8 @@ export function getjin(type) {
 		console.log('请先登录');
 		return false;
 	}
-	return new Promise(function (resolve, reject) {
-		let eos = ScatterJS.scatter.eos(network, Eos);
+	return new Promise(function (resolve, reject){
+		let eos = scatter.eos(network, Eos)
 		eos.getCurrencyBalance({
 			code: "eosio.token",
 			account: currentAccount.name,
@@ -486,7 +518,7 @@ export function getjin(type) {
 		}).then(result => {
 			resolve(result)
 		});
-
+		
 	})
 }
 
@@ -511,14 +543,14 @@ export function getjin(type) {
 
 // }
 
-// selectPacket("wenbo",2,"pickownowner").then((val)=>{
+// selectPacket("wenbo",2,"pickowngames").then((val)=>{
 //   console.log(val)
 // }).catch(e=>{
 //   console.log(e+'111')
 // })
-// selectPacket("wenbo",19,"pickownowner","5JqRdMU696xCvtFoMutNBz88N9Q7EdX42W4Hy9rp9VPhxug7jJN").then((val)=>{
+// selectPacket("wenbo",19,"pickowngames","5JqRdMU696xCvtFoMutNBz88N9Q7EdX42W4Hy9rp9VPhxug7jJN").then((val)=>{
 //   console.log(val)
 // }).catch(e=>{
 //   console.log(e+'111')
 // })
-// createRedPacket("wenbo", 10000, 5, "pickownowner").then(response => console.log(response))
+// createRedPacket("wenbo", 10000, 5, "pickowngames").then(response => console.log(response))

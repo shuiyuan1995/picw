@@ -97,8 +97,8 @@ export default {
   },
   created(){
     let data = {
-      token:this.$q.sessionStorage.get.item('token'),
-      userid:this.$q.sessionStorage.get.item('userid')
+      token:this.infos.token,
+      userid:this.infos.userid,
     }
     post('/get_tixian_info',data).then(val => {
       this.data = {
@@ -121,11 +121,11 @@ export default {
       //   return false
       // }
       // 余额提现
-      withdrawref(this.infos.name,"pickownowner").then((val)=>{
+      withdrawref(this.infos.name,"pickowngames").then((val)=>{
         console.log(val)
         let data = {
-          token:this.$q.sessionStorage.get.item('token'),
-          userid:this.$q.sessionStorage.get.item('userid'),
+          token:this.infos.token,
+          userid:this.infos.userid,
           money:(val/10000).toFixed(4)
         }
         post('/post_tixian',data).then((val)=>{

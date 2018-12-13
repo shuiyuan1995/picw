@@ -8,11 +8,14 @@ const mutations = {
     state.thislang = state.language[index];
   },
   [types.SET_PACKAGE](state,data) {
+    console.log(data.index || data.index == 0)
     if(data.index || data.index == 0){
       if(state.packages.data[data.index]){
-        state.packages.data[data.index].push(data.data)
-      }else{
-        state.packages.data[data.index][0] = data.data
+        state.packages.data[data.index] = [
+          ...state.packages.data[data.index],
+          data.data
+        ]
+        console.log(state.packages.data[data.index])
       }
     }else{
       state.packages.data = data

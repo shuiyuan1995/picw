@@ -136,8 +136,8 @@ export default {
     // 获取红包id
     this.packetId = this.$route.params.txId
     let data = {
-      token:this.$q.sessionStorage.get.item('token'),
-      userid:this.$q.sessionStorage.get.item('userid'),
+      token:this.infos.token,
+      userid:this.infos.userid,
       outid:this.packetId
     }
     // 获取当前红包抽奖信息
@@ -166,7 +166,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "thislang"
+      "thislang","infos"
     ]),
     // 红包获奖状态判断
     // typetxt(){

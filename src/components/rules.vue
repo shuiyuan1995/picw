@@ -117,7 +117,7 @@
           <p>奖池的 2 %</p>
         </div>
         <div class="tr flex">
-          <div class="flex"><span>炸弹</span><p><span>0.1111</span><br /><span>0.6666</span></p></div>
+          <div class="flex"><span>四条</span><p><span>0.1111</span><br /><span>0.6666</span></p></div>
           <p>奖池的 3 %</p>
         </div>
       </div>

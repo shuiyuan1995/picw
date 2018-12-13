@@ -16,7 +16,7 @@
     .btn-group
       height 1.53rem
     .item
-      width 2.84rem
+      width 50%
       height 1.53rem
       text-align center
     .btn-item
@@ -194,7 +194,7 @@
     <div class="content">
       <keep-alive>
         <div class="info scroll column" @scroll="handleScroll" ref="myscroll">
-          <div :is="item.type==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in thelists" @myshow="myshow"></div>
+          <div :is="item.type==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in packages.thisdata" @myshow="myshow"></div>
         </div>
       </keep-alive>
       <!-- <swiper :options="swiperOptionone" class="right">
@@ -207,7 +207,7 @@
     <div class="sendbtn flex">
       <div class="send">
         <p>累计发红包</p>
-        <p>{{Number(infos.info.out_packet_count)}}</p>
+        <p>{{infos.info.out_packet_count?Number(infos.info.out_packet_count):0}}</p>
         <!-- <transition
           enter-active-class="animated fadeInUp"
           leave-active-class="animated fadeOutUp"
@@ -218,7 +218,7 @@
       <button class="btn" @click="changepage">{{thislang.sendbtn}}</button>
       <div class="send">
         <p class="icon" @click="openrule(false)">{{thislang.lucky}}</p>
-        <p>{{Number(infos.info.xinyunjiangchi).toFixed(4)}}</p>
+        <p>{{infos.info.xinyunjiangchi?Number(infos.info.xinyunjiangchi).toFixed(4):(0).toFixed(4)}}</p>
       </div>
     </div>
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
@@ -254,7 +254,6 @@ export default {
     return{
       swiperOption: {
         slidesPerView:2,
-        spaceBetween:10,
         initialSlide: 0
       }, //房间类别切换滑动
       swiperOptionone: {
@@ -289,7 +288,6 @@ export default {
     scrollto(i){
       // 确认目标
       let total = i - this.itemH
-      console.log(total)
       let self = this
       let step = total / 25
       if (total > this.scrollTop) {
@@ -334,20 +332,19 @@ export default {
       let temparr = []
       this.$nextTick(()=>{
         list = this.$refs.scrollitem
+        if(!list){
+          return false
+        }
         this.itemH = list[0].$el.offsetHeight
         for(let i = 0;i<newdata.length;i++){
           if(!newdata[i].none&&newdata[i].type==1&&!newdata[i].isgo){
-            if(temparr.length>0){
-              temparr.push({
-                packetId:newdata[i].packetId,
-                top:list[i].$el.offsetTop + list[i].$el.offsetHeight
-              })
-            }else{
-              temparr[0] = {
+            temparr = [
+              ...temparr,
+              {
                 packetId:newdata[i].packetId,
                 top:list[i].$el.offsetTop + list[i].$el.offsetHeight
               }
-            }
+            ]
           }
         }
         this.listH = temparr
@@ -361,7 +358,6 @@ export default {
         }
         this.outn = n
       })
-      // console.log(this.scrollTop,temparr)
     },
     // 监听滚动
     handleScroll(e){
@@ -399,7 +395,7 @@ export default {
     ]),
     // 当前房间红包筛选
     thelists(){
-      return this.packages.thisdata
+      return this.packages.data[this.packages.this]
     },
     // 所有可抢红包
     golist(){
@@ -419,7 +415,8 @@ export default {
   },
   watch:{
     // 监听列表信息
-    thelists(){
+    thelists(newdata){
+      this.setpackdatal(this.packages.data[this.packages.this])
       this.scrollbottom()
     },
   }

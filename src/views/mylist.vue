@@ -103,7 +103,6 @@
 <script>
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters} from 'vuex';
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import {redPacketList} from '../scattereos'
 export default {
   created(){
@@ -114,15 +113,13 @@ export default {
       return false
     }else{
       // 获取排行榜列表
-      redPacketList("pickownowner").then(val => {
+      redPacketList("pickowngames").then(val => {
         console.log(val)
         this.items2 = val
       })
     }
   },
   components: {
-    swiper,
-    "swiper-slide":swiperSlide,
     smallhead
   },
   data(){

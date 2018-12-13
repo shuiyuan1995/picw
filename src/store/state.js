@@ -21,6 +21,8 @@ const state = {
     hui:false,
     cpu:0,
     net:0,
+    token:"",
+    userid:""
   }
 };
 

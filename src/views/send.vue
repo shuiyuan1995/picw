@@ -111,7 +111,7 @@
 import classify from '@/components/classify.vue'
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters,mapMutations} from 'vuex';
-import {createRedPacket,getjin} from '../scattereos'
+import {createRedPacket,getjin,getinfo} from '../scattereos'
 import {post} from '../api'
 export default {
   data(){
@@ -125,7 +125,7 @@ export default {
     smallhead
   },
   methods:{
-    // 保留一位数字
+    // 选择尾数
     gonum(i){
       this.number = i-1
     },
@@ -139,10 +139,12 @@ export default {
       // loading
       this.$q.loading.show()
       // 创建红包
-      console.log('发的参数',this.infos.name, this.eosnum[this.packages.this], Number(this.number), "pickownowner","eosio.token")
-      createRedPacket(this.infos.name, this.eosnum[this.packages.this], Number(this.number), "pickownowner","eosio.token").then(response=>{
+      console.log('发的参数',this.infos.name, this.eosnum[this.packages.this], Number(this.number), "pickowngames","eosio.token")
+      createRedPacket(this.infos.name, this.eosnum[this.packages.this], Number(this.number), "pickowngames","eosio.token").then(response=>{
         console.log(response)
         // 关闭loading
+        this.$q.loading.hide()
+        // 判断参数是否正确
         if(!response.packetId||!response.txId){
           this.$q.loading.hide()
           this.$q.notify({
@@ -153,44 +155,10 @@ export default {
           })
           return false
         }
-        // 查询余额
-        getjin('EOS').then((val)=>{
-          this.setinfo({eos:parseFloat(val[0])})
-        })
-        // 查询cpu
-        getinfo().then(val=>{
-          this.setinfo({
-            cpu:val.cpu,
-            net:val.net
-          })
-        }).catch(()=>{
-          // console.log("信息获取失败")
-        })
-        let data = {
-          index:this.packages.this,
-          data:{
-            name:this.infos.name,
-            packetId:response.packetId,
-            txId:response.txId,
-            type:1,
-            num:this.number,
-            eos:this.eosnum[this.packages.this],
-            time:new Date(),
-            none:false
-          }
-        }
-        let data1 ={
-          token:this.$q.sessionStorage.get.item('token'),
-          userid:this.$q.sessionStorage.get.item('userid'),
-          issus_sum:this.eosnum[this.packages.this],
-          tail_number:this.number,
-          count:10,
-          eosid:response.packetId,
-          blocknumber:response.txId,
-          addr:this.infos.B_name
-        }
-        // 向房间展示红包
-        this.setpackage(data)
+        // 查询金钱cpu
+        this.getmoney()
+        // 展示上传红包data
+        this.updata(response)
         this.$q.notify({
           message: this.thislang.sendok,
           timeout: 100,
@@ -198,35 +166,70 @@ export default {
           position:"center"
         })
         this.$router.push('/')
-        this.$q.loading.hide()
-        // 上传红包信息
-        post('/issus_packet',data1).then(()=>{
-        })
       }).catch((e) => {
         console.log(e)
         this.$q.loading.hide()
         this.$q.notify({
           message: "发送失败",
           timeout: 400,
-           color: 'red',
+          color: 'red',
           position:"center"
         })
-        getjin('EOS').then((val)=>{
-          this.setinfo({eos:parseFloat(val[0])})
-        })
-        getinfo().then(val=>{
-          this.setinfo({
-            cpu:val.cpu,
-            net:val.net
-          })
-        }).catch(()=>{
-          // console.log("信息获取失败")
-        })
+        // 查询金钱cpu
+        this.getmoney()
       });
+    },
+    // 展示上传红包data
+    updata(response){
+      let data = {
+        index:this.packages.this,
+        data:{
+          name:this.infos.name,
+          packetId:response.packetId,
+          txId:response.txId,
+          type:1,
+          num:this.number,
+          eos:this.eosnum[this.packages.this],
+          time:new Date(),
+          none:false
+        }
+      }
+      let data1 ={
+        token:this.infos.token,
+        userid:this.infos.userid,
+        issus_sum:this.eosnum[this.packages.this],
+        tail_number:this.number,
+        count:10,
+        eosid:response.packetId,
+        blocknumber:response.txId,
+        addr:this.infos.B_name
+      }
+      // 向房间展示红包
+      this.setpackage(data)
+      this.setpackdatal(this.packages.data[this.packages.this])
+      // 上传红包信息
+      post('/issus_packet',data1).then(()=>{})
+    },
+    // 查询金钱cpu
+    getmoney(){
+      // 查询余额
+      getjin('EOS').then((val)=>{
+        this.setinfo({eos:parseFloat(val[0])})
+      })
+      // 查询cpu
+      getinfo().then((val)=>{
+        this.setinfo({
+          cpu:val.cpu,
+          net:val.net
+        })
+      }).catch(()=>{
+        // console.log("信息获取失败")
+      })
     },
     ...mapMutations({
       setpackage:'SET_PACKAGE',
       setinfo:'SET_INFO',
+      setpackdatal:'SET_PACKDATAL',
     }),
   },
   computed:{
