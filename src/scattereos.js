@@ -5,14 +5,14 @@ ScatterJS.plugins(new ScatterEOS());
 export let scatter = ScatterJS.scatter;
 
 let chainId = 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906';
-let endpoint = 'http://112.74.36.211:8888';
+let endpoint = 'https://eospro.pickown.com';
 let network = {
-	blockchain: 'eos',
-	host: '112.74.36.211',
-	port: 8888,
-	chainId: chainId,
-	protocol: "http",
-	httpEndpoint : endpoint,
+    blockchain: 'eos',
+		host: 'eospro.pickown.com',
+		port: '',
+    chainId: chainId,
+    protocol: "https",
+    httpEndpoint : endpoint,
 };
 
 // let scatterEos = scatter.eos(network, Eos);
