@@ -5,10 +5,6 @@ import store from './store/index'
 import VueI18n from 'vue-i18n'
 
 Vue.use(VueI18n);
-
-// import LangEn from './common/lang/en'
-// import LangZhCHS from './common/lang/zhCHS'
-// import LangZhCHT from './common/lang/zhCHT'
 const i18n = new VueI18n({
   //定义默认语言
   locale: 'zhCHS', 

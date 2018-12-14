@@ -8,6 +8,8 @@ import recordHair from './views/record-hair.vue'
 import recordThis from './views/record-this.vue'
 import recordClosed from './views/record-closed.vue'
 import recordJiang from './views/record-jiang.vue'
+import cooperation from './views/cooperation.vue'
+import contant from './views/contant.vue'
 
 Vue.use(Router)
 
@@ -69,6 +71,22 @@ export default new Router({
           path: '/record-jiang',
           name: 'record-jiang',
           component: recordJiang,
+          meta:{
+            keepAlive:false
+          }
+        },
+        {
+          path: '/cooperation',
+          name: 'cooperation',
+          component: cooperation,
+          meta:{
+            keepAlive:false
+          }
+        },
+        {
+          path: '/contant',
+          name: 'contant',
+          component: contant,
           meta:{
             keepAlive:false
           }

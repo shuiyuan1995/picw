@@ -14,8 +14,8 @@ var langcn = {
     sendbtn:"我要发红包",
     choosenum:"选择你要发出的EOS数量",
     chooseluck:"设置红包的号码",
-    explain:"如果其他玩家抢到的EOS数量的尾数=红包的号码时您将，其抵押的EOS将会奖励给您",
-    explain1:"自动拆分为EOS数量随机的10份",
+    explain:"如果野兽所抢红包尾数与您预设踩雷号码一致时，其抵押的EOS将会即时奖励到您的账户，踩雷人数不限",
+    explain1:"系统将随机生成10份金额不等的红包",
     sendbtn1:"发红包",
     rank:"排名",
     user:"用户名",
@@ -77,5 +77,6 @@ var langcn = {
     jiangxiang:"奖项",
     jiangchi:"奖池的",
     login:"登录",
+    hezuo:"合作伙伴"
   }
 }

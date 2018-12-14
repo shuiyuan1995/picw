@@ -13,21 +13,20 @@
 </template>
 
 <script>
-import {mapActions,mapMutations,mapGetters} from 'vuex';
+import {mapMutations,mapGetters} from 'vuex';
 import io from "socket.io-client";
-import data from '@/common/lang/data.json'
 import {get} from './api'
 import { date } from 'quasar'
 export default {
   created(){
-    // 添加语言包
-    let mydata = {
-      Language:data.language,
-      index:1
-    }
-    this.languageAsyn(mydata)
+    // 调用可抢红包
+
+    // 登录
+    
     // 调用可抢红包
     get('/get_money_list').then((val)=>{
+      console.log(1)
+      console.log(val)
       let newval = val.data
       let newdata = [[],[],[],[],[],[]]
       for(let i =0;i<newval.length;i++){
@@ -147,9 +146,6 @@ export default {
     });
   },
   methods:{
-    ...mapActions([
-      'languageAsyn'
-    ]),
     ...mapMutations({
       setpackage:'SET_PACKAGE',
       setpackdata:'SET_PACKDATA',

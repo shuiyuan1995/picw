@@ -327,7 +327,8 @@ li.active {
         <li :class="page == 2?'active':''" @click="thepage(2)">{{$t("message.invitation")}}</li>
         <li @click="openu(0)">{{$t("message.bai")}}</li>
         <li :class="page == 4?'active':''" @click="thepage(4)">{{$t("message.lin")}}</li>
-        <li>{{$t("message.contact")}}</li>
+        <li :class="page == 5?'active':''" @click="thepage(5)">{{$t("message.contact")}}</li>
+        <li :class="page == 6?'active':''" @click="thepage(6)">{{$t("message.hezuo")}}</li>
       </ul>
       <div class="statistical smalltop flex">
         <q-knob v-model="infos.cpu" :min="0" :max="100" size="1.52rem" class="knob" readonly>
@@ -401,7 +402,7 @@ export default {
       model: 0, //CPU百分比
       model1: 0, //NET百分比
       changeI: 'zhCHS', //语言切换index
-      page: 5, //页面nav切换样式
+      page: 10, //页面nav切换样式
       B_name: "", //浏览器类型
       invitation: false, //邀请好友
       rules: false
@@ -563,7 +564,7 @@ export default {
         this.invitation = !this.invitation;
         return false;
       }
-      let list = ["/mylist", "/record-hair", "", "", "/record-jiang"];
+      let list = ["/mylist", "/record-hair", "", "", "/record-jiang","/contant","/cooperation"];
       this.$router.push(list[i]);
     },
     // 侧滑开关

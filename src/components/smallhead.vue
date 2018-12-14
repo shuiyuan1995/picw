@@ -55,9 +55,10 @@
     <span :class="left" v-if="left == 'guan'" @click="$router.push('/')">{{$t("message.close")}}</span>
     <span v-else @click="prev" class="icon icon-Left" v-show="!judge"></span>
     <p>{{title}}</p>
+    <span v-if="!right"></span>
     <span :class="right" v-if="right == 'jilu'" @click="togojilu">{{$t("message.record")}}</span>
-    <span :class="right" class="icon icon-moreread" v-else-if="right == 'jilui'" @click.stop="more = !more"></span>
-    <q-btn v-else flat dense round aria-label="Menu" class="menu icon icon-menu" @click="menu"/>
+    <span :class="right" class="icon icon-moreread" v-if="right == 'jilui'" @click.stop="more = !more"></span>
+    <q-btn v-if="right" flat dense round aria-label="Menu" class="menu icon icon-menu" @click="menu"/>
     <ul class="more" v-show="more">
       <li :class="$route.path == '/record-hair'?'active':''" @click="$router.push('/record-hair')">{{$t("message.fa")}}</li>
       <li :class="$route.path == '/record-closed'?'active':''" @click="$router.push('/record-closed')">{{$t("message.shou")}}</li>
