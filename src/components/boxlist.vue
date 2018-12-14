@@ -62,7 +62,6 @@
 <script>
 import {mapGetters,mapMutations} from 'vuex'
 import { date } from 'quasar'
-// import {selectPacket,getjin,getinfo} from '../scattereos'
 import {post} from '../api'
 import {login, scatSelectPacket} from "@common/js"
 export default {

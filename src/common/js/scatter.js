@@ -17,13 +17,6 @@ let network = {
     protocol: "https",
     httpEndpoint : endpoint,
 };
-// // eos
-// try {
-
-// }catch(e) {
-
-// }
-let eos = ScatterJS.scatter.eos(network, Eos);
 
 /**
  * 登陆scatter
@@ -32,6 +25,7 @@ let eos = ScatterJS.scatter.eos(network, Eos);
  */
 const scatGameLogin = (gameName) => {
   return new Promise((resolve, reject) => {
+    store.state.userInfo = ""
     ScatterJS.scatter.connect(gameName).then(status => {
       if (!status) return reject("连接游戏失败");
       // 连接scatter网络
@@ -78,6 +72,7 @@ const getBalance = (symbol, code) => {
     // 获取vuex用户信息
     const {userInfo} = store.state;
     if (JSON.stringify(userInfo) === "{}") return reject("请先登陆在查询");
+    let eos = ScatterJS.scatter.eos(network, Eos);
     // 查询eos
     eos.getCurrencyBalance({
       code,
@@ -139,6 +134,7 @@ const scatGetAccount = () => {
      // 获取vuex用户信息
     const {userInfo} = store.state;
     if (JSON.stringify(userInfo) === "{}") return reject("请先登陆在查询");
+    let eos = ScatterJS.scatter.eos(network, Eos);
     eos.getAccount({
       account_name: userInfo.name
     })
@@ -185,6 +181,7 @@ function scatSelectPacket(roomId, transferAmount, referral) {
     position:"center"
   });
   return new Promise(function (resolve, reject) {
+    let eos = ScatterJS.scatter.eos(network, Eos);
     eos.transaction({
       actions: [{
         account: "eosio.token",

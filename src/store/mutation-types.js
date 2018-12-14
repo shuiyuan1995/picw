@@ -21,6 +21,8 @@ export const SET_ROOM_RED_EVELOPE_LIST = "SET_ROOM_RED_EVELOPE_LIST";
 export const SET_ACTIVE_RED_EVELOPE_LIST = "SET_ACTIVE_RED_EVELOPE_LIST";
 // 设置侧边栏显示隐藏
 export const SET_GOOGLE_MENU = "SET_GOOGLE_MENU";
+// 设置邀请人
+export const SET_INVITE_NAME = "SET_INVITE_NAME";
 
 /* --------------- action type ------------------ */
 // 设置用户cpu，net

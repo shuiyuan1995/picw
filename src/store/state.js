@@ -10,6 +10,8 @@ const state = {
     data:[[],[],[],[],[],[]],
     thisdata:[]
   },
+  // 邀请人名称
+  inviteName: "",
   // 用户标示
   token: "",
   // 用户信息
