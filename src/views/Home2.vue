@@ -164,59 +164,40 @@
 <template>
   <q-page class="column home no-scroll">
     <div class="nav">
-      <swiper :options="swiperOption" class="btn-group swiper-no-swiping">
-        <swiper-slide class="item">
-          <div @click="changeE(0)" class="btn-item" :class="packages.this == 0?'active':''">1 EOS</div>
-          <span v-show="packages.this != 0&&golist[0]>0" class="more">{{golist[0]}}</span>
+      <!-- table切换列表 -->
+      <swiper :options="{slidesPerView:2,initialSlide}" class="btn-group swiper-no-swiping">
+        <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
+          <div @click="changeE(index)" class="btn-item" :class="initialSlide === index ?'active':''">1 EOS</div>
+          <!-- <span class="more" v-show="">{{item[index]}}</span> -->
         </swiper-slide>
-        <swiper-slide class="item">
-          <div @click="changeE(1)" class="btn-item" :class="packages.this == 1?'active':''">5 EOS</div>
-          <span v-show="packages.this != 1&&golist[1]>0" class="more">{{golist[1]}}</span>
-        </swiper-slide>
-        <!-- <swiper-slide class="item">
-          <div @click="changeE(2)" class="btn-item" :class="packages.this == 2?'active':''">10 EOS</div>
-          <span v-show="packages.this != 2&&golist[2]>0" class="more">{{golist[2]}}</span>
-        </swiper-slide>
-        <swiper-slide class="item">
-          <div @click="changeE(3)" class="btn-item" :class="packages.this == 3?'active':''">20 EOS</div>
-          <span v-show="packages.this != 3&&golist[3]>0" class="more">{{golist[3]}}</span>
-        </swiper-slide>
-        <swiper-slide class="item">
-          <div @click="changeE(4)" class="btn-item" :class="packages.this == 4?'active':''">50 EOS</div>
-          <span v-show="packages.this != 4&&golist[4]>0" class="more">{{golist[4]}}</span>
-        </swiper-slide>
-        <swiper-slide class="item">
-          <div @click="changeE(5)" class="btn-item" :class="packages.this == 5?'active':''">100 EOS</div>
-          <span v-show="packages.this != 5&&golist[5]>0" class="more">{{golist[5]}}</span>
-        </swiper-slide> -->
       </swiper>
     </div>
     <div class="content">
-      <keep-alive>
-        <div class="info scroll column" @scroll="handleScroll" ref="myscroll">
-          <div :is="item.type==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in packages.thisdata" @myshow="myshow"></div>
-        </div>
-      </keep-alive>
+      <!-- 红包数据展示 -->
+     <div class="info scroll column" ref="myscroll">
+        <div :is="1==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList"></div>
+      </div>
       <!-- <swiper :options="swiperOptionone" class="right">
         <swiper-slide class="itemright" :key="index" v-for="(item,index) in thelists" v-if="!item.none&&item.type==1">
           <img src="../common/images/bao.png" @click="scrollto(item.packetId)">
         </swiper-slide>
       </swiper> -->
-      <div class="inforight icon icon-shang" v-show="outn>0&&this.infos.name" @click="scrollto(listH[0].top)">{{outn}}个红包</div>
+      <!-- <div class="inforight icon icon-shang" v-show="outn>0&&this.infos.name" @click="scrollto(listH[0].top)">{{outn}}个红包</div> -->
     </div>
+    <!-- 底部按钮 -->
     <div class="sendbtn flex">
       <div class="send">
         <p>{{$t("message.leifa")}}</p>
-        <p>{{infos.info.out_packet_count?Number(infos.info.out_packet_count):0}}</p>
+        <p>{{hairRedEnvelopeCount}}</p>
       </div>
-      <button class="btn" @click="changepage">{{$t("message.sendbtn")}}</button>
+      <button class="btn">{{$t("message.sendbtn")}}</button>
       <div class="send">
-        <p class="icon" @click="openrule(false)">{{$t("message.lucky")}}</p>
-        <p>{{infos.info.xinyunjiangchi?Number(infos.info.xinyunjiangchi).toFixed(4):(0).toFixed(4)}}</p>
+        <p class="icon">{{$t("message.lucky")}}</p>
+        <p>{{prizeCount}}</p>
       </div>
     </div>
-    <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
-    <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao>
+    <!-- <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules> -->
+    <!-- <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao> -->
   </q-page>
 </template>
 
@@ -226,8 +207,9 @@ import gobao from '@/components/gobao.vue'
 import boxlist from '@/components/boxlist.vue'
 import results from '@/components/results.vue'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
-import {mapGetters,mapMutations} from 'vuex';
-import {prizePool} from '../scattereos'
+import {mapGetters,mapMutations, mapActions} from 'vuex';
+import {SET_CLICK_ROOMID_RED_EVELOPE_LIST} from "@store/mutation-types"
+// import {prizePool} from '../scattereos'
 export default {
   components: {
     swiper,
@@ -238,181 +220,42 @@ export default {
     results
   },
   created(){
-    this.swiperOption.initialSlide = this.packages.this
+    // this.swiperOption.initialSlide = this.packages.this
   },
   mounted(){
     // 滚到底部
-    this.scrollbottom()
+    // this.scrollbottom()
   },
-  data(){
-    return{
-      swiperOption: {
-        slidesPerView:2,
-        initialSlide: 0
-      }, //房间类别切换滑动
-      swiperOptionone: {
-        direction:"vertical",
-        slidesPerView:"auto",
-        spaceBetween:10
-      },//红包滑动
-      rules:false, //规则切换
-      inshow:false, //红包结果展示切换
-      scrollTop:13, //滚动距离
-      therules:false, //切换奖池与规则
-      win:{},//单个红包信息
-      listH:[],// 可选红包高度
-      outn:0,
-      itemH:0,//单个红包高度
+  data() {
+    return {
+      initialSlide: 0,
+      roomList: ["1 Eos", "5 Eos", "10 Eos", "20eos", "50 eos", "100 eos"],
+      // therules: false,
+      // rules: false
     }
   },
-  methods:{
-    // 打开关闭游戏介绍
-    openrule(b){
-      this.therules = b
-      this.rules = !this.rules
+  methods: {
+    changeE(index) {
+      this.initialSlide = index;
+      let roomid = index;
+      // 修改焦点数据
+      this.SET_CLICK_ROOMID_RED_EVELOPE_LIST({roomid, redEnvelopeList: this.roomRedEnvelopeList[index]})
     },
-    //打开关闭抢红包结果展示
-    myshow(win){
-      if(win){
-        this.win = win
-      }
-      this.inshow = !this.inshow
-    },
-    //点击滚动到目标
-    scrollto(i){
-      // 确认目标
-      let total = i - this.itemH
-      let self = this
-      let step = total / 25
-      if (total > this.scrollTop) {
-        smoothDown()
-      } else {
-        let newTotal = this.scrollTop - total
-        step = newTotal / 25
-        smoothUp()
-      }
-      // 向下滚动
-      function smoothDown () {
-        if (self.scrollTop < total) {
-          self.scrollTop += step
-          self.$refs.myscroll.scrollTop = self.scrollTop
-          setTimeout(smoothDown, 10)
-        } else {
-          self.$refs.myscroll.scrollTop = total
-        }
-      }
-      // 向上滚动
-      function smoothUp () {
-        if (self.scrollTop > total) {
-          self.scrollTop -= step
-          self.$refs.myscroll.scrollTop = self.scrollTop
-          setTimeout(smoothUp, 10)
-        } else {
-          self.$refs.myscroll.scrollTop = total
-        }
-      }
-    },
-    // 判断窗口外可选红包
-    thisgobao(){
-      if(!this.infos.name){
-        return false
-      }
-      let newdata = this.packages.data[this.packages.this]
-      if(!newdata.length){
-        this.outn = 0
-        return false
-      }
-      let list = []
-      let temparr = []
-      this.$nextTick(()=>{
-        list = this.$refs.scrollitem
-        if(!list){
-          return false
-        }
-        this.itemH = list[0].$el.offsetHeight
-        for(let i = 0;i<newdata.length;i++){
-          if(!newdata[i].none&&newdata[i].type==1&&!newdata[i].isgo){
-            temparr = [
-              ...temparr,
-              {
-                packetId:newdata[i].packetId,
-                top:list[i].$el.offsetTop + list[i].$el.offsetHeight
-              }
-            ]
-          }
-        }
-        this.listH = temparr
-        let n = 0
-        for(let i = 0;i<this.listH.length;i++){
-          if(this.scrollTop>this.listH[i].top){
-            n = i+1
-          }else{
-            break;
-          }
-        }
-        this.outn = n
-      })
-    },
-    // 监听滚动
-    handleScroll(e){
-      this.scrollTop = e.target.pageYOffset || e.target.scrollTop
-      this.thisgobao()
-    },
-    // 跳转发红包页面
-    changepage(){
-      if(this.infos.name.length == 0){
-        alert('请先登录')
-        return false
-      }
-      this.$router.push('/send')
-    },
-    // 房间切换
-    changeE(i){
-      this.setpacki(i)
-      this.setpackdatal(this.packages.data[i])
-    },
-    ...mapMutations({
-      setpacki:'SET_PACKI',
-      setpackdatal:'SET_PACKDATAL',
-    }),
-    // 滚到底部
-    scrollbottom(){
-      this.$nextTick(()=>{
-        this.$refs.myscroll.scrollTop = this.$refs.myscroll.scrollHeight
-        this.thisgobao()
-      })
-    }
+    // openrule(status) {
+    //   this.openrule = status;
+    // },
+    ...mapActions({
+      SET_CLICK_ROOMID_RED_EVELOPE_LIST
+    })
   },
   computed:{
     ...mapGetters([
-      "packages","infos"
+      "userInfo",
+      "redEnvelopeList",
+      "roomRedEnvelopeList",
+      "hairRedEnvelopeCount",
+      "prizeCount"
     ]),
-    // 当前房间红包筛选
-    thelists(){
-      return this.packages.data[this.packages.this]
-    },
-    // 所有可抢红包
-    golist(){
-      if(!this.infos.name){
-        return []
-      }
-      let arr = []
-      this.packages.data.map((v,i)=>{
-        v.map((v1)=>{
-          if(!v1.none&&v1.type==1&&!v1.isgo){
-            arr[i]?arr[i] += 1:arr[i] = 1
-          }
-        })
-      })
-      return arr
-    },
-  },
-  watch:{
-    // 监听列表信息
-    thelists(){
-      this.setpackdatal(this.packages.data[this.packages.this])
-      this.scrollbottom()
-    },
   }
 }
 </script>

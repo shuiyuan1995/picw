@@ -69,6 +69,7 @@
 
 <script>
 import {mapGetters,mapMutations} from 'vuex';
+import {SET_GOOGLE_MENU} from "@store/mutation-types"
 export default {
   props:{
     // 标题
@@ -114,7 +115,7 @@ export default {
     },
     // 打开菜单
     menu(){
-      this.setinfo({menu:true})
+      this.SET_GOOGLE_MENU(true)
     },
     open(){
       this.more = false
@@ -130,7 +131,7 @@ export default {
       }
     },
     ...mapMutations({
-      setinfo:'SET_INFO',
+     SET_GOOGLE_MENU
     }),
   }
 }

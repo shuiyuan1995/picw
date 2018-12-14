@@ -1,55 +1,73 @@
 import axios from "axios";
-// 环境的切换
-// const baseURL = "http://pickown.test/api";
-const baseURL = process.env.NODE_ENV !== "production"
-? "http://pickown.test/api"
-: "https://manage.pickown.com/api";
-// const baseURL = "/api";
-// 请求超时时间
-axios.defaults.timeout = 5000;
-// 请求拦截器
-axios.interceptors.request.use(
-  config => config,
-  error => {
-    return Promise.error(error);
-  }
-);
-// 响应拦截器
-axios.interceptors.response.use(response => {
-  if (response.status === 200) {
-    return Promise.resolve(response.data);
+import qs from "qs";
+import store from "@store";
+
+// 请求配置参数
+const http = axios.create({
+  baseURL:
+    process.env.NODE_ENV === "production"
+      ? "https://manage.pickown.com/api"
+      : "http://pickown.test/api", // 基础路径
+  timeout: 5000 // 请求延时
+});
+
+// 请求拦截
+http.interceptors.request.use(config => {
+  // 参数解析
+  config.method === "post"
+    ? (config.data = qs.stringify({ ...config.data }))
+    : (config.params = { ...config.params });
+  // 数据类型
+  config.headers["Accept"] = "application/json";
+  // token
+  config.headers["token"] =
+    process.env.NODE_ENV !== "production"
+      ? `${store.state.token}`
+      : `${store.state.token}`;
+  return config;
+});
+
+// 请求返回拦截
+http.interceptors.response.use(response => {
+  const { data } = response;
+  if (response.status === 200 && data.code === 200) {
+    return Promise.resolve(data);
   } else {
-    return Promise.reject(response);
+    return Promise.reject(data);
   }
 });
+
 /**
- * get方法，对应get请求
- * @param {String} url [请求的url地址]
- * @param {Object} params [请求时携带的参数]
+ * post请求
+ * @export
+ * @param {*} url
+ * @param {*} [data={}]
+ * @returns
  */
-export function get(url, params = {}) {
+export function post(url, data = {}) {
   return new Promise((resolve, reject) => {
-    axios
-      .get(baseURL + url, {
-        params: params
-      })
-      .then(data => {
-        resolve(data);
+    http
+      .post(url, data)
+      .then(json => {
+        resolve(json);
       })
       .catch(err => reject(err));
   });
 }
+
 /**
- * post方法，对应post请求
- * @param {String} url [请求的url地址]
- * @param {Object} params [请求时携带的参数]
+ * get请求
+ * @export
+ * @param {*} url
+ * @param {*} [data={}]
+ * @returns
  */
-export function post(url, params = {}) {
+export function get(url, data = {}) {
   return new Promise((resolve, reject) => {
-    axios
-      .post(baseURL + url, params)
-      .then(data => {
-        resolve(data);
+    http
+      .get(url, {params: data})
+      .then(json => {
+        resolve(json);
       })
       .catch(err => reject(err));
   });

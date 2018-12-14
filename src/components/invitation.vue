@@ -56,7 +56,7 @@
     <div class="info fixed-center">
       <h2>{{$t("message.yaoqin")}}</h2>
       <div class="conent flex">
-        <input type="text" :value="copytxt" id="copyObj">
+        <input readonly type="text" :value="href" id="copyObj">
         <button @click="copy">{{$t("message.copy")}}</button>
       </div>
       <p>{{$t("message.yaolin")}}</p>
@@ -89,11 +89,10 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "infos"
+      "userInfo"
     ]),
-    // 获奖类型判断
-    copytxt(){
-      return this.infos.name?`${window.location.origin}/#/?ref=${this.infos.name}`:window.location.origin
+    href() {
+      return window.location.origin + "?href=" + this.userInfo.name;
     }
   },
 }

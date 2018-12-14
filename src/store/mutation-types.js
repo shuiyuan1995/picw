@@ -1,9 +1,31 @@
-export const SET_LANGUAGE = "SET_LANGUAGE";
-export const THIS_LANGUAG = "THIS_LANGUAG";
-export const SET_PACKAGE = "SET_PACKAGE";
-export const SET_PACKI = "SET_PACKI";
-export const SET_PACKIA = "SET_PACKIA";
-export const SET_PACKDATA = "SET_PACKDATA";
-export const SET_PACKDATAL = "SET_PACKDATAL";
-export const SET_INFO = "SET_INFO";
+/* --------------- mutation type ------------------ */
+// 设置token
+export const SET_TOKEN = "SET_TOKEN";
+// 设置用户id
+export const SET_USERID = "SET_USERID";
+// 设置用户信息
+export const SET_USER_INFO = "SET_USER_INFO";
+// 设置eosbalance
+export const SET_EOSBALANCE = "SET_EOSBALANCE";
+// 设置ownbalance
+export const SET_OWNBALANCE = "SET_OWNBALANCE";
+// 设置cpu
+export const SET_CPU = "SET_CPU";
+// 设置net
+export const SET_NET = "SET_NET";
+// 设置房间id
+export const SET_ROOMID = "SET_ROOMID";
+// 设置所有房间红包列表
+export const SET_ROOM_RED_EVELOPE_LIST = "SET_ROOM_RED_EVELOPE_LIST";
+// 设置焦点红包列表
+export const SET_ACTIVE_RED_EVELOPE_LIST = "SET_ACTIVE_RED_EVELOPE_LIST";
+// 设置侧边栏显示隐藏
+export const SET_GOOGLE_MENU = "SET_GOOGLE_MENU";
 
+/* --------------- action type ------------------ */
+// 设置用户cpu，net
+export const SET_CPU_NET = "SET_CPU_NET";
+// 推出登陆
+export const SET_LOGINOUT = "SET_LOGINOUT";
+// 设置红包焦点列表，房间id
+export const SET_CLICK_ROOMID_RED_EVELOPE_LIST = "SET_CLICK_ROOMID_RED_EVELOPE_LIST";

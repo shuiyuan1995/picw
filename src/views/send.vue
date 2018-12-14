@@ -111,7 +111,7 @@
 import classify from '@/components/classify.vue'
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters,mapMutations} from 'vuex';
-import {createRedPacket,getjin,getinfo} from '../scattereos'
+// import {createRedPacket,getjin,getinfo} from '../scattereos'
 import {post} from '../api'
 export default {
   data(){

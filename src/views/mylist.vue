@@ -103,21 +103,21 @@
 <script>
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters} from 'vuex';
-import {redPacketList} from '../scattereos'
+// import {redPacketList} from '../scattereos'
 export default {
   created(){
     // 判断登录
-    if(this.infos.name.length == 0){
-      alert('请先登录')
-      this.$router.push('/')
-      return false
-    }else{
-      // 获取排行榜列表
-      redPacketList("pickowngames").then(val => {
-        console.log(val)
-        this.items2 = val
-      })
-    }
+    // if(this.infos.name.length == 0){
+    //   alert('请先登录')
+    //   this.$router.push('/')
+    //   return false
+    // }else{
+    //   // 获取排行榜列表
+    //   redPacketList("pickowngames").then(val => {
+    //     console.log(val)
+    //     this.items2 = val
+    //   })
+    // }
   },
   components: {
     smallhead
@@ -132,7 +132,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "infos"
+      "userInfo"
     ]),
   }
 }

@@ -43,7 +43,7 @@
 </style>
 
 <template>
-  <div class="boxlist" :class="{'over':item.none||item.isgo,'baoright':item.name == infos.name}" @click="go">
+  <div class="boxlist" :class="{'over':item.none||item.isgo,'baoright':item.name == userInfo.name}" @click="go">
     <p class="sendname">{{item.name}} <span class="time">({{timer}})</span></p>
     <div class="box">
       <div class="box-top flex">
@@ -62,8 +62,9 @@
 <script>
 import {mapGetters,mapMutations} from 'vuex'
 import { date } from 'quasar'
-import {selectPacket,getjin,getinfo} from '../scattereos'
+// import {selectPacket,getjin,getinfo} from '../scattereos'
 import {post} from '../api'
+import {login, scatSelectPacket} from "@common/js"
 export default {
   props:{
     item:{
@@ -80,53 +81,31 @@ export default {
   },
   methods:{
     go(){
-      // 判断登录
-      if(this.infos.name.length == 0){
-        alert('请先登录')
-        return false
-      }
-      // 判断是否领完或已领取
-      if(this.item.none || Number(this.item.isgo) == 1){
-        this.$router.push({
-          name: 'record-this',
-          params: {
-            txId:this.item.txId
-          }
-        })
-        return false
-      }
-      this.$q.loading.show()
-      // 抢红包
-      console.log('抢的参数',this.infos.name,Number(this.item.packetId),"pickowngames","eosio.token",`${Number(this.item.eos).toFixed(4)} EOS`,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`)
-      selectPacket(this.infos.name,Number(this.item.packetId),"pickowngames", "eosio.token", `${Number(this.item.eos).toFixed(4)} EOS`,`${!this.infos.B_name||this.infos.B_name == 'undefined'?'':this.infos.B_name}`).then((val)=>{
-        console.log(val)
-        // 判断参数
-        if(!val.packetId){
-          this.$q.notify({
-            message: "获取失败",
-            timeout: 100,
-            color: 'green',
-            position:"center"
-          })
-          return false
-        }
-        // 查询金钱cpu
-        this.getmoney()
-        // 展示上传红包data
-        this.updata(val)
-        this.$q.loading.hide()
-      }).catch(e => {
-        this.$q.loading.hide()
-        // 查询金钱cpu
-        this.getmoney()
-        console.log(e)
-        this.$q.notify({
-          message: "获取失败",
-          timeout: 100,
-          color: 'green',
-          position:"center"
-        })
+      if (JSON.stringify(this.userInfo) === "{}") return login();
+      const {isgo, none, txId, packetId, eos} = this.item;
+      // 判断时候可抢，不能抢跳转详情
+      if (isgo || none) return this.$router.push({
+        name: 'record-this',
+        params: {txId}
       });
+      // 提示信息
+      const errObje = {
+        "3081001": "用户CPU不足",
+        "3080004": "合约CPU不足",
+        "3040005": "交易超时",
+        "3123456": "找不到对应红包",
+        "3123457": "发送失败"
+      }
+      scatSelectPacket(packetId, `${Number(eos).toFixed(4)} EOS`, "")
+      .then(json => {
+        console.log(json)
+      })
+      .catch(code => this.$q.notify({
+        message: errObje[code] || "发送失败",
+        timeout: 1500,
+        color: 'red',
+        position:"center"
+      }))
     },
     // 查询金钱cpu
     getmoney(){
@@ -213,7 +192,8 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "infos","packages"
+      "userInfo",
+      "packages"
     ]),
     // 转换时间
     timer(){

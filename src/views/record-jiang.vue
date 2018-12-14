@@ -87,7 +87,7 @@
 <script>
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters} from 'vuex';
-import {withdrawref} from '../scattereos'
+// import {withdrawref} from '../scattereos'
 import {post} from '../api'
 export default {
   data(){

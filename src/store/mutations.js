@@ -1,45 +1,46 @@
 import * as types from "./mutation-types";
 
 const mutations = {
-  [types.SET_LANGUAGE](state, Language) {
-    state.language = Language;
+  // 设置token
+  [types.SET_TOKEN](state, token) {
+    state.token = token;
   },
-  [types.THIS_LANGUAG](state, index) {
-    state.thislang = state.language[index];
+  // 设置用户信息
+  [types.SET_USER_INFO](state, userInfo) {
+    state.userInfo = userInfo;
   },
-  [types.SET_PACKAGE](state,data) {
-    if(data.index || data.index == 0){
-      if(state.packages.data[data.index]){
-        state.packages.data[data.index] = [
-          ...state.packages.data[data.index],
-          data.data
-        ]
-      }
-    }else{
-      state.packages.data = data
-    }
+  // 设置eosbalance
+  [types.SET_EOSBALANCE](state, eosbalance) {
+    state.eosbalance = eosbalance;
   },
-  [types.SET_PACKI](state,i) {
-    state.packages.this = i
+  // 设置ownbalance
+  [types.SET_OWNBALANCE](state, ownbalance) {
+    state.ownbalance = ownbalance;
   },
-  [types.SET_PACKIA](state,i) {
-    state.packages.all = i
+   // 设置用户cpu
+  [types.SET_CPU](state, cpu) {
+    state.cpu = cpu | 0;
   },
-  [types.SET_INFO](state,obj) {
-    state.info = {
-      ...state.info,
-      ...obj
-    }
+  // 设置用户net
+  [types.SET_NET](state, net) {
+    state.net = net | 0;
   },
-  [types.SET_PACKDATA](state,obj) {
-    state.packages.data[obj.index][obj.index1] = {
-      ...state.packages.data[obj.index][obj.index1],
-      ...obj.data
-    }
+  // 设置房间id
+  [types.SET_ROOMID](state, roomId) {
+    state.roomId = roomId;
   },
-  [types.SET_PACKDATAL](state,obj) {
-    state.packages.thisdata = obj
+  // 设置红包焦点列表
+  [types.SET_ACTIVE_RED_EVELOPE_LIST](state, redEnvelopeList) {
+    state.redEnvelopeList = redEnvelopeList;
   },
+  // 设置所有房间红包列表
+  [types.SET_ROOM_RED_EVELOPE_LIST](state, roomRedEnvelopeList) {
+    state.roomRedEnvelopeList = roomRedEnvelopeList;
+  },
+  // 设置侧边栏显示隐藏
+  [types.SET_GOOGLE_MENU](state, status) {
+    state.menuStatus = status;
+  }
 };
 
 export default mutations;
