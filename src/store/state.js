@@ -32,14 +32,13 @@ const state = {
   roomId: 0,
   // 侧边栏状态
   menuStatus: false,
-  // 累计发红包次数
-  hairRedEnvelopeCount: 0,
-  // 幸运将池数量
-  prizeCount: 0,
-  // 交易金额
-  transactionAmount:0,
-  // 玩家总数
-  allPlayersNum:0
+  // 展示数据,累计发红包，幸运奖池，玩家数，交易金额
+  allInfo: {
+    out_packet_count: 0,
+    transaction_info_count: "00.0000",
+    user_count: 0,
+    xinyunjiangchi: "00.0000"
+  }
 };
 
 export default state;

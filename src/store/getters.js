@@ -18,3 +18,5 @@ export const roomRedEnvelopeList = state => state.roomRedEnvelopeList;
 export const hairRedEnvelopeCount = state => state.hairRedEnvelopeCount;
 // 获取幸运奖池数
 export const prizeCount = state => state.prizeCount;
+// 展示数据,累计发红包，幸运奖池，玩家数，交易金额
+export const allInfo = state => state.allInfo;
