@@ -34,7 +34,7 @@ export function eoslogin(gameName) {
 	}
 	return new Promise((resolve, reject) => {
 		ScatterJS.scatter.connect(gameName).then((val) => {
-			if (!val) return reject(error)
+			if (!val) reject(false)
 			open(function (identity) {
 				resolve(identity)
 			}, function (error) {

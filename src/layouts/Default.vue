@@ -419,11 +419,19 @@ export default {
     login() {
       // 判断登录状态
       if (this.islogin) {
-        this.$q.loading.show()
-        this.setbaocss()
+        // 调整红包登录过程样式
+        let pak = this.packages.thisdata;
+        let templist = [];
+        for (let i = 0; i < pak.length; i++) {
+          templist[i] = Object.assign({}, pak[i], {
+            isgo: 1
+          });
+        }
+        this.setpackdatal(templist);
         // 登录
         eoslogin("PickOwn")
           .then((val) => {
+            console.log("1111222")
 						this.islogin = !this.islogin;
             // 判断登录人与邀请人是否一致
             if (this.usename == this.B_name) {
@@ -441,7 +449,8 @@ export default {
               position: "center"
             });
           })
-          .catch(code => {
+          .catch((val) => {
+            console.log("1111111")
             this.$q.loading.hide()
             this.getbaoinfo({});
             let msg = "登录失败";
@@ -466,17 +475,6 @@ export default {
         this.islogin = !this.islogin;
         this.downlogin = false;
       }
-		},
-		// 调整红包登录过程样式
-		setbaocss(){
-			let pak = this.packages.thisdata;
-			let templist = [];
-			for (let i = 0; i < pak.length; i++) {
-				templist[i] = Object.assign({}, pak[i], {
-					isgo: 1
-				});
-			}
-			this.setpackdatal(templist);
 		},
     // 获取userid，token
     getlogin(val) {

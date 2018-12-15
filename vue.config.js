@@ -14,7 +14,7 @@ module.exports = {
     }
   },
   lintOnSave: undefined,
-  baseUrl: 'https://www.pickown.com/',
+  baseUrl: './',
   transpileDependencies: [
     /[\\\/]node_modules[\\\/]quasar-framework[\\\/]/
   ]

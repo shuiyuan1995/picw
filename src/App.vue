@@ -45,7 +45,6 @@ export default {
       }
       this.setpackage(newdata)
       this.setpackdatal(newdata[0])
-      this.$q.loading.hide()
     })
   },
   mounted(){
