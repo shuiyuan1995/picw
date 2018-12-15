@@ -69,15 +69,15 @@
     <div class="center">
       <div class="ren">
         <p class="txt">{{$t("message.leiyao")}}</p>
-        <p class="info"><span>{{data.sum}}</span>人</p>
+        <p class="info"><span>{{sum}}</span>人</p>
       </div>
       <div class="jiangold">
         <p class="txt">{{$t("message.leijiang")}}</p>
-        <p class="info"><span>{{data.tixian_sum}}</span>EOS</p>
+        <p class="info"><span>{{tixian_sum}}</span>EOS</p>
       </div>
       <div class="jiang">
         <p class="txt">{{$t("message.weilinjiang")}}</p>
-        <p class="info"><span>{{data.shengyu_sum}}</span>EOS</p>
+        <p class="info"><span>{{shengyu_sum}}</span>EOS</p>
         <button class="lin" @click="lin">{{$t("message.lin")}}</button>
       </div>
     </div>
@@ -87,66 +87,51 @@
 <script>
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters} from 'vuex';
-// import {withdrawref} from '../scattereos'
-import {post} from '../api'
+import {get} from "@api"
 export default {
-  data(){
-    return{
-      data:{} //奖金信息
-    }
-  },
   created(){
-    let data = {
-      token:this.infos.token,
-      userid:this.infos.userid,
-    }
-    post('/get_tixian_info',data).then(val => {
-      this.data = {
-        shengyu_sum:val.data.shengyu_sum,
-        sum:val.data.sum,
-        tixian_sum:val.data.tixian_sum
-      }
-    })
-  },
-  methods:{
-    lin(){
-      // 余额判断
-      // if(Number(this.data.tixian_sum) <= 0){
-      //   this.$q.notify({
-      //     message: "没有提现余额",
-      //     timeout: 400,
-      //      color: 'red',
-      //     position:"center"
-      //   })
-      //   return false
-      // }
-      // 余额提现
-      withdrawref(this.infos.name,"pickowngames").then((val)=>{
-        console.log(val)
-        let data = {
-          token:this.infos.token,
-          userid:this.infos.userid,
-          money:(val/10000).toFixed(4)
-        }
-        post('/post_tixian',data).then((val)=>{
-          this.data = {
-            shengyu_sum:val.data.shengyu_sum,
-            sum:val.data.sum,
-            tixian_sum:val.data.tixian_sum
-          }
-          // console.log(val)
-        })
-      })
-    }
+    this._getInfo();
   },
   components:{
     smallhead
   },
   computed:{
     ...mapGetters([
-      "infos"
+      "userInfo"
     ])
   },
+  data(){
+    return{
+      shengyu_sum: "0",
+      sum: "0",
+      tixian_sum: "0"
+    }
+  },
+  methods:{
+    lin(){
+      // 余额提现
+      withdrawref(this.userInfo.name,"pickowngames").then((val)=>{
+        post('/post_tixian', {
+          money:(val/10000).toFixed(4)
+        }).then(json => {
+          const {shengyu_sum, sum, tixian_sum} = json.data;
+          this.shengyu_sum = shengyu_sum;
+          this.sum = sum;
+          this.tixian_sum = tixian_sum;
+        })
+      })
+    },
+    _getInfo() {
+      this.$q.loading.show();
+      get('/get_tixian_info').then(json => {
+        this.$q.loading.hide();
+        const {shengyu_sum, sum, tixian_sum} = json.data;
+        this.shengyu_sum = shengyu_sum;
+        this.sum = sum;
+        this.tixian_sum = tixian_sum;
+      })
+    }
+  }
 }
 </script>
 
