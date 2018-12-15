@@ -25,7 +25,6 @@ let network = {
  */
 const scatGameLogin = (gameName) => {
   return new Promise((resolve, reject) => {
-    store.state.userInfo = ""
     ScatterJS.scatter.connect(gameName).then(status => {
       if (!status) return reject("连接游戏失败");
       // 连接scatter网络

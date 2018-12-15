@@ -8,7 +8,6 @@ import {get} from '@api';
 const login = () => {
   Loading.show();
   scatGameLogin("PickOwn").then(account => {
-    console.log(account)
     const {publicKey, name} = account;
     // 同步用户信息
     store.commit(SET_USER_INFO, {
