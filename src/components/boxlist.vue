@@ -62,7 +62,7 @@
 <script>
 import {mapGetters,mapMutations} from 'vuex'
 import { date } from 'quasar'
-import {post} from '../api'
+import {post} from '@/api'
 import {login, scatSelectPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
 import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
 export default {
@@ -100,14 +100,26 @@ export default {
       });
       // 提示信息
       const errObje = {
-        "3081001": "用户CPU不足",
-        "3080004": "合约CPU不足",
+        "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
+        "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
         "3040005": "交易超时",
         "3123456": "找不到对应红包",
-        "3123457": "发送失败"
+        "3123457": "发送失败",
+        "3050003": "余额不足",
+        "3080001": "Account using more than allotted RAM usage"
       }
-      scatSelectPacket(packetId, `${Number(eos).toFixed(4)} EOS`, "")
+      // let json = {
+      //   packetAmount:2131,
+      //   isBomb:1,
+      //   isLuck:2,
+      //   luckyAmount:3,
+      //   own:1222
+      // }
+      // this.updata(json)
+      // return false
+      scatSelectPacket(userInfo.name, `${Number(eos).toFixed(4)} EOS`, "")
       .then(json => {
+        // 判断获得参数
         if(!json.packetId){
           this.$q.notify({
             message: errObje[code] || "发送失败",
@@ -124,26 +136,32 @@ export default {
         // 展示上传红包
         this.updata(json)
       })
-      .catch(code => this.$q.notify({
-        message: errObje[code] || "发送失败",
-        timeout: 1500,
-        color: 'red',
-        position:"center"
-      }))
+      .catch(code => {
+        this.$q.notify({
+          message: errObje[code] || "发送失败",
+          timeout: 1500,
+          color: 'red',
+          position:"center"
+        })
+        // 用户cpu查询
+        scatGetAccount()
+        // 查询EosBalance同步vuex， 查询OwnBalance
+        scatGetAllBalance()
+      });
     },
     // 展示上传红包data
-    updata(val){
+    updata(json){
       let item = {}
       // 热点红包
       let _redEnvelopeList = [
         ...this.redEnvelopeList
       ] 
-      // 热点红包
+      // 所有红包
       let _roomRedEnvelopeList = [
         ...this.roomRedEnvelopeList,
       ]
       // 判断是否为最后一个
-      if(val.isLast == '1'){
+      if(json.isLast == '1'){
         _redEnvelopeList[this.index] = {
           ..._redEnvelopeList[this.index],
           isgo: 1,
@@ -160,38 +178,40 @@ export default {
       this.SET_ACTIVE_RED_EVELOPE_LIST(_redEnvelopeList)
       let data = {
         outid:this.item.txId,
-        eosid:val.packetId,
-        blocknumber:val.block_num,
-        income_sum:(val.packetAmount/10000).toFixed(4),
-        is_chailei:val.isBomb,
-        reward_type:val.isLuck,
-        reward_sum:(val.luckyAmount/10000).toFixed(4),
+        eosid:json.packetId,
+        blocknumber:json.block_num,
+        income_sum:(json.packetAmount/10000).toFixed(4),
+        is_chailei:json.isBomb,
+        reward_type:json.isLuck,
+        reward_sum:(json.luckyAmount/10000).toFixed(4),
         addr:this.inviteName,
-        isnone:val.isLast,
+        isnone:json.isLast,
         isgo:1,
-        own:(val.own/10000).toFixed(4),
-        newPrizePool:(val.newPrizePool/10000).toFixed(4)
+        own:(json.own/10000).toFixed(4),
+        newPrizePool:(json.newPrizePool/10000).toFixed(4)
       }
       let win = {
-        print:(val.packetAmount/10000).toFixed(4),
-        is_chailei:val.isBomb,
-        reward:val.isLuck,
-        rewardsum:(val.luckyAmount/10000).toFixed(4),
+        print:(json.packetAmount/10000).toFixed(4),
+        is_chailei:json.isBomb,
+        reward:json.isLuck,
+        rewardsum:(json.luckyAmount/10000).toFixed(4),
         num:this.item.num,
         eos:this.item.eos,
         packetId:Number(this.item.packetId),
         outid:this.item.txId,
-        own:(val.own/10000).toFixed(4)
+        own:(json.own/10000).toFixed(4)
       }
       // 展示抢红包结果
+      console.log(win)
       this.$emit('myshow',win)
       // 上传结果
+      this._income_packet(data)
+    },
+    _income_packet(data){
       post('/income_packet',data).then((val)=>{
         console.log(val)
-      }).catch((e)=>{
-        
-      })
-    },
+      }).catch((e)=>{})
+    }
   },
   computed:{
     ...mapGetters([
@@ -200,7 +220,6 @@ export default {
       "roomId",
       "inviteName",
       "userInfo",
-      "packages"
     ]),
     // 转换时间
     timer(){

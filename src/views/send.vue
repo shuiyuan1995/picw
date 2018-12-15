@@ -111,7 +111,8 @@
 import classify from '@/components/classify.vue'
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters,mapMutations} from 'vuex';
-// import {createRedPacket,getjin,getinfo} from '../scattereos'
+import {login, scatcreateRedPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
+import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
 import {post} from '../api'
 export default {
   data(){
@@ -125,6 +126,10 @@ export default {
     smallhead
   },
   methods:{
+    ...mapMutations({
+      SET_ROOM_RED_EVELOPE_LIST,
+      SET_ACTIVE_RED_EVELOPE_LIST,
+    }),
     // 选择尾数
     gonum(i){
       this.number = i-1
@@ -132,21 +137,24 @@ export default {
     // 发红包
     send(){
       // 判断登录
-      if(this.infos.name.length == 0){
-        alert('请先登录')
-        return false
+      if (JSON.stringify(this.userInfo) === "{}") return login();
+      // 提示信息
+      const errObje = {
+        "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
+        "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
+        "3040005": "交易超时",
+        "3123456": "找不到对应红包",
+        "3123457": "发送失败",
+        "3050003": "余额不足",
+        "3080001": "Account using more than allotted RAM usage"
       }
-      // loading
-      this.$q.loading.show()
       // 创建红包
-      console.log('发的参数',this.infos.name, this.eosnum[this.packages.this], Number(this.number), "pickowngames","eosio.token")
-      createRedPacket(this.infos.name, this.eosnum[this.packages.this], Number(this.number), "pickowngames","eosio.token").then(response=>{
+      console.log(this.eosnum[this.roomId], Number(this.number))
+      scatcreateRedPacket(this.eosnum[this.roomId], Number(this.number))
+      .then(response=>{
         console.log(response)
-        // 关闭loading
-        this.$q.loading.hide()
         // 判断参数是否正确
         if(!response.packetId||!response.txId){
-          this.$q.loading.hide()
           this.$q.notify({
             message: "发送失败",
             timeout: 100,
@@ -155,86 +163,76 @@ export default {
           })
           return false
         }
-        // 查询金钱cpu
-        this.getmoney()
+        // 用户cpu查询
+        scatGetAccount()
+        // 查询EosBalance同步vuex， 查询OwnBalance
+        scatGetAllBalance()
         // 展示上传红包data
         this.updata(response)
+
         this.$q.notify({
-          message: this.thislang.sendok,
+          message: '发送成功',
           timeout: 100,
           color: 'green',
           position:"center"
         })
         this.$router.push('/')
-      }).catch((e) => {
-        console.log(e)
-        this.$q.loading.hide()
+      }).catch(code => {
         this.$q.notify({
-          message: "发送失败",
-          timeout: 400,
+          message: errObje[code] || "发送失败",
+          timeout: 1500,
           color: 'red',
           position:"center"
         })
-        // 查询金钱cpu
-        this.getmoney()
+        // 用户cpu查询
+        scatGetAccount()
+        // 查询EosBalance同步vuex， 查询OwnBalance
+        scatGetAllBalance()
       });
     },
     // 展示上传红包data
     updata(response){
       let data = {
-        index:this.packages.this,
-        data:{
-          name:this.infos.name,
-          packetId:response.packetId,
-          txId:response.txId,
-          type:1,
-          num:this.number,
-          eos:this.eosnum[this.packages.this],
-          time:new Date(),
-          none:false
-        }
+        name:this.userInfo.name,
+        packetId:response.packetId,
+        txId:response.txId,
+        type:1,
+        num:this.number,
+        eos:this.eosnum[this.roomId],
+        time:new Date(),
+        none:false
       }
       let data1 ={
-        token:this.infos.token,
-        userid:this.infos.userid,
-        issus_sum:this.eosnum[this.packages.this],
+        issus_sum:this.eosnum[this.roomId],
         tail_number:this.number,
         count:10,
         eosid:response.packetId,
         blocknumber:response.txId,
-        addr:this.infos.B_name
+        addr:this.inviteName
       }
+      // 热点红包
+      let _redEnvelopeList = [
+        ...this.redEnvelopeList
+      ]
+      // 所有红包
+      let _roomRedEnvelopeList = [
+        ...this.roomRedEnvelopeList,
+      ]
+      _redEnvelopeList = [
+        ..._redEnvelopeList,
+        data
+      ]
+      _roomRedEnvelopeList[this.roomId] = _redEnvelopeList;
       // 向房间展示红包
-      this.setpackage(data)
-      this.setpackdatal(this.packages.data[this.packages.this])
+      this.SET_ROOM_RED_EVELOPE_LIST(_roomRedEnvelopeList)
+      this.SET_ACTIVE_RED_EVELOPE_LIST(_redEnvelopeList)
       // 上传红包信息
       post('/issus_packet',data1).then(()=>{})
     },
-    // 查询金钱cpu
-    getmoney(){
-      // 查询余额
-      getjin('EOS').then((val)=>{
-        this.setinfo({eos:parseFloat(val[0])})
-      })
-      // 查询cpu
-      getinfo().then((val)=>{
-        this.setinfo({
-          cpu:val.cpu,
-          net:val.net
-        })
-      }).catch(()=>{
-        // console.log("信息获取失败")
-      })
-    },
-    ...mapMutations({
-      setpackage:'SET_PACKAGE',
-      setinfo:'SET_INFO',
-      setpackdatal:'SET_PACKDATAL',
-    }),
   },
   computed:{
     ...mapGetters([
-      "packages","infos"
+      "roomId","userInfo","inviteName","redEnvelopeList","roomRedEnvelopeList"
     ])
   },
 }

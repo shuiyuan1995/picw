@@ -154,6 +154,60 @@ const scatGetAccount = () => {
 }
 
 /**
+ * 创建红包
+ * @param amount 金额(number)
+ * @param bomb 踩雷号码(number)
+ * @Result packetId 红包唯一标识
+ * @Result txId 红包对应的区块
+ * @Result referralFee
+ */
+function scatcreateRedPacket(amount, bomb) {
+  Loading.show();
+  const {name, authority} = store.state.userInfo;
+	return new Promise(function (resolve, reject) {
+			let eos = ScatterJS.scatter.eos(network, Eos);
+			eos.transaction({
+        actions: [
+          {
+            account: "eosio.token",
+            name: 'transfer',
+            authorization: [{
+              actor: name,
+              permission: authority
+            }],
+            data: {
+              from: name,
+              to: "pickowngames",
+              quantity: amount + ".0000 EOS",
+              memo: "create:" + bomb
+            }
+          }
+        ]
+			}).then(result => {
+        Loading.hide();
+        let consoleJson = JSON.parse(result.processed.action_traces[0].inline_traces[1].console);
+        if (consoleJson.ERROR !== undefined) {
+          reject(3123457);
+        } else {
+          let response = {
+            "packetId": consoleJson.packet_id,
+            "txId": result.transaction_id
+          };
+          resolve(response);
+        }
+			}).catch(error => {
+        Loading.hide();
+        if (typeof error !== "object" && JSON.parse(error)) {
+          const {code} = JSON.parse(error).error;
+          reject(code);
+        } else {
+          reject(3123457)
+        }
+			});
+	});
+}
+
+/**
  * 抢红包
  * @param roomId 红包唯一标识(number)
  * @param transferAmount 转账金额（string）例：1.0000 EOS
@@ -201,7 +255,7 @@ function scatSelectPacket(roomId, transferAmount, referral) {
         reject(consoleString);
       }
       if (JSON.parse(consoleString).ERROR !== undefined) {
-        resolve(analysisException(JSON.parse(consoleString).ERROR));
+        resolve(3123457);
       } else {
         consoleString = consoleString.substring(consoleString.indexOf("{"), consoleString.indexOf("}") + 1);
         let response = {
@@ -250,5 +304,6 @@ function formatRoomId(roomId){
   scatGameLoginOut,
   scatGetAllBalance,
   scatSelectPacket,
-  scatGetAccount
+  scatGetAccount,
+  scatcreateRedPacket
  }

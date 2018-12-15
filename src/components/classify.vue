@@ -37,34 +37,20 @@
 </style>
 
 <template>
-  <swiper :options="swiperOption" class="btn-group swiper-no-swiping">
-    <swiper-slide class="item">
-      <button @click="changeE(0)" :class="packages.this == 0?'active':''" class="btn-item">1 EOS</button>
+  <swiper :options="{slidesPerView:2,initialSlide}" class="btn-group swiper-no-swiping">
+    <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
+      <button @click="changeE(index)" :class="initialSlide === index?'active':''" class="btn-item">{{item}}</button>
     </swiper-slide>
-    <swiper-slide class="item">
-      <button @click="changeE(1)" :class="packages.this == 1?'active':''" class="btn-item">5 EOS</button>
-    </swiper-slide>
-    <!-- <swiper-slide class="item">
-      <button @click="changeE(2)" :class="packages.this == 2?'active':''" class="btn-item">10 EOS</button>
-    </swiper-slide>
-    <swiper-slide class="item">
-      <button @click="changeE(3)" :class="packages.this == 3?'active':''" class="btn-item">20 EOS</button>
-    </swiper-slide>
-    <swiper-slide class="item">
-      <button @click="changeE(4)" :class="packages.this == 4?'active':''" class="btn-item">50 EOS</button>
-    </swiper-slide>
-    <swiper-slide class="item">
-      <button @click="changeE(5)" :class="packages.this == 5?'active':''" class="btn-item">100 EOS</button>
-    </swiper-slide> -->
   </swiper>
 </template>
 
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import {mapMutations,mapGetters} from 'vuex';
+import {SET_ROOMID} from "@store/mutation-types";
 export default {
   created(){
-    this.swiperOption.initialSlide = this.packages.this
+    this.initialSlide = this.roomId
   },
   props:{
     page:{ //页面类型
@@ -74,21 +60,19 @@ export default {
   },
   data(){
     return{
-      swiperOption: {
-        slidesPerView:2,
-        initialSlide: 0
-      },
+      initialSlide:0,
+      roomList: ["1 Eos", "5 Eos", "10 Eos", "20eos", "50 eos", "100 eos"],
     }
   },
   methods:{
+    ...mapMutations({
+      SET_ROOMID,
+    }),
     // 房间选择切换
     changeE(i){
-      this.chaE = i
-      this.setpacki(i)
+      this.SET_ROOMID(i)
+      this.initialSlide = i
     },
-    ...mapMutations({
-      setpacki:'SET_PACKI'
-    }),
   },
   components:{
     swiper,
@@ -96,7 +80,8 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "packages"
+      "packages",
+      "roomId"
     ]),
   }
 }

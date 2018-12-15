@@ -167,7 +167,7 @@
       <!-- table切换列表 -->
       <swiper :options="{slidesPerView:2,initialSlide}" class="btn-group swiper-no-swiping">
         <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
-          <div @click="changeE(index)" class="btn-item" :class="initialSlide === index ?'active':''">1 EOS</div>
+          <div @click="changeE(index)" class="btn-item" :class="initialSlide === index ?'active':''">{{item}}</div>
           <!-- <span class="more" v-show="">{{item[index]}}</span> -->
         </swiper-slide>
       </swiper>
@@ -175,7 +175,7 @@
     <div class="content">
       <!-- 红包数据展示 -->
       <div class="info scroll column" ref="myscroll">
-        <div :is="1==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList"></div>
+        <div :is="1==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
       </div>
       <!-- <swiper :options="swiperOptionone" class="right">
         <swiper-slide class="itemright" :key="index" v-for="(item,index) in thelists" v-if="!item.none&&item.type==1">
@@ -190,14 +190,14 @@
         <p>{{$t("message.leifa")}}</p>
         <p>{{allInfo.out_packet_count}}</p>
       </div>
-      <button class="btn">{{$t("message.sendbtn")}}</button>
+      <button class="btn" @click="send">{{$t("message.sendbtn")}}</button>
       <div class="send">
         <p class="icon">{{$t("message.lucky")}}</p>
         <p>{{allInfo.xinyunjiangchi}}</p>
       </div>
     </div>
     <!-- <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules> -->
-    <!-- <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao> -->
+    <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao>
   </q-page>
 </template>
 
@@ -238,6 +238,8 @@ export default {
     return {
       initialSlide: 0,
       roomList: ["1 Eos", "5 Eos", "10 Eos", "20eos", "50 eos", "100 eos"],
+      inshow:false,
+      win:{}
       // therules: false,
       // rules: false
     }
@@ -248,6 +250,16 @@ export default {
       let roomid = index;
       // 修改焦点数据
       this.SET_CLICK_ROOMID_RED_EVELOPE_LIST({roomid, redEnvelopeList: this.roomRedEnvelopeList[index]})
+    },
+    send(){
+      if (JSON.stringify(this.userInfo) === "{}") return login();
+      this.$router.push("/send")
+    },
+    myshow(win){
+      if(win){
+        this.win = win
+      }
+      this.inshow = !this.inshow
     },
     // openrule(status) {
     //   this.openrule = status;

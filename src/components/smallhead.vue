@@ -95,9 +95,6 @@ export default {
       type:String
     }
   },
-  created(){
-    console.log(this.$route.path)
-  },
   data(){
     return{
       more:false
