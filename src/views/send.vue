@@ -89,7 +89,7 @@
 
 <template>
   <div class="home fullscreen">
-    <smallhead :title='$t("message.sendbtn1")'></smallhead>
+    <smallhead :title='$t("message.sendbtn1")' :right="false"></smallhead>
     <div class="send column">
       <p>{{$t("message.choosenum")}}</p>
       <classify class="classify"></classify>

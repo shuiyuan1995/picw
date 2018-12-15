@@ -278,7 +278,7 @@ li.active {
   <!-- header头部 -->
   <q-layout-header class="head">
     <q-toolbar class="headbar flex transparent">
-      <span class="rules icon">{{$t("message.how")}}</span>
+      <span @click="openrule" class="rules icon">{{$t("message.how")}}</span>
       <div class="logo">
         <img src="../common/images/logo.png">
       </div>
@@ -379,7 +379,7 @@ li.active {
     </transition>
   </q-page-container>
   <invitation v-show="invitation" @invitashow="invitashow"></invitation>
-  <!-- <rules v-show="rules" bgc="white" @openrule="openrule"></rules> -->
+  <rules v-show="rules" bgc="white" @openrule="openrule"></rules>
 </q-layout>
 </template>
 
@@ -462,6 +462,10 @@ export default {
     // 邀请好友开关
     invitashow() {
       this.invitation = false;
+    },
+    //打开关闭游戏介绍
+    openrule() {
+      this.rules = !this.rules;
     },
     ...mapMutations({
       SET_GOOGLE_MENU

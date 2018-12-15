@@ -174,7 +174,7 @@
     </div>
     <div class="content">
       <!-- 红包数据展示 -->
-      <div class="info scroll column" ref="myscroll">
+      <div class="info scroll column" ref="myscroll" @scroll="scrollHandler">
         <div :is="1==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
       </div>
       <!-- <swiper :options="swiperOptionone" class="right">
@@ -192,11 +192,11 @@
       </div>
       <button class="btn" @click="send">{{$t("message.sendbtn")}}</button>
       <div class="send">
-        <p class="icon">{{$t("message.lucky")}}</p>
+        <p class="icon" @click="openrule">{{$t("message.lucky")}}</p>
         <p>{{allInfo.xinyunjiangchi}}</p>
       </div>
     </div>
-    <!-- <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules> -->
+    <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
     <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao>
   </q-page>
 </template>
@@ -239,9 +239,9 @@ export default {
       initialSlide: 0,
       roomList: ["1 Eos", "5 Eos", "10 Eos", "20eos", "50 eos", "100 eos"],
       inshow:false,
-      win:{}
-      // therules: false,
-      // rules: false
+      win:{},
+      therules: false,
+      rules: false
     }
   },
   methods: {
@@ -261,9 +261,13 @@ export default {
       }
       this.inshow = !this.inshow
     },
-    // openrule(status) {
-    //   this.openrule = status;
-    // },
+    openrule() {
+      console.log(11)
+      this.rules = !this.rules
+    },
+    scrollHandler(e){
+      
+    },
     ...mapActions({
       SET_CLICK_ROOMID_RED_EVELOPE_LIST
     })

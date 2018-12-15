@@ -62,7 +62,7 @@
 
 <template>
   <div class="recordHair fullscreen scroll" :class="$q.platform.is.desktop?'desktop':''">
-    <smallhead :title='$t("message.myjiang")'></smallhead>
+    <smallhead :title='$t("message.myjiang")' :right="false"></smallhead>
     <div class="nav">
       <div class="nav-item active">{{$t("message.yaojiang")}}</div>
     </div>

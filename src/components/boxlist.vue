@@ -66,9 +66,6 @@ import {post} from '@/api'
 import {login, scatSelectPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
 import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
 export default {
-  created(){
-    console.log(this.item,this.index)
-  },
   props:{
     item:{
       type:Object
@@ -86,9 +83,6 @@ export default {
     ...mapMutations({
       SET_ROOM_RED_EVELOPE_LIST,
       SET_ACTIVE_RED_EVELOPE_LIST
-      // setpackdata:'SET_PACKDATA',
-      // setinfo:'SET_INFO',
-      // setpackdatal:'SET_PACKDATAL',
     }),
     go(){
       if (JSON.stringify(this.userInfo) === "{}") return login();

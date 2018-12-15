@@ -140,8 +140,8 @@
             <p class="num1"></p>
           </div>
         </div>
-        <p v-if="item.reward_type>0" class="txtinfo"><span>{{$t("message.zhong")}}：{{typetxt[item.reward_type]}}，{{$t("message.huo")}}{{item.reward_sum}} EOS</span></p>
-        <p v-if="item.is_chailei==1" class="txtinfo"><span><img class="img1" src="../common/images/lei.png">{{$t("message.steptitle")}}，{{$t("message.fu")}}{{item.outpacket_sum}} EOS</span></p>
+        <p v-show="item.reward_type>0" class="txtinfo"><span>{{$t("message.zhong")}}：{{typetxt[item.reward_type]}}，{{$t("message.huo")}}{{item.reward_sum}} EOS</span></p>
+        <p v-show="item.is_chailei==1" class="txtinfo"><span><img class="img1" src="../common/images/lei.png">{{$t("message.steptitle")}}，{{$t("message.fu")}}{{item.outpacket_sum}} EOS</span></p>
       </li>
       <li class="more" v-show="more">{{data.meta.current_page>=data.meta.last_page?$t("message.di"):$t("message.loading")}}</li>
     </ul>
@@ -254,7 +254,7 @@ export default {
     },
     // 奖励类型判断
     typetxt(){
-      return ['',$t("message.dui"),$t("message.san"),this.thislang.small,this.thislang.zhen,this.thislang.shun,this.thislang.si,this.thislang.big]
+      return ['',this.$t("message.dui"),this.$t("message.san"),this.$t("message.zhen"),this.$t("message.shun"),this.$t("message.si")]
     },
     ...mapGetters([
       "userInfo"

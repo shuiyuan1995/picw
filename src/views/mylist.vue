@@ -76,7 +76,7 @@
 
 <template>
   <q-page class="fullscreen column home">
-    <smallhead :title='$t("message.board")'></smallhead>
+    <smallhead :title='$t("message.board")' :right="false"></smallhead>
     <div>
       <div class="listtitle paititle flex">
         <span>{{$t("message.rank")}}</span>
