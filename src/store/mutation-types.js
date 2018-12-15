@@ -23,6 +23,14 @@ export const SET_ACTIVE_RED_EVELOPE_LIST = "SET_ACTIVE_RED_EVELOPE_LIST";
 export const SET_GOOGLE_MENU = "SET_GOOGLE_MENU";
 // 设置邀请人
 export const SET_INVITE_NAME = "SET_INVITE_NAME";
+// 设置累计发红包次数
+export const SET_HAIR_RED_ENVELOP_COUNT = "SET_HAIR_RED_ENVELOP_COUNT";
+// 设置幸运将池数量
+export const SET_PRIZECOUNT = "SET_PRIZECOUNT";
+// 设置交易金额
+export const SET_TRANSACtion_AMOUNT = "SET_TRANSACtion_AMOUNT";
+// 设置玩家总数
+export const SET_ALL_PLAYERS_NUM = "SET_ALL_PLAYERS_NUM";
 
 /* --------------- action type ------------------ */
 // 设置用户cpu，net
