@@ -33,5 +33,7 @@ export const SET_LOGINOUT = "SET_LOGINOUT";
 export const SET_CLICK_ROOMID_RED_EVELOPE_LIST = "SET_CLICK_ROOMID_RED_EVELOPE_LIST";
 // 更新展示数据,累计发红包数，幸运奖池，玩家数，交易金额
 export const SET_ALL_INFO = "SET_ALL_INFO";
-// 设置焦点红包同步所有房间红包列表
+// 添加单个红包到对应房间
 export const SET_ROOM_RED_EVELOPE_LIST_UPDATA = "SET_ROOM_RED_EVELOPE_LIST_UPDATA";
+// 修改已抢完红包状态
+export const SET_ROOM_RED_EVELOPE_EXPIRED = "SET_ROOM_RED_EVELOPE_EXPIRED"

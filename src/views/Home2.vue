@@ -174,7 +174,7 @@
     </div>
     <div class="content">
       <!-- 红包数据展示 -->
-      <div class="info scroll column" ref="myscroll" @scroll="scrollHandler">
+      <div class="info scroll column" ref="myscroll">
         <div :is="1==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
       </div>
       <!-- <swiper :options="swiperOptionone" class="right">
@@ -192,11 +192,11 @@
       </div>
       <button class="btn" @click="send">{{$t("message.sendbtn")}}</button>
       <div class="send">
-        <p class="icon" @click="openrule">{{$t("message.lucky")}}</p>
+        <p class="icon">{{$t("message.lucky")}}</p>
         <p>{{allInfo.xinyunjiangchi}}</p>
       </div>
     </div>
-    <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
+    <!-- <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules> -->
     <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao>
   </q-page>
 </template>
@@ -208,7 +208,7 @@ import boxlist from '@/components/boxlist.vue'
 import results from '@/components/results.vue'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import {mapGetters,mapMutations, mapActions} from 'vuex';
-import {SET_CLICK_ROOMID_RED_EVELOPE_LIST} from "@store/mutation-types"
+import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types"
 // import {prizePool} from '../scattereos'
 export default {
   components: {
@@ -231,7 +231,8 @@ export default {
       "roomRedEnvelopeList",
       "hairRedEnvelopeCount",
       "prizeCount",
-      "allInfo"
+      "allInfo",
+      "token"
     ]),
   },
   data() {
@@ -239,9 +240,60 @@ export default {
       initialSlide: 0,
       roomList: ["1 Eos", "5 Eos", "10 Eos", "20eos", "50 eos", "100 eos"],
       inshow:false,
-      win:{},
-      therules: false,
-      rules: false
+      win:{}
+      // therules: false,
+      // rules: false
+    }
+  },
+  // socket维护
+  sockets: {
+    // 发红包通知
+    issus_packet(data) {
+      const {index, info, name, out_packet} = data;
+      const {eosid, blocknumber, tail_number, issus_sum, created_at} = out_packet;
+      // 设置展示数据
+      this.SET_ALL_INFO(info);
+      // 如果是自己发的红包不做处理,只同步展示数据;
+      console.log(~[1,2,3,4,5,6].indexOf(7))
+      if (data.token === token) return false;
+      // 红包数据
+      let packetData = {
+        name,
+        packetId: eosid,
+        txId: blocknumber,
+        num: tail_number,
+        eos: issus_sum,
+        time: created_at * 1000,
+        type: 1,
+        none: false
+      }
+      // 更新所有红包数据
+      this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData, index})
+    },
+    // 抢红包通知
+    income_packet(data) {
+      const {info, in_packet_data, out_packet, type, index} = data;
+      // 更新展示数据
+      this.SET_ALL_INFO(info);
+      // 判断是否需要处理数据类型
+      if(type === 3) return false;
+      // 判断是否为抢完红包
+      if (type === 2) {
+        const {blocknumber, eosid} = out_packet;
+        let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
+        // 找到对应抢完的红包，改变状态
+        for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
+          if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === packetId) {
+            // 修改红包展示状态
+            this.SET_ROOM_RED_EVELOPE_EXPIRED({rommId: index, index: i, packetData: _roomItemEnvelopeList[i]});
+            // 添加表格信息
+            in_packet_data.map((item, index) => {
+              this.SET_ROOM_RED_EVELOPE_LIST_UPDATA(item, index);
+            })
+            return false;
+          }
+        }
+      }
     }
   },
   methods: {
@@ -261,15 +313,14 @@ export default {
       }
       this.inshow = !this.inshow
     },
-    openrule() {
-      console.log(11)
-      this.rules = !this.rules
-    },
-    scrollHandler(e){
-      
-    },
+    // 获取vuex方法
     ...mapActions({
-      SET_CLICK_ROOMID_RED_EVELOPE_LIST
+      SET_CLICK_ROOMID_RED_EVELOPE_LIST,
+      SET_ROOM_RED_EVELOPE_LIST_UPDATA,
+      SET_ROOM_RED_EVELOPE_EXPIRED
+    }),
+    ...mapMutations({
+      SET_ALL_INFO
     })
   }
 }

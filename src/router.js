@@ -26,7 +26,7 @@ const router =  new Router({
           name: 'home',
           component: Home,
           meta:{
-            keepAlive:false
+            keepAlive: true
           }
         },
         {
@@ -34,7 +34,7 @@ const router =  new Router({
           name: 'send',
           component: send,
           meta:{
-            keepAlive:false
+            keepAlive: true
           }
         },
         {
