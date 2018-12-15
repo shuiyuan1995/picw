@@ -4,6 +4,9 @@ import axios from "axios";
 const baseURL = process.env.NODE_ENV !== "production"
 ? "http://pickown.test/api"
 : "https://manage.pickown.com/api";
+// const baseURL = process.env.NODE_ENV !== "production"
+// ? "https://manage.pickown.com/api"
+// : "https://manage.pickown.com/api";
 // const baseURL = "/api";
 // 请求超时时间
 axios.defaults.timeout = 5000;

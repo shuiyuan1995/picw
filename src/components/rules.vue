@@ -89,6 +89,11 @@
       <p>{{$t("message.wa")}}</p>
       <h5>{{$t("message.jiangtitle")}}</h5>
       <p>{{$t("message.jiang")}}</p>
+      <h5>{{$t("message.board")}}</h5>
+      <p>{{$t("message.board1")}}</p>
+      <p>{{$t("message.board2")}}</p>
+      <p>{{$t("message.board3")}}</p>
+      <p>{{$t("message.board4")}}</p>
       <h5 @click="openu">{{$t("message.morerule")}}</h5>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
@@ -147,12 +152,12 @@ export default {
       this.$emit('openrule')
     },
     openu(){
-      openURL("https://www.pickown.com/Pick_Own_V1.pdf")
+      openURL("https://assets.pickown.com/PickOwnV1.pdf")
     }
   },
   computed:{
     ...mapGetters([
-      "thislang","packages"
+      "packages"
     ])
   }
 }

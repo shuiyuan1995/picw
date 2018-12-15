@@ -60,10 +60,19 @@
       margin 0 1.28rem
     p:nth-of-type(1)
       color #333333
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
     p:nth-of-type(2)
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
       span
         color: #ff9703;
     p:nth-of-type(3)
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
       span
         color: #00bf0d;
   .bottomtxt
@@ -76,7 +85,7 @@
 
 <template>
   <q-page class="fullscreen column home">
-    <smallhead :title='$t("message.board")'></smallhead>
+    <smallhead :title='$t("message.board")' :right="false"></smallhead>
     <div>
       <div class="listtitle paititle flex">
         <span>{{$t("message.rank")}}</span>
@@ -113,9 +122,19 @@ export default {
       return false
     }else{
       // 获取排行榜列表
+      this.$q.loading.show()
       redPacketList("pickowngames").then(val => {
+        this.$q.loading.hide()
         console.log(val)
         this.items2 = val
+      }).catch((e)=>{
+        this.$q.loading.hide()
+        this.$q.notify({
+          message: "服务器异常，请稍后再试",
+          timeout: 100,
+          color: 'green',
+          position:"center"
+        })
       })
     }
   },

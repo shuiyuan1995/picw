@@ -58,6 +58,7 @@
       .num1
         text-align right
         align-items center
+        justify-content flex-end
         span 
           display flex
           align-items center
@@ -98,10 +99,10 @@
 
 <template>
   <div class="recordHair fullscreen scroll" @click="$refs.smallhead.open()">
-    <smallhead ref="smallhead" :title='`${data.outpacketname}${$t("message.debao")}`' :data="data.outpacketname" class="fixed-top" right="jilu"></smallhead>
+    <smallhead ref="smallhead" :title='`${name}${$t("message.debao")}`' :data="name" class="fixed-top" right="jilu"></smallhead>
     <div class="top column">
       <img class="img" src="../common/images/icon.png" />
-      <p class="num">{{$t("message.wei")}}:{{data.outpackettailnumber}}</p>
+      <p class="num">{{$t("message.wei")}}:{{num}}</p>
       <p class="over" v-if="data.data && data.data.length > 0">{{$t("message.linwan")}}</p>
     </div>
     <div class="center">{{$t("message.gong")}}{{data.outpacketsum}}eos</div>
@@ -135,6 +136,8 @@ export default {
   created(){
     // 获取红包id
     this.packetId = this.$route.params.txId
+    this.name = this.$route.params.name
+    this.num = this.$route.params.num
     let data = {
       token:this.infos.token,
       userid:this.infos.userid,
@@ -168,10 +171,6 @@ export default {
     ...mapGetters([
       "infos"
     ]),
-    // 红包获奖状态判断
-    // typetxt(){
-    //   return ['',this.thislang.dui,this.thislang.san,this.thislang.small,this.thislang.zhen,this.thislang.shun,this.thislang.si,this.thislang.big]
-    // },
   }
 }
 </script>

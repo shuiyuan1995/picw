@@ -19,14 +19,9 @@ import {get} from './api'
 import { date } from 'quasar'
 export default {
   created(){
-    // 调用可抢红包
-
-    // 登录
-    
+    this.$q.loading.show()
     // 调用可抢红包
     get('/get_money_list').then((val)=>{
-      console.log(1)
-      console.log(val)
       let newval = val.data
       let newdata = [[],[],[],[],[],[]]
       for(let i =0;i<newval.length;i++){
@@ -50,6 +45,7 @@ export default {
       }
       this.setpackage(newdata)
       this.setpackdatal(newdata[0])
+      this.$q.loading.hide()
     })
   },
   mounted(){
@@ -70,7 +66,7 @@ export default {
         user_count,
         xinyunjiangchi
       }
-      self.setinfo({info:info})
+      self.setortherinfo(info)
       // 判断是否是自己发的红包
       if(self.infos.name == val.name){
         return false
@@ -97,6 +93,7 @@ export default {
     })
     // 接收领完消息
     socket.on('income_packet', function(val) {
+      console.log(val)
       const {in_packet_count, in_packet_sum, out_packet_count, transaction_info_count, user_count, xinyunjiangchi} = val.data || {}
       let info = {
         in_packet_count,
@@ -106,7 +103,7 @@ export default {
         user_count,
         xinyunjiangchi
       }
-      self.setinfo({info:info})
+      self.setortherinfo(info)
       if(val.type == 2){
         let item = {}
         // 查找当前领完红包标识
@@ -151,6 +148,7 @@ export default {
       setpackdata:'SET_PACKDATA',
       setinfo:'SET_INFO',
       setpackdatal:'SET_PACKDATAL',
+      setortherinfo:"SET_ORTHERINFO"
     }),
   },
   computed:{

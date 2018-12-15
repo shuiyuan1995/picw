@@ -5,6 +5,7 @@ module.exports = {
       errors: false
     }
   },
+  productionSourceMap:false,
   pluginOptions: {
     quasar: {
       theme: 'mat',
@@ -13,7 +14,7 @@ module.exports = {
     }
   },
   lintOnSave: undefined,
-  baseUrl: './',
+  baseUrl: 'https://www.pickown.com/',
   transpileDependencies: [
     /[\\\/]node_modules[\\\/]quasar-framework[\\\/]/
   ]

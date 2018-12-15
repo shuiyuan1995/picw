@@ -6,4 +6,5 @@ export const SET_PACKIA = "SET_PACKIA";
 export const SET_PACKDATA = "SET_PACKDATA";
 export const SET_PACKDATAL = "SET_PACKDATAL";
 export const SET_INFO = "SET_INFO";
+export const SET_ORTHERINFO = "SET_ORTHERINFO";
 

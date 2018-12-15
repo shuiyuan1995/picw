@@ -1,8 +1,4 @@
 const state = {
-  // 语言
-  language: [],
-  // 当前语言
-  thislang:'',
   // 红包数据
   packages:{
     this:0,
@@ -23,7 +19,8 @@ const state = {
     net:0,
     token:"",
     userid:""
-  }
+  },
+  otherinfo:{}
 };
 
 export default state;

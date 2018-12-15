@@ -158,11 +158,7 @@ import {mapGetters} from 'vuex';
 import {post} from '../api'
 export default {
   created(){
-    if(this.infos.name.length == 0){
-      alert('请先登录')
-      this.$router.push('/')
-      return false
-    }
+    this.$q.loading.show()
     this.getinfo()
   },
   data(){
@@ -192,10 +188,13 @@ export default {
       this.timer = false
     },
     golist(item){
+      console.log(item)
       this.$router.push({
         name: 'record-this',
         params: {
-          txId:item.outblocknumber
+          txId:item.outblocknumber,
+          name:item.user,
+          num:item.tail_number
         }
       })
     },
@@ -218,6 +217,7 @@ export default {
         }
       }
       post('/my_income_packet',data).then((val)=>{
+        this.$q.loading.hide()
         this.qingqiu = false
         console.log(val)
         this.data = val
@@ -238,6 +238,14 @@ export default {
           first:val.last_time*1000,
           last:val.max_time*1000
         }
+      }).catch(()=>{
+        this.$q.loading.hide()
+        this.$q.notify({
+          message: "服务器异常，请稍后再试",
+          timeout: 100,
+          color: 'green',
+          position:"center"
+        })
       })
     },
     scrollHandler(e){
@@ -261,7 +269,7 @@ export default {
     },
     // 奖励类型判断
     typetxt(){
-      return ['',$t("message.dui"),$t("message.san"),this.thislang.small,this.thislang.zhen,this.thislang.shun,this.thislang.si,this.thislang.big]
+      return ['',this.$t("message.dui"),this.$t("message.san"),this.$t("message.zhen"),this.$t("message.shun"),this.$t("message.si")]
     },
     ...mapGetters([
       "infos"

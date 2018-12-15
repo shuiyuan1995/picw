@@ -1,12 +1,6 @@
 import * as types from "./mutation-types";
 
 const mutations = {
-  [types.SET_LANGUAGE](state, Language) {
-    state.language = Language;
-  },
-  [types.THIS_LANGUAG](state, index) {
-    state.thislang = state.language[index];
-  },
   [types.SET_PACKAGE](state,data) {
     if(data.index || data.index == 0){
       if(state.packages.data[data.index]){
@@ -30,6 +24,9 @@ const mutations = {
       ...state.info,
       ...obj
     }
+  },
+  [types.SET_ORTHERINFO](state,obj) {
+    state.otherinfo = obj
   },
   [types.SET_PACKDATA](state,obj) {
     state.packages.data[obj.index][obj.index1] = {

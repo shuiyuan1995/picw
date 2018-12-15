@@ -354,17 +354,17 @@ li.active {
       <ul class="topbox smalltop flex">
         <li>
           <img src="../common/images/icon12.png">
-          <p>{{infos.info.out_packet_count?Number(infos.info.out_packet_count):0}}</p>
+          <p>{{ortherinfos.out_packet_count?Number(ortherinfos.out_packet_count):0}}</p>
           <p>{{$t("message.packet")}}</p>
         </li>
         <li>
           <img src="../common/images/icon13.png">
-          <p>{{infos.info.transaction_info_count?Number(infos.info.transaction_info_count).toFixed(4):(0).toFixed(4)}}</p>
+          <p>{{ortherinfos.transaction_info_count?Number(ortherinfos.transaction_info_count).toFixed(4):(0).toFixed(4)}}</p>
           <p>EOS</p>
         </li>
         <li>
           <img src="../common/images/icon14.png">
-          <p>{{infos.info.user_count?Number(infos.info.user_count):0}}</p>
+          <p>{{ortherinfos.user_count?Number(ortherinfos.user_count):0}}</p>
           <p>{{$t("message.player")}}</p>
         </li>
       </ul>
@@ -409,7 +409,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["infos", "packages"]),
+    ...mapGetters(["infos", "packages","ortherinfos"]),
     // vuex中侧滑状态
     myopenleft() {
       return this.infos.menu;
@@ -419,6 +419,7 @@ export default {
     login() {
       // 判断登录状态
       if (this.islogin) {
+        this.$q.loading.show()
         this.setbaocss()
         // 登录
         eoslogin("PickOwn")
@@ -441,6 +442,7 @@ export default {
             });
           })
           .catch(code => {
+            this.$q.loading.hide()
             this.getbaoinfo({});
             let msg = "登录失败";
             this.$q.notify({
@@ -543,8 +545,17 @@ export default {
 						]
           }
         }
+        this.$q.loading.hide()
         this.setpackage(newdata);
         this.setpackdatal(newdata[this.packages.this]);
+      }).catch(()=>{
+        this.$q.loading.hide()
+        this.$q.notify({
+          message: "网络超时",
+          timeout: 100,
+          color: "red",
+          position: "center"
+        });
       });
     },
     // 打开关闭游戏介绍
@@ -573,6 +584,9 @@ export default {
     },
     // 语言切换
     changeL(i) {
+      if(i != "zhCHS"){
+        return false
+      }
       this.changeI = i;
       this.$i18n.locale=i
       this.leftDrawerOpen = !this.leftDrawerOpen;
@@ -591,7 +605,7 @@ export default {
             user_count,
             xinyunjiangchi
           };
-          self.setinfo({ info: info });
+          self.setortherinfo(info);
         });
       });
     },
@@ -609,10 +623,11 @@ export default {
       setlanguage: "SET_LANGUAGE",
       setinfo: "SET_INFO",
       setpackage: "SET_PACKAGE",
-      setpackdatal: "SET_PACKDATAL"
+      setpackdatal: "SET_PACKDATAL",
+      setortherinfo:"SET_ORTHERINFO"
 		}),
 		openu(){
-			openURL("https://www.pickown.com/Pick_Own_V1.pdf")
+			openURL("https://assets.pickown.com/PickOwnV1.pdf")
 		},
   },
   components: {

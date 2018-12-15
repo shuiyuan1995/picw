@@ -123,7 +123,9 @@ export default {
       this.$router.push({
         name: 'record-this',
         params: {
-          txId:this.win.outid
+          txId:this.win.outid,
+          name:this.win.name,
+          num:this.win.num
         }
       })
     }

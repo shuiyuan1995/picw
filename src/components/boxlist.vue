@@ -90,7 +90,9 @@ export default {
         this.$router.push({
           name: 'record-this',
           params: {
-            txId:this.item.txId
+            txId:this.item.txId,
+            name:this.item.name,
+            num:this.item.num
           }
         })
         return false
@@ -117,13 +119,21 @@ export default {
         this.$q.loading.hide()
       }).catch(e => {
         this.$q.loading.hide()
+        const errObje = {
+          "3081001": "用户CPU不足",
+          "3080004": "合约CPU不足",
+          "3040005": "交易超时",
+          "3123456": "找不到对应红包",
+          "3123457": "发送失败",
+          "3050003": "余额不足"
+        }
         // 查询金钱cpu
         this.getmoney()
         console.log(e)
         this.$q.notify({
-          message: "获取失败",
-          timeout: 100,
-          color: 'green',
+          message: errObje[e] || "发送失败",
+          timeout: 1500,
+          color: 'red',
           position:"center"
         })
       });
@@ -192,7 +202,8 @@ export default {
         eos:this.item.eos,
         packetId:Number(this.item.packetId),
         outid:this.item.txId,
-        own:(val.own/10000).toFixed(4)
+        own:(val.own/10000).toFixed(4),
+        name:this.item.name,
       }
       // 展示抢红包结果
       this.$emit('myshow',win)
@@ -207,9 +218,6 @@ export default {
       setinfo:'SET_INFO',
       setpackdatal:'SET_PACKDATAL',
     }),
-  },
-  created(){
-    console.log(this.item)
   },
   computed:{
     ...mapGetters([

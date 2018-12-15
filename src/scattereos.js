@@ -34,7 +34,7 @@ export function eoslogin(gameName) {
 	}
 	return new Promise((resolve, reject) => {
 		ScatterJS.scatter.connect(gameName).then((val) => {
-			if (!val) return alert("连接失败")
+			if (!val) return reject(error)
 			open(function (identity) {
 				resolve(identity)
 			}, function (error) {
@@ -87,8 +87,8 @@ export function getinfo(cd) {
 		}).then((val) => {
 			console.log(val, "cpu")
 			let info = {
-				cpu: Math.round((val.cpu_limit.used / val.cpu_limit.max) * 100),
-				net: Math.round((val.net_limit.used / val.net_limit.max) * 100)
+				cpu: Math.round((val.cpu_limit.used / val.cpu_limit.max) * 100) >100?100:Math.round((val.cpu_limit.used / val.cpu_limit.max) * 100),
+				net: Math.round((val.net_limit.used / val.net_limit.max) * 100) >100?100:Math.round((val.net_limit.used / val.net_limit.max) * 100)
 			}
 			resolve(info)
 		}).catch(e => {
@@ -129,7 +129,7 @@ export function createRedPacket(userName, amount, bomb, contractOwner, tokenName
 			return false;
 
 	return new Promise(function (resolve, reject) {
-			let eos = scatter.eos(network, Eos);
+			let eos = ScatterJS.scatter.eos(network, Eos);
 			eos.transaction({
 					actions: [
 							{
@@ -149,22 +149,23 @@ export function createRedPacket(userName, amount, bomb, contractOwner, tokenName
 					]
 			}).then(result => {
 					console.log("创建红包成功");
-		console.log(result);
+					console.log(result);
 					let consoleJson = JSON.parse(result.processed.action_traces[0].inline_traces[1].console);
 					if (consoleJson.ERROR !== undefined) {
-							resolve(analysisException(consoleJson.ERROR));
+						reject(3123457);
 					} else {
-							let response = {
-									"packetId": consoleJson.packet_id,
-									"txId": result.transaction_id
-							};
-							resolve(response);
+						let response = {
+							"packetId": consoleJson.packet_id,
+							"txId": result.transaction_id
+						};
+						resolve(response);
 					}
 			}).catch(error => {
-					if (typeof error !== "object" && JSON.parse(error).error.what === 'eosio_assert_message assertion failure') {
-							resolve("交易异常");
+					if (typeof error !== "object" && JSON.parse(error)) {
+						const {code} = JSON.parse(error).error;
+						reject(code);
 					} else {
-							reject(error);
+						reject(3123457)
 					}
 			});
 	});
@@ -234,7 +235,7 @@ export function selectPacket(userName, roomId, contractOwner, tokenName, transfe
 	}
 
 	return new Promise(function (resolve, reject) {
-			let eos = scatter.eos(network, Eos);
+			let eos = ScatterJS.scatter.eos(network, Eos);
 			eos.transaction({
 					actions: [
 							{
@@ -258,7 +259,7 @@ export function selectPacket(userName, roomId, contractOwner, tokenName, transfe
 							reject(consoleString);
 					}
 					if (JSON.parse(consoleString).ERROR !== undefined) {
-							resolve(analysisException(JSON.parse(consoleString).ERROR));
+							reject(3123457)
 					} else {
 							consoleString = consoleString.substring(consoleString.indexOf("{"), consoleString.indexOf("}") + 1);
 							let response = {
@@ -276,11 +277,13 @@ export function selectPacket(userName, roomId, contractOwner, tokenName, transfe
 							resolve(response);
 					}
 			}).catch(error => {
-					if (typeof error !== "object" && JSON.parse(error).error.what === 'eosio_assert_message assertion failure') {
-							resolve("交易异常");
-					}else {
-							reject(error);
-					}
+				if (typeof error !== "object" && JSON.parse(error)) {
+					const {code} = JSON.parse(error).error;
+					reject(code);
+				} else {
+					if (error.code === 402) return reject(3123456)
+					else reject(3123457)
+				}
 			});
 	});
 }
@@ -480,7 +483,7 @@ export function getjin(type) {
 	return new Promise(function (resolve, reject) {
 		let eos = ScatterJS.scatter.eos(network, Eos);
 		eos.getCurrencyBalance({
-			code: "eosio.token",
+			code: type == 'EOS'?"eosio.token":"pickowntoken",
 			account: currentAccount.name,
 			symbol: type
 		}).then(result => {

@@ -123,12 +123,7 @@ import {mapGetters} from 'vuex';
 import {post} from '../api'
 export default {
   created(){
-    // 判断登录
-    if(this.infos.name.length == 0){
-      alert('请先登录')
-      this.$router.push('/')
-      return false
-    }
+    this.$q.loading.show()
     this.getinfo()
   },
   data(){
@@ -158,10 +153,13 @@ export default {
       this.timer = false
     },
     golist(item){
+      console.log(item)
       this.$router.push({
         name: 'record-this',
         params: {
-          txId:item.blocknumber
+          txId:item.blocknumber,
+          name:item.user.name,
+          num:item.tail_number
         }
       })
     },
@@ -184,6 +182,7 @@ export default {
         }
       }
       post('/my_issus_packet',data).then((val)=>{
+        this.$q.loading.hide()
         this.qingqiu = false
         console.log(val)
         this.data = val
@@ -204,6 +203,14 @@ export default {
           first:val.last_time*1000,
           last:val.max_time*1000
         }
+      }).catch(()=>{
+        this.$q.loading.hide()
+        this.$q.notify({
+          message: "服务器异常，请稍后再试",
+          timeout: 100,
+          color: 'green',
+          position:"center"
+        })
       })
     },
     scrollHandler(e){

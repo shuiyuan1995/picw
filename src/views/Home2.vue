@@ -207,12 +207,12 @@
     <div class="sendbtn flex">
       <div class="send">
         <p>{{$t("message.leifa")}}</p>
-        <p>{{infos.info.out_packet_count?Number(infos.info.out_packet_count):0}}</p>
+        <p>{{ortherinfos.out_packet_count?Number(ortherinfos.out_packet_count):0}}</p>
       </div>
       <button class="btn" @click="changepage">{{$t("message.sendbtn")}}</button>
       <div class="send">
         <p class="icon" @click="openrule(false)">{{$t("message.lucky")}}</p>
-        <p>{{infos.info.xinyunjiangchi?Number(infos.info.xinyunjiangchi).toFixed(4):(0).toFixed(4)}}</p>
+        <p>{{ortherinfos.xinyunjiangchi?Number(ortherinfos.xinyunjiangchi).toFixed(4):(0).toFixed(4)}}</p>
       </div>
     </div>
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
@@ -336,7 +336,7 @@ export default {
               ...temparr,
               {
                 packetId:newdata[i].packetId,
-                top:list[i].$el.offsetTop + list[i].$el.offsetHeight
+                top:list[i].$el.offsetTop + this.itemH
               }
             ]
           }
@@ -385,7 +385,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "packages","infos"
+      "packages","infos","ortherinfos"
     ]),
     // 当前房间红包筛选
     thelists(){

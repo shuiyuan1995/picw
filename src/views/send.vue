@@ -89,7 +89,7 @@
 
 <template>
   <div class="home fullscreen">
-    <smallhead :title='$t("message.sendbtn1")'></smallhead>
+    <smallhead :title='$t("message.sendbtn1")' :right="false"></smallhead>
     <div class="send column">
       <p>{{$t("message.choosenum")}}</p>
       <classify class="classify"></classify>
@@ -101,7 +101,6 @@
         <p>{{$t("message.explain")}}</p>
         <div class="two flex"><span>{{$t("message.explain1")}}</span></div>
       </div>
-      <!-- <q-btn dense :label="thislang.sendbtn1" class="gobtn" @click="send"/> -->
       <button class="gobtn" @click="send" v-ripple>{{$t("message.sendbtn1")}}</button>
     </div>
   </div>
@@ -160,7 +159,7 @@ export default {
         // 展示上传红包data
         this.updata(response)
         this.$q.notify({
-          message: this.thislang.sendok,
+          message: "创建成功",
           timeout: 100,
           color: 'green',
           position:"center"
@@ -168,10 +167,18 @@ export default {
         this.$router.push('/')
       }).catch((e) => {
         console.log(e)
+        const errObje = {
+          "3081001": "用户CPU不足",
+          "3080004": "合约CPU不足",
+          "3040005": "交易超时",
+          "3123456": "找不到对应红包",
+          "3123457": "发送失败",
+          "3050003": "余额不足"
+        }
         this.$q.loading.hide()
         this.$q.notify({
-          message: "发送失败",
-          timeout: 400,
+          message: errObje[e] || "发送失败",
+          timeout: 1500,
           color: 'red',
           position:"center"
         })
