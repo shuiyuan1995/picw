@@ -100,12 +100,22 @@ export default {
       token:this.infos.token,
       userid:this.infos.userid,
     }
+    this.$q.loading.show()
     post('/get_tixian_info',data).then(val => {
+      this.$q.loading.hide()
       this.data = {
         shengyu_sum:val.data.shengyu_sum,
         sum:val.data.sum,
         tixian_sum:val.data.tixian_sum
       }
+    }).catch(()=>{
+      this.$q.loading.hide()
+      this.$q.notify({
+        message: "服务器繁忙，请稍后再试",
+        timeout: 100,
+        color: 'green',
+        position:"center"
+      })
     })
   },
   methods:{

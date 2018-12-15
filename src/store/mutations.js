@@ -26,6 +26,7 @@ const mutations = {
     }
   },
   [types.SET_ORTHERINFO](state,obj) {
+    console.log(obj,state.otherinfo)
     state.otherinfo = obj
   },
   [types.SET_PACKDATA](state,obj) {

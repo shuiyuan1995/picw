@@ -143,8 +143,10 @@ export default {
       userid:this.infos.userid,
       outid:this.packetId
     }
+    this.$q.loading.show()
     // 获取当前红包抽奖信息
     post('/red_packet',data).then((obj)=>{
+      this.$q.loading.hide()
       console.log(obj)
       this.data = obj
       this.data.data = obj.data.map((val,i)=>{
@@ -154,7 +156,13 @@ export default {
         }
       })
     }).catch(()=>{
-      // console.log(e)
+      this.$q.loading.hide()
+      this.$q.notify({
+        message: "服务器繁忙，请稍后再试",
+        timeout: 100,
+        color: 'green',
+        position:"center"
+      })
     })
   },
   data(){

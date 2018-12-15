@@ -186,10 +186,6 @@ export default {
         this.qingqiu = false
         console.log(val)
         this.data = val
-        this.list = [
-          ...this.list,
-          ...val.data
-        ]
         this.page = val.meta.current_page
         if(Object.keys(val.data).length != 0){
           this.data.data = val.data.map((val,i)=>{
@@ -199,6 +195,10 @@ export default {
             }
           })
         }
+        this.list = [
+          ...this.list,
+          ...this.data.data
+        ]
         this.timej = {
           first:val.last_time*1000,
           last:val.max_time*1000
@@ -206,7 +206,7 @@ export default {
       }).catch(()=>{
         this.$q.loading.hide()
         this.$q.notify({
-          message: "服务器异常，请稍后再试",
+          message: "服务器繁忙，请稍后再试",
           timeout: 100,
           color: 'green',
           position:"center"

@@ -93,7 +93,7 @@ export default {
     // 接收领完消息
     socket.on('income_packet', function(val) {
       console.log(val)
-      const {in_packet_count, in_packet_sum, out_packet_count, transaction_info_count, user_count, xinyunjiangchi} = val.data || {}
+      const {in_packet_count, in_packet_sum, out_packet_count, transaction_info_count, user_count, xinyunjiangchi} = val.info || {}
       let info = {
         in_packet_count,
         in_packet_sum,

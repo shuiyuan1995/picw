@@ -120,12 +120,13 @@ export default {
       }).catch(e => {
         this.$q.loading.hide()
         const errObje = {
-          "3081001": "用户CPU不足",
-          "3080004": "合约CPU不足",
+          "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
+          "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
           "3040005": "交易超时",
           "3123456": "找不到对应红包",
           "3123457": "发送失败",
-          "3050003": "余额不足"
+          "3050003": "余额不足",
+          "3080001": "Account using more than allotted RAM usage"
         }
         // 查询金钱cpu
         this.getmoney()

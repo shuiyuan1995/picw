@@ -419,6 +419,7 @@ export default {
     login() {
       // 判断登录状态
       if (this.islogin) {
+        this.$q.loading.show()
         // 调整红包登录过程样式
         let pak = this.packages.thisdata;
         let templist = [];

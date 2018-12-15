@@ -11,7 +11,6 @@ const state = {
     B_name:'',
     name:'',
     menu:false,
-    info:{},
     eos:0,
     own:0,
     hui:false,
