@@ -18,7 +18,7 @@ const actions = {
   [types.SET_CLICK_ROOMID_RED_EVELOPE_LIST]({commit}, {roomid, redEnvelopeList}) {
     commit(types.SET_ROOMID, roomid);
     commit(types.SET_ACTIVE_RED_EVELOPE_LIST, redEnvelopeList);
-  },
+  }
 };
 
 export default actions;

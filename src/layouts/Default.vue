@@ -348,23 +348,23 @@ li.active {
         <img src="../common/images/icon9.png">
       </div>
     </ul>
-    <!-- <ul class="topbox smalltop flex">
+    <ul class="topbox smalltop flex">
         <li>
           <img src="../common/images/icon12.png">
-          <p>{{infos.info.out_packet_count?Number(infos.info.out_packet_count):0}}</p>
+          <p>{{allInfo.out_packet_count}}</p>
           <p>{{$t("message.packet")}}</p>
         </li>
         <li>
           <img src="../common/images/icon13.png">
-          <p>{{infos.info.transaction_info_count?Number(infos.info.transaction_info_count).toFixed(4):(0).toFixed(4)}}</p>
+          <p>{{allInfo.transaction_info_count}}</p>
           <p>EOS</p>
         </li>
         <li>
           <img src="../common/images/icon14.png">
-          <p>{{infos.info.user_count?Number(infos.info.user_count):0}}</p>
+           <p>{{allInfo.user_count}}</p>
           <p>{{$t("message.player")}}</p>
         </li>
-      </ul> -->
+      </ul>
     <p class="lian">www.pickown.com</p>
   </q-layout-drawer>
   <!--  -->
@@ -415,7 +415,8 @@ export default {
       "ownbalance",
       "cpu",
       "net",
-      "menuStatus"
+      "menuStatus",
+      "allInfo"
     ]),
     // ...mapGetters(["infos", "packages"]),
     // // vuex中侧滑状态
@@ -424,9 +425,6 @@ export default {
     // }
   },
   methods: {
-    ddddddfs() {
-      console.log(6787)
-    },
     // 打开侧边栏
     leftopen() {
       this.openleft = true;
@@ -457,7 +455,7 @@ export default {
         this.leftopen();
         this.invitation = !this.invitation;
         return false;
-      }
+      } 
       let list = ["/mylist", "/record-hair", "", "", "/record-jiang","/contant","/cooperation"];
       this.$router.push(list[i]);
     },

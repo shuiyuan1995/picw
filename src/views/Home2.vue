@@ -188,12 +188,12 @@
     <div class="sendbtn flex">
       <div class="send">
         <p>{{$t("message.leifa")}}</p>
-        <p>{{hairRedEnvelopeCount}}</p>
+        <p>{{allInfo.out_packet_count}}</p>
       </div>
       <button class="btn">{{$t("message.sendbtn")}}</button>
       <div class="send">
         <p class="icon">{{$t("message.lucky")}}</p>
-        <p>{{prizeCount}}</p>
+        <p>{{allInfo.xinyunjiangchi}}</p>
       </div>
     </div>
     <!-- <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules> -->
@@ -224,9 +224,15 @@ export default {
     console.log(this.redEnvelopeList,this.roomList)
     // this.swiperOption.initialSlide = this.packages.this
   },
-  mounted(){
-    // 滚到底部
-    // this.scrollbottom()
+  computed:{
+    ...mapGetters([
+      "userInfo",
+      "redEnvelopeList",
+      "roomRedEnvelopeList",
+      "hairRedEnvelopeCount",
+      "prizeCount",
+      "allInfo"
+    ]),
   },
   data() {
     return {
@@ -249,15 +255,6 @@ export default {
     ...mapActions({
       SET_CLICK_ROOMID_RED_EVELOPE_LIST
     })
-  },
-  computed:{
-    ...mapGetters([
-      "userInfo",
-      "redEnvelopeList",
-      "roomRedEnvelopeList",
-      "hairRedEnvelopeCount",
-      "prizeCount"
-    ]),
   }
 }
 </script>
