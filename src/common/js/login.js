@@ -19,7 +19,6 @@ const login = () => {
     scatGetAccount();
     // 获取EOSBALANCE,OWNBALANCE
     scatGetAllBalance();
-    scatSelectPacket(42, "0.0001e", "22")
     // 登陆后台
     get("/login",{
       name,

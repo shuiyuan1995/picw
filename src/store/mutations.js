@@ -40,7 +40,12 @@ const mutations = {
   // 设置侧边栏显示隐藏
   [types.SET_GOOGLE_MENU](state, status) {
     state.menuStatus = status;
+  },
+  // 设置侧边栏显示隐藏
+  [types.SET_GOOGLE_MENU](state, status) {
+    state.menuStatus = status;
   }
+
 };
 
 export default mutations;

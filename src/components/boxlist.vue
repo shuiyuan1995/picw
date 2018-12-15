@@ -66,12 +66,15 @@ import { date } from 'quasar'
 import {post} from '../api'
 import {login, scatSelectPacket} from "@common/js"
 export default {
+  created(){
+    console.log(this.item,this.index)
+  },
   props:{
     item:{
-      type:Object
+      // type:Object
     },
     index:{
-      type:Number
+      // type:Number
     }
   },
   data(){
@@ -186,9 +189,6 @@ export default {
       setinfo:'SET_INFO',
       setpackdatal:'SET_PACKDATAL',
     }),
-  },
-  created(){
-    console.log(this.item)
   },
   computed:{
     ...mapGetters([

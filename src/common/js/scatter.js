@@ -185,6 +185,7 @@ function scatSelectPacket(roomId, transferAmount, referral) {
     position:"center"
   });
   return new Promise(function (resolve, reject) {
+    let eos = ScatterJS.scatter.eos(network, Eos);
     eos.transaction({
       actions: [{
         account: "eosio.token",

@@ -174,7 +174,7 @@
     </div>
     <div class="content">
       <!-- 红包数据展示 -->
-     <div class="info scroll column" ref="myscroll">
+      <div class="info scroll column" ref="myscroll">
         <div :is="1==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList"></div>
       </div>
       <!-- <swiper :options="swiperOptionone" class="right">
@@ -220,6 +220,8 @@ export default {
     results
   },
   created(){
+    console.log(111)
+    console.log(this.redEnvelopeList,this.roomList)
     // this.swiperOption.initialSlide = this.packages.this
   },
   mounted(){

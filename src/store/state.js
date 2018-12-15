@@ -33,7 +33,11 @@ const state = {
   // 累计发红包次数
   hairRedEnvelopeCount: 0,
   // 幸运将池数量
-  prizeCount: 0
+  prizeCount: 0,
+  // 交易金额
+  transactionAmount:0,
+  // 玩家总数
+  allPlayersNum:0
 };
 
 export default state;
