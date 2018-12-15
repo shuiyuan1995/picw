@@ -29,6 +29,8 @@ export const SET_PRIZECOUNT = "SET_PRIZECOUNT";
 export const SET_TRANSACtion_AMOUNT = "SET_TRANSACtion_AMOUNT";
 // 设置玩家总数
 export const SET_ALL_PLAYERS_NUM = "SET_ALL_PLAYERS_NUM";
+// 设置邀请人
+export const SET_INVITE_NAME = "SET_INVITE_NAME";
 
 /* --------------- action type ------------------ */
 // 设置用户cpu，net

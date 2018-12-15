@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from "@store";
 import DefaultLayout from './layouts/Default.vue'
 import Home from './views/Home2.vue'
 import send from './views/send.vue'
@@ -13,7 +14,8 @@ import contant from './views/contant.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router =  new Router({
+  mode: "history",
   routes: [
     {
       path: '/',
@@ -40,7 +42,8 @@ export default new Router({
           name: 'mylist',
           component: mylist,
           meta:{
-            keepAlive:false
+            keepAlive:false,
+            requireAuth: true
           }
         },
         {
@@ -94,4 +97,24 @@ export default new Router({
       ]
     }
   ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+  const {userInfo} = store.state;
+  // 判断是否需要登陆
+  if (to.meta.requireAuth) {
+    // token是否存在
+    if (JSON.stringify(userInfo) !== "{}") {
+      next();
+    }else {
+      // 需要注册
+      next({
+        path:'/'
+      })
+    }
+  }else {
+    next();
+  }
+});
+
+export default router;

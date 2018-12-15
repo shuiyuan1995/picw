@@ -41,9 +41,9 @@ const mutations = {
   [types.SET_GOOGLE_MENU](state, status) {
     state.menuStatus = status;
   },
-  // 设置侧边栏显示隐藏
-  [types.SET_GOOGLE_MENU](state, status) {
-    state.menuStatus = status;
+  // 设置邀请人名字
+  [types.SET_INVITE_NAME](state, inviteName) {
+    state.inviteName = inviteName;
   }
 
 };

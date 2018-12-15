@@ -17,13 +17,6 @@ let network = {
     protocol: "https",
     httpEndpoint : endpoint,
 };
-// // eos
-// try {
-
-// }catch(e) {
-
-// }
-let eos = ScatterJS.scatter.eos(network, Eos);
 
 /**
  * 登陆scatter
@@ -78,6 +71,7 @@ const getBalance = (symbol, code) => {
     // 获取vuex用户信息
     const {userInfo} = store.state;
     if (JSON.stringify(userInfo) === "{}") return reject("请先登陆在查询");
+    let eos = ScatterJS.scatter.eos(network, Eos);
     // 查询eos
     eos.getCurrencyBalance({
       code,
@@ -139,6 +133,7 @@ const scatGetAccount = () => {
      // 获取vuex用户信息
     const {userInfo} = store.state;
     if (JSON.stringify(userInfo) === "{}") return reject("请先登陆在查询");
+    let eos = ScatterJS.scatter.eos(network, Eos);
     eos.getAccount({
       account_name: userInfo.name
     })
