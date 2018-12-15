@@ -80,21 +80,21 @@
   <div class="recordHair fullscreen scroll" ref="myscroll" @scroll="scrollHandler" @click="$refs.smallhead.open()">
     <smallhead ref="smallhead" :title='$t("message.fa")' class="fixed-top" right="jilui" left="guan"></smallhead>
     <div class="top">
-      <p class="name">{{data.name}}{{$t("message.issued")}}</p>
-      <p class="allprice">{{data.outpacketsum?Number(data.outpacketsum).toFixed(4):(0).toFixed(4)}}EOS</p>
+      <p class="name">{{userInfo.name}}{{$t("message.issued")}}</p>
+      <p class="allprice">{{data.outpacketsum}}EOS</p>
       <ul class="flex tablebox">
         <li>
-          <p>{{data.outpacketcount?data.outpacketcount:0}}</p>
+          <p>{{data.outpacketcount}}</p>
           <p>{{$t("message.fabao")}}</p>
         </li>
         <li>
-          <p>{{data.chaileicount?data.chaileicount:0}}</p>
+          <p>{{data.chaileicount}}</p>
           <p>{{$t("message.shoucai")}}</p>
         </li>
       </ul>
       <span class="time" @click="timer = !timer">{{thisdata}}</span>
     </div>
-    <ul class="bottom" v-if="list&&list.length>0">
+    <ul class="bottom" v-if="list.length">
       <li :key="index" v-for="(item,index) in list">
         <!-- <div class="info flex" @click="$router.push(`/record-this/${Number(item.eosid)}`)"> -->
         <div class="info flex" @click="golist(item)">
@@ -120,22 +120,20 @@ import smallhead from '@/components/smallhead.vue'
 import datetime from '@/components/datetime.vue'
 import { date } from 'quasar'
 import {mapGetters} from 'vuex';
-import {post} from '../api'
+import {get} from "@api"
 export default {
   created(){
-    // 判断登录
-    if(this.infos.name.length == 0){
-      alert('请先登录')
-      this.$router.push('/')
-      return false
-    }
     this.getinfo()
   },
   data(){
     return{
       model:new Date(),//时间
       timer:false,//时间选择展示
-      data:{}, //信息
+      data:{
+        outpacketsum: "00.0000",
+        outpacketcount: 0,
+        chaileicount: 0
+      }, //信息
       list:[],//列表
       timej:{}, //时间区间
       more:false ,
@@ -171,21 +169,18 @@ export default {
       let data = {}
       if(time){
         data = {
-          token:this.infos.token,
-          userid:this.infos.userid,
           time:time,
           page:this.page+1
         }
       }else{
         data = {
-          token:this.infos.token,
-          userid:this.infos.userid,
           page:this.page+1
         }
       }
-      post('/my_issus_packet',data).then((val)=>{
+      this.$q.loading.show();
+      get('/my_issus_packet',data).then((val)=>{
+        this.$q.loading.hide();
         this.qingqiu = false
-        console.log(val)
         this.data = val
         this.list = [
           ...this.list,
@@ -226,7 +221,7 @@ export default {
       return  `${date.formatDate(this.model, 'MM')}月${date.formatDate(this.model, 'DD')}日`
     },
     ...mapGetters([
-      "infos"
+      "userInfo"
     ])
   }
 }

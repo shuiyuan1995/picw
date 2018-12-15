@@ -645,7 +645,6 @@ export default {
   watch: {
     menuStatus(now) {
       if (now) {
-        console.log(now)
         this.openleft = now;
         this.SET_GOOGLE_MENU(false)
       }

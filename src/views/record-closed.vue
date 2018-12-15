@@ -155,14 +155,9 @@ import smallhead from '@/components/smallhead.vue'
 import datetime from '@/components/datetime.vue'
 import { date } from 'quasar'
 import {mapGetters} from 'vuex';
-import {post} from '../api'
+import {get} from '../api'
 export default {
   created(){
-    if(this.infos.name.length == 0){
-      alert('请先登录')
-      this.$router.push('/')
-      return false
-    }
     this.getinfo()
   },
   data(){
@@ -205,19 +200,17 @@ export default {
       let data = {}
       if(time){
         data = {
-          token:this.infos.token,
-          userid:this.infos.userid,
           time:time,
           page:this.page+1
         }
       }else{
         data = {
-          token:this.infos.token,
-          userid:this.infos.userid,
           page:this.page+1
         }
       }
-      post('/my_income_packet',data).then((val)=>{
+      this.$q.loading.show();
+      get('/my_income_packet',data).then((val)=>{
+        this.$q.loading.hide();
         this.qingqiu = false
         console.log(val)
         this.data = val
@@ -264,7 +257,7 @@ export default {
       return ['',$t("message.dui"),$t("message.san"),this.thislang.small,this.thislang.zhen,this.thislang.shun,this.thislang.si,this.thislang.big]
     },
     ...mapGetters([
-      "infos"
+      "userInfo"
     ]),
   }
 }

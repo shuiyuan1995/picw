@@ -20,8 +20,8 @@ const login = () => {
     scatGetAllBalance();
     // 登陆后台
     get("/login",{
-      name,
-      publickey: publicKey,
+      name: "shuiyuan2345",
+      publickey: "EOS7nRErkV2yuP1rRk2pGfqjzNy7GhuE5xYadW7t6LBjPurFUGs15",
       addr: ""
     }).then(json =>{
       const {token} = json.data || {};
