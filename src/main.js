@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store/index'
+import store from "@store"
 import VueI18n from 'vue-i18n'
+import socket from "@socket"
 
 Vue.use(VueI18n);
 const i18n = new VueI18n({
@@ -14,6 +15,9 @@ const i18n = new VueI18n({
     'zhCHT': langcnH
   }
 })
+
+// socket
+Vue.use(socket)
 
 import './styles/quasar.styl'
 import 'quasar-framework/dist/quasar.ie.polyfills'
@@ -33,7 +37,7 @@ Vue.use(Quasar, {
   config: {}
  })
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
   router,

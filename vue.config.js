@@ -39,5 +39,6 @@ module.exports = {
     .set("@router", resolve("src/router"))
     .set("@store", resolve("src/store"))
     .set("@images", resolve("src/images"))
+    .set("@socket", resolve("src/socket"))
   }
 };
