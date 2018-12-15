@@ -117,7 +117,7 @@ export default {
       // }
       // this.updata(json)
       // return false
-      scatSelectPacket(userInfo.name, `${Number(eos).toFixed(4)} EOS`, "")
+      scatSelectPacket(this.userInfo.name, `${Number(eos).toFixed(4)} EOS`, "")
       .then(json => {
         // 判断获得参数
         if(!json.packetId){
