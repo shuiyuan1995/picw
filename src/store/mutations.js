@@ -44,13 +44,10 @@ const mutations = {
   // 设置邀请人名字
   [types.SET_INVITE_NAME](state, inviteName) {
     state.inviteName = inviteName;
-<<<<<<< HEAD
-=======
   },
   // 设置展示数据,累计发红包，幸运奖池，玩家数，交易金额
   [types.SET_ALL_INFO](state, info) {
     state.allInfo = info;
->>>>>>> 8896e8cee1ca530583050c005a9177e72cd9b468
   }
 };
 
