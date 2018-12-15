@@ -1,6 +1,7 @@
 import axios from "axios";
 import qs from "qs";
 import store from "@store";
+import {Loading, Notify} from "quasar"
 
 // 请求配置参数
 const http = axios.create({
@@ -33,6 +34,15 @@ http.interceptors.response.use(response => {
   if (response.status === 200 && data.code === 200) {
     return Promise.resolve(data);
   } else {
+    // 返回错误提示
+    const {message} = data;
+    Loading.hide();
+    Notify.create({
+      message: message || "服务器错误，稍后再试！",
+      timeout: 1500,
+      color: 'red',
+      position:"center"
+    })
     return Promise.reject(data);
   }
 });
