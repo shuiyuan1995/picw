@@ -63,17 +63,18 @@
 import {mapGetters,mapMutations} from 'vuex'
 import { date } from 'quasar'
 import {post} from '../api'
-import {login, scatSelectPacket} from "@common/js"
+import {login, scatSelectPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
+import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
 export default {
   created(){
     console.log(this.item,this.index)
   },
   props:{
     item:{
-      // type:Object
+      type:Object
     },
     index:{
-      // type:Number
+      type:Number
     }
   },
   data(){
@@ -82,6 +83,13 @@ export default {
     }
   },
   methods:{
+    ...mapMutations({
+      SET_ROOM_RED_EVELOPE_LIST,
+      SET_ACTIVE_RED_EVELOPE_LIST
+      // setpackdata:'SET_PACKDATA',
+      // setinfo:'SET_INFO',
+      // setpackdatal:'SET_PACKDATAL',
+    }),
     go(){
       if (JSON.stringify(this.userInfo) === "{}") return login();
       const {isgo, none, txId, packetId, eos} = this.item;
@@ -100,7 +108,21 @@ export default {
       }
       scatSelectPacket(packetId, `${Number(eos).toFixed(4)} EOS`, "")
       .then(json => {
-        console.log(json)
+        if(!json.packetId){
+          this.$q.notify({
+            message: errObje[code] || "发送失败",
+            timeout: 1500,
+            color: 'red',
+            position:"center"
+          })
+          return false
+        }
+        // 用户cpu查询
+        scatGetAccount()
+        // 查询EosBalance同步vuex， 查询OwnBalance
+        scatGetAllBalance()
+        // 展示上传红包
+        this.updata(json)
       })
       .catch(code => this.$q.notify({
         message: errObje[code] || "发送失败",
@@ -109,48 +131,34 @@ export default {
         position:"center"
       }))
     },
-    // 查询金钱cpu
-    getmoney(){
-      // 查询余额
-      getjin('EOS').then((val)=>{
-        this.setinfo({eos:parseFloat(val[0])})
-      })
-      // 查询cpu
-      getinfo().then(val=>{
-        this.setinfo({
-          cpu:val.cpu,
-          net:val.net
-        })
-      }).catch(()=>{
-        // console.log("信息获取失败")
-      })
-    },
     // 展示上传红包data
     updata(val){
       let item = {}
+      // 热点红包
+      let _redEnvelopeList = [
+        ...this.redEnvelopeList
+      ] 
+      // 热点红包
+      let _roomRedEnvelopeList = [
+        ...this.roomRedEnvelopeList,
+      ]
       // 判断是否为最后一个
       if(val.isLast == '1'){
-        item = {
-          index:this.packages.this,
-          index1:this.index,
-          data:{
-            none:1,
-            isgo:1
-          }
+        _redEnvelopeList[this.index] = {
+          ..._redEnvelopeList[this.index],
+          isgo: 1,
+          none: 1
         }
       }else{
-        item = {
-          index:this.packages.this,
-          index1:this.index,
-          data:{
-            isgo:1
-          }
+        _redEnvelopeList[this.index] = {
+          ..._redEnvelopeList[this.index],
+          isgo: 1,
         }
       }
-      this.setpackdata(item)
+      _roomRedEnvelopeList[this.roomId] = _redEnvelopeList;
+      this.SET_ROOM_RED_EVELOPE_LIST(_roomRedEnvelopeList)
+      this.SET_ACTIVE_RED_EVELOPE_LIST(_redEnvelopeList)
       let data = {
-        token:this.infos.token,
-        userid:this.infos.userid,
         outid:this.item.txId,
         eosid:val.packetId,
         blocknumber:val.block_num,
@@ -158,7 +166,7 @@ export default {
         is_chailei:val.isBomb,
         reward_type:val.isLuck,
         reward_sum:(val.luckyAmount/10000).toFixed(4),
-        addr:this.infos.B_name,
+        addr:this.inviteName,
         isnone:val.isLast,
         isgo:1,
         own:(val.own/10000).toFixed(4),
@@ -177,20 +185,20 @@ export default {
       }
       // 展示抢红包结果
       this.$emit('myshow',win)
-      this.setpackdatal(this.packages.data[this.packages.this])
       // 上传结果
       post('/income_packet',data).then((val)=>{
         console.log(val)
-      }) 
+      }).catch((e)=>{
+        
+      })
     },
-    ...mapMutations({
-      setpackdata:'SET_PACKDATA',
-      setinfo:'SET_INFO',
-      setpackdatal:'SET_PACKDATAL',
-    }),
   },
   computed:{
     ...mapGetters([
+      "roomRedEnvelopeList",
+      "redEnvelopeList",
+      "roomId",
+      "inviteName",
       "userInfo",
       "packages"
     ]),

@@ -173,13 +173,11 @@ function scatSelectPacket(roomId, transferAmount, referral) {
   Loading.show();
   roomId = formatRoomId(roomId);
   const {name, authority} = store.state.userInfo;
-  if (roomId === null) return Notify.create({
-    message: "找不到对应红包",
-    timeout: 1500,
-    color: 'red',
-    position:"center"
-  });
   return new Promise(function (resolve, reject) {
+    if (roomId === null) {
+      Loading.hide();
+      return reject(3123456)
+    }
     let eos = ScatterJS.scatter.eos(network, Eos);
     eos.transaction({
       actions: [{
@@ -191,9 +189,9 @@ function scatSelectPacket(roomId, transferAmount, referral) {
         }],
         data: {
           from: name,
-          to: 'shuiyuan2345',
-          quantity: '0.0001 EOS',
-          memo: 'scatter 转账测试'
+          to: "pickowngames",
+          quantity: transferAmount,
+          memo: referral === undefined ? "select:" + roomId : "select:" + roomId + ":" + referral
         }
       }]
     }).then(result => {
