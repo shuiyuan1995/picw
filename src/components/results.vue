@@ -49,13 +49,18 @@
   .tr
     margin-top 0.4rem
     align-items center
-    span 
+    &>span 
       font-size 0.48rem
-      flex 1
+      flex 0 0 25%
       text-align center
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
+      &:first-of-type
+        text-align left
       &:last-of-type
         text-align right
-        margin-right 0.4rem
+        padding-right 0.4rem
     img
       width 0.68rem
       height 0.68rem
@@ -85,8 +90,8 @@
       </div>
       <div class="tr flex" :key="index" v-for="(it,index) in item.in_packet_data">
         <span class="grey">{{it.name}}</span>
-        <span class="orange">{{it.income_sum}}</span>
-        <span class="orange1">{{it.own}}</span>
+        <span class="orange">{{Number(it.income_sum)>0?it.income_sum:'待同步'}}</span>
+        <span class="orange1">{{Number(it.own)>0?it.own:''}}</span>
         <span>
           <img v-if="it.reward_type != 0" :src="typetxt[it.reward_type]">
           <!-- <i class="jiangimg zhen"></i> -->

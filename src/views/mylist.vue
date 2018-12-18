@@ -23,44 +23,37 @@
     width 100%
     top 3.7rem
     bottom 0px
-    flex-wrap nowrap
     .paiitem
       margin 0 0.8rem
       height 1.52rem
       border-bottom 1px solid #f4f4f4
       font-size 0.48rem
       align-items center
-      &:nth-of-type(1) > span 
-        flex 0 0 0.88rem
+      &:nth-of-type(1) > span
         margin 0 1.2rem 
         height 1.04rem
         background url("../common/images/one.png") no-repeat
         background-size 100% 100%
         padding-top 0.08rem
-        color #7e0808
-      &:nth-of-type(2) > span 
-        flex 0 0 0.88rem
+        color #ea1f1f
+      &:nth-of-type(2) > span
         margin 0 1.2rem
         height 1.04rem
         background url("../common/images/two.png") no-repeat
         background-size 100% 100%
         padding-top 0.08rem
-        color #0e226a
-      &:nth-of-type(3) > span 
-        flex 0 0 0.88rem
+        color #4a68d3
+      &:nth-of-type(3) > span
         margin 0 1.2rem
         height 1.04rem
         background url("../common/images/three.png") no-repeat
         background-size 100% 100%
         padding-top 0.08rem
-        color #622805
+        color #a94e17
     span,p
       flex 0 0 25%
       font-size 0.48rem
       text-align center
-      overflow hidden
-      text-overflow ellipsis
-      white-space nowrap
     .num
       flex 0 0 0.76rem
       width 0.76rem
@@ -73,11 +66,19 @@
       margin 0 1.28rem
     p:nth-of-type(1)
       color #333333
-      text-align left
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
     p:nth-of-type(2)
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
       span
         color: #ff9703;
     p:nth-of-type(3)
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
       span
         color: #00bf0d;
   .bottomtxt
