@@ -7,9 +7,10 @@ import {get} from '@api';
 // 登陆封装
 const login = (cp) => {
   Loading.show();
+  const {inviteName,redEnvelopeList} = store.state;
   scatGameLogin("PickOwn").then(account => {
     const {publicKey, name} = account;
-    const {inviteName,redEnvelopeList} = store.state;
+    
     isbian(redEnvelopeList,true)
    
     // 邀请人判断
