@@ -105,6 +105,7 @@ export default {
         "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
         "3040005": "交易超时",
         "3123456": "找不到对应红包",
+        "3123458": "取消操作",
         "3123457": "发送失败",
         "3050003": "余额不足",
         "3080001": "Account using more than allotted RAM usage"

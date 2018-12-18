@@ -204,6 +204,7 @@ function scatcreateRedPacket(amount, bomb) {
           const {code} = JSON.parse(error).error;
           reject(code);
         } else {
+          if (error.code === 402) return reject(3123458)
           reject(3123457)
         }
 			});
@@ -284,7 +285,7 @@ function scatSelectPacket(roomId, transferAmount, referral) {
         const {code} = JSON.parse(error).error;
         reject(code);
       } else {
-        if (error.code === 402) return reject(3123457)
+        if (error.code === 402) return reject(3123458)
         else reject(3123457)
       }
     });
