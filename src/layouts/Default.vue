@@ -341,10 +341,10 @@ li.active {
       <div class="langitem" :class="changeI == 'zhCHS'?'active':''" @click="changeL('zhCHS')">
         <img src="../common/images/icon9.png">
       </div>
-      <div class="langitem" :class="changeI == 'en'?'active':''" @click="changeL('en')">
+      <div class="langitem" :class="changeI == 'en'?'active':''">
         <img src="../common/images/icon1.png">
       </div>
-      <div class="langitem" :class="changeI == 'zhCHT'?'active':''" @click="changeL('zhCHT')">
+      <div class="langitem" :class="changeI == 'zhCHT'?'active':''">
         <img src="../common/images/icon9.png">
       </div>
     </ul>
@@ -473,7 +473,12 @@ export default {
     },
     ...mapMutations({
       SET_GOOGLE_MENU
-    })
+    }),
+    changeL(i) {
+      this.changeI = i;
+      this.$i18n.locale=i
+      this.leftDrawerOpen = !this.leftDrawerOpen;
+    },
     // login() {
     //   // 判断登录状态
     //   if (this.islogin) {

@@ -124,6 +124,8 @@ export default {
             color: 'green',
             position:"center"
           })
+          post('/income_packet',json).then((val)=>{
+          }) 
         },10000)
       })
       .catch(code => {

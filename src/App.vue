@@ -26,7 +26,7 @@ export default {
     const {invite} = this.$route.query;
     invite && this.SET_INVITE_NAME(invite);
     // 获取红包列表
-    this.$q.loading.show();
+    // this.$q.loading.show();
     getMoneyListget(true);
     // 自动登陆
     login(()=>{
