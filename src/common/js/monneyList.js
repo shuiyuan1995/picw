@@ -4,7 +4,9 @@ import {SET_ROOM_RED_EVELOPE_LIST, SET_CLICK_ROOMID_RED_EVELOPE_LIST} from "@sto
 import {Notify, Loading} from 'quasar'
 // 获取红包列表接口
 const getMoneyListget = (once = false) => get('/get_money_list').then(json => {
-  Loading.hide();
+  if(!once){
+    Loading.hide();
+  }
   const {data} = json;
   let _roomid = 0;
   let redEnvelopeList = [];

@@ -35,7 +35,6 @@ const login = (cp) => {
       // 设置token
       store.commit(SET_TOKEN, token);
       // 登陆成功获取一次红包信息
-      Loading.show();
       getMoneyListget();
       Loading.hide();
     }).catch(err => {
