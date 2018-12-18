@@ -218,12 +218,11 @@ export default {
   },
   watch:{
     redresults(newobj){
-      console.log(newobj.txid,this.txid)
       if(this.txid == ""){
         return false
       }
-      console.log(newobj.txid,this.txid)
       if(newobj.txid == this.txid){
+        console.log(newobj)
         // 展示红包
         this.updata(newobj)
         // 用户cpu查询

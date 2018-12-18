@@ -98,7 +98,7 @@
 
 <template>
   <div class="recordHair fullscreen scroll" @click="$refs.smallhead.open()">
-    <smallhead ref="smallhead" :title='`${name}${$t("message.debao")}`' :data="data.outpacketname" class="fixed-top" right="jilu"></smallhead>
+    <smallhead ref="smallhead" :title='`${name}${$t("message.debao")}`' :data="name" class="fixed-top" right="jilu"></smallhead>
     <div class="top column">
       <img class="img" src="../common/images/icon.png" />
       <p class="num">{{$t("message.wei")}}:{{num}}</p>

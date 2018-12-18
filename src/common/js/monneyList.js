@@ -24,7 +24,7 @@ const getMoneyListget = (once = false) => get('/get_money_list').then(json => {
   store.commit(SET_ROOM_RED_EVELOPE_LIST, data);
 })
 .catch(() => {
-  // Loading.hide();
+  Loading.hide();
   Notify.create({
     message: "服务器错误，稍后再试！",
     timeout: 1500,
