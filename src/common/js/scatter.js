@@ -284,7 +284,7 @@ function scatSelectPacket(roomId, transferAmount, referral) {
         const {code} = JSON.parse(error).error;
         reject(code);
       } else {
-        if (error.code === 402) return reject(3123456)
+        if (error.code === 402) return reject(3123457)
         else reject(3123457)
       }
     });

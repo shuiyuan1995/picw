@@ -56,6 +56,7 @@
         color #ffffff
         margin-top 1.28rem
         margin-left 3.36rem
+        outline none
     .jiang
       height 6.88rem
 </style>
@@ -78,7 +79,7 @@
       <div class="jiang">
         <p class="txt">{{$t("message.weilinjiang")}}</p>
         <p class="info"><span>{{shengyu_sum}}</span>EOS</p>
-        <button class="lin" @click="lin">{{$t("message.lin")}}</button>
+        <button :disabled="Number(shengyu_sum)<=0" class="lin" @click="lin">{{$t("message.lin")}}</button>
       </div>
     </div>
   </div>
@@ -110,6 +111,10 @@ export default {
   },
   methods:{
     lin(){
+      // 余额判断
+      if(Number(this.shengyu_sum)<=0){
+        return false
+      }
       // 余额提现
       this.$q.loading.show();
       scatWithdrawref().then((val)=>{

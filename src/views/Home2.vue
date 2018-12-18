@@ -158,6 +158,7 @@
       color #ffffff
       font-weight bold
       border none
+      outline none
 </style>
 
 
