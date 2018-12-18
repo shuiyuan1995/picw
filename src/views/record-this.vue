@@ -169,7 +169,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "infos"
+      "userInfo"
     ]),
     // 红包获奖状态判断
     // typetxt(){

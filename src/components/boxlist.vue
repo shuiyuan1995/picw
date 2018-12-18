@@ -121,7 +121,7 @@ export default {
           this.$q.notify({
             message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
             timeout: 1000,
-            color: 'red',
+            color: 'green',
             position:"center"
           })
         },10000)

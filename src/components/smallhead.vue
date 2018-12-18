@@ -102,7 +102,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "infos"
+      "userInfo"
     ])
   },
   methods:{
@@ -118,10 +118,11 @@ export default {
       this.more = false
     },
     togojilu(){
-      if(!data){
+      // console.log()
+      if(!this.data){
         this.$router.push('/record-hair')
       }
-      if(data == this.infos.name){
+      if(this.data == this.userInfo.name){
         this.$router.push('/record-hair')
       }else{
         this.$router.push('/record-closed')
