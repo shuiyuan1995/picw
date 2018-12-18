@@ -190,7 +190,9 @@ export default {
       this.$router.push({
         name: 'record-this',
         params: {
-          txId:item.outblocknumber
+          txId:item.outblocknumber,
+          name:item.user,
+          num:item.tail_number
         }
       })
     },
@@ -210,14 +212,10 @@ export default {
       }
       this.$q.loading.show();
       get('/my_income_packet',data).then((val)=>{
+        console.log(val)
         this.$q.loading.hide();
         this.qingqiu = false
-        console.log(val)
         this.data = val
-        this.list = [
-          ...this.list,
-          ...val.data
-        ]
         this.page = val.meta.current_page
         if(Object.keys(val.data).length != 0){
           this.data.data = val.data.map((val,i)=>{
@@ -226,6 +224,10 @@ export default {
             created_at:date.formatDate(val.created_at*1000, 'HH:mm:ss')
           }
         })
+        this.list = [
+          ...this.list,
+          ...this.data.data
+        ]
         }
         this.timej = {
           first:val.last_time*1000,

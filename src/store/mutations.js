@@ -48,6 +48,17 @@ const mutations = {
   // 设置展示数据,累计发红包，幸运奖池，玩家数，交易金额
   [types.SET_ALL_INFO](state, info) {
     state.allInfo = info;
+  },
+  // 设置自己发红包id
+  [types.SET_MY_SEND](state, id) {
+    state.mysend = [
+      ...state.mysend,
+      id
+    ];
+  },
+  //设置抢红包结果
+  [types.SET_RED_RESULTS](state, obj) {
+    state.redresults = obj;
   }
 };
 

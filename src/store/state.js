@@ -17,9 +17,9 @@ const state = {
   // 用户信息
   userInfo: {},
   // 用户eosbalance
-  eosbalance: "00.0000",
+  eosbalance: "0.0000",
   // 用户ownbalance
-  ownbalance: "00.0000",
+  ownbalance: "0.0000",
   // 用户cpu
   cpu: 0,
   // 用户net
@@ -35,10 +35,14 @@ const state = {
   // 展示数据,累计发红包，幸运奖池，玩家数，交易金额
   allInfo: {
     out_packet_count: 0,
-    transaction_info_count: "00.0000",
+    transaction_info_count: "0.0000",
     user_count: 0,
-    xinyunjiangchi: "00.0000"
-  }
+    xinyunjiangchi: "0.0000"
+  },
+  // 自己发红包id列表
+  mysend:[],
+  // 抢红包结果
+  redresults:{}
 };
 
 export default state;

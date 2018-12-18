@@ -4,7 +4,9 @@ const debug = process.env.NODE_ENV !== "production";
 
 const socket = new VueSocketIO({
   debug: debug,
-  connection: "http://pickown.test:6001"
+  connection: process.env.NODE_ENV === "production"
+    ? window.location.origin
+    : "http://pickown.test:6001",
 })
 
 export default socket;

@@ -98,10 +98,10 @@
 
 <template>
   <div class="recordHair fullscreen scroll" @click="$refs.smallhead.open()">
-    <smallhead ref="smallhead" :title='`${data.outpacketname}${$t("message.debao")}`' :data="data.outpacketname" class="fixed-top" right="jilu"></smallhead>
+    <smallhead ref="smallhead" :title='`${name}${$t("message.debao")}`' :data="data.outpacketname" class="fixed-top" right="jilu"></smallhead>
     <div class="top column">
       <img class="img" src="../common/images/icon.png" />
-      <p class="num">{{$t("message.wei")}}:{{data.outpackettailnumber}}</p>
+      <p class="num">{{$t("message.wei")}}:{{num}}</p>
       <p class="over" v-if="data.data && data.data.length > 0">{{$t("message.linwan")}}</p>
     </div>
     <div class="center">{{$t("message.gong")}}{{data.outpacketsum}}eos</div>
@@ -129,19 +129,21 @@
 <script>
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters} from 'vuex';
-import {post} from '../api'
+import {get} from '../api'
 import { date } from 'quasar'
 export default {
   created(){
     // 获取红包id
     this.packetId = this.$route.params.txId
+    this.name = this.$route.params.name
+    this.num = this.$route.params.num
     let data = {
-      token:this.infos.token,
-      userid:this.infos.userid,
       outid:this.packetId
     }
     // 获取当前红包抽奖信息
-    post('/red_packet',data).then((obj)=>{
+    this.$q.loading.show();
+    get('/red_packet',data).then((obj)=>{
+      this.$q.loading.hide();
       console.log(obj)
       this.data = obj
       this.data.data = obj.data.map((val,i)=>{
@@ -151,6 +153,7 @@ export default {
         }
       })
     }).catch(()=>{
+      this.$q.loading.hide();
       // console.log(e)
     })
   },

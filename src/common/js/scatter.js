@@ -26,7 +26,7 @@ let network = {
 const scatGameLogin = (gameName) => {
   return new Promise((resolve, reject) => {
     ScatterJS.scatter.connect(gameName).then(status => {
-      if (!status) return reject("连接游戏失败");
+      if (!status) return reject(101);
       // 连接scatter网络
       ScatterJS.scatter.suggestNetwork(network).then(() => {
         const requirements = {accounts: [network]};
@@ -162,10 +162,12 @@ const scatGetAccount = () => {
  * @Result referralFee
  */
 function scatcreateRedPacket(amount, bomb) {
+  console.log(amount, bomb)
   Loading.show();
   const {name, authority} = store.state.userInfo;
 	return new Promise(function (resolve, reject) {
-			let eos = ScatterJS.scatter.eos(network, Eos);
+      let eos = ScatterJS.scatter.eos(network, Eos);
+      console.log(amount, bomb)
 			eos.transaction({
         actions: [
           {
@@ -178,7 +180,7 @@ function scatcreateRedPacket(amount, bomb) {
             data: {
               from: name,
               to: "pickowngames",
-              quantity: amount + ".0000 EOS",
+              quantity: amount>=1?amount+".0000 EOS":amount+"000 EOS",
               memo: "create:" + bomb
             }
           }
@@ -196,6 +198,7 @@ function scatcreateRedPacket(amount, bomb) {
           resolve(response);
         }
 			}).catch(error => {
+        console.log(error)
         Loading.hide();
         if (typeof error !== "object" && JSON.parse(error)) {
           const {code} = JSON.parse(error).error;
@@ -224,13 +227,13 @@ function scatcreateRedPacket(amount, bomb) {
  * @Result old_prize_pool
  */
 function scatSelectPacket(roomId, transferAmount, referral) {
-  Loading.show();
+  console.log(roomId)
   roomId = formatRoomId(roomId);
+  console.log(roomId)
   const {name, authority} = store.state.userInfo;
   return new Promise(function (resolve, reject) {
     if (roomId === null) {
-      Loading.hide();
-      return reject(3123456)
+      return reject(3123457)
     }
     let eos = ScatterJS.scatter.eos(network, Eos);
     eos.transaction({
@@ -249,13 +252,15 @@ function scatSelectPacket(roomId, transferAmount, referral) {
         }
       }]
     }).then(result => {
-      Loading.hide();
       let consoleString = result.processed.action_traces[0].inline_traces[1].console;
+      if (consoleString.indexOf("Cannot find Packet") > -1) {
+        return reject(3123456);
+      }
       if (consoleString.indexOf("{") === -1) {
         reject(consoleString);
       }
       if (JSON.parse(consoleString).ERROR !== undefined) {
-        resolve(3123457);
+        reject(analysisException(JSON.parse(consoleString).ERROR));
       } else {
         consoleString = consoleString.substring(consoleString.indexOf("{"), consoleString.indexOf("}") + 1);
         let response = {
@@ -267,13 +272,13 @@ function scatSelectPacket(roomId, transferAmount, referral) {
           "isLuck": JSON.parse(consoleString).luck,
           "luckyAmount": JSON.parse(consoleString).prize_amount,
           "own": JSON.parse(consoleString).own_mined,
+          "txid": JSON.parse(consoleString).txid,
           "newPrizePool": JSON.parse(consoleString).new_prize_pool,
           "oldPrizePool": JSON.parse(consoleString).old_prize_pool
         };
         resolve(response);
       }
     }).catch(error => {
-      Loading.hide();
       console.log(error)
       if (typeof error !== "object" && JSON.parse(error)) {
         const {code} = JSON.parse(error).error;
@@ -297,6 +302,75 @@ function formatRoomId(roomId){
   else if(z === 5) return "00000" + roomId;
   else return null;
 }
+function analysisException(e) {
+  if (e === 'NO_ROOM') {
+    return 3123456;
+  }
+  if (e === 'NO_REF') {
+    return 10001;
+  }
+  if (e === 'WITHDRAW_VAL_IS_ZERO') {
+    return 10002;
+  }
+  return 3123457
+}
+/**
+ * 领渠道奖励
+ */
+function scatWithdrawref() {
+  const {userInfo} = store.state;
+	return new Promise(function (resolve, reject) {
+    let eos = ScatterJS.scatter.eos(network, Eos);
+		eos.transaction({
+			actions: [{
+				account: "pickowngames",
+				name: 'withdrawref',
+				authorization: [{
+					actor: userInfo.name,
+					permission: userInfo.authority
+				}],
+				data: {
+					"user": userInfo.name
+				}
+			}]
+		}).then(result => {
+			console.log(result);
+			let consoleString = result.processed.action_traces[0].console;
+			if (JSON.parse(consoleString).ERROR !== undefined) {
+				reject(analysisException(JSON.parse(consoleString).ERROR));
+			} else {
+				resolve(JSON.parse(consoleString).value);
+			}
+		}).catch(e => {
+			reject(e.message)
+		});
+	})
+}
+
+/**
+ * 发红包榜单
+ */
+function scatRedPacketList() {
+  const {userInfo} = store.state;
+	return new Promise(function (resolve, reject) {
+		let eos = ScatterJS.scatter.eos(network, Eos);
+		eos.transaction({
+			actions: [{
+				account: "pickowngames",
+				name: 'printboard',
+				authorization: [{
+					actor: userInfo.name,
+					permission: userInfo.authority
+				}],
+				data: {}
+			}]
+		}).then(result => {
+			resolve(JSON.parse(result.processed.action_traces[0].console).data);
+		}).catch(e => {
+			reject(e.message)
+		});
+	})
+}
 
 
  export {
@@ -305,5 +379,7 @@ function formatRoomId(roomId){
   scatGetAllBalance,
   scatSelectPacket,
   scatGetAccount,
-  scatcreateRedPacket
+  scatcreateRedPacket,
+  scatWithdrawref,
+  scatRedPacketList
  }

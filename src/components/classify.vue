@@ -37,7 +37,7 @@
 </style>
 
 <template>
-  <swiper :options="{slidesPerView:2,initialSlide}" class="btn-group swiper-no-swiping">
+  <swiper :options="{slidesPerView:3,initialSlide}" class="btn-group swiper-no-swiping">
     <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
       <button @click="changeE(index)" :class="initialSlide === index?'active':''" class="btn-item">{{item}}</button>
     </swiper-slide>
@@ -61,7 +61,7 @@ export default {
   data(){
     return{
       initialSlide:0,
-      roomList: ["1 Eos", "5 Eos", "10 Eos", "20eos", "50 eos", "100 eos"],
+      roomList: ["0.1 Eos","1 Eos", "5 Eos"],
     }
   },
   methods:{

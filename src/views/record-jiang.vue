@@ -86,6 +86,7 @@
 
 <script>
 import smallhead from '@/components/smallhead.vue'
+import {scatWithdrawref} from "@common/js"
 import {mapGetters} from 'vuex';
 import {get} from "@api"
 export default {
@@ -110,15 +111,38 @@ export default {
   methods:{
     lin(){
       // 余额提现
-      withdrawref(this.userInfo.name,"pickowngames").then((val)=>{
+      this.$q.loading.show();
+      scatWithdrawref().then((val)=>{
         post('/post_tixian', {
           money:(val/10000).toFixed(4)
         }).then(json => {
+          this.$q.loading.hide();
           const {shengyu_sum, sum, tixian_sum} = json.data;
           this.shengyu_sum = shengyu_sum;
           this.sum = sum;
           this.tixian_sum = tixian_sum;
+        }).catch(e => {
+          this.$q.loading.hide();
         })
+      }).catch(e =>{
+        // 提示信息
+        const errObje = {
+          "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
+          "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
+          "3040005": "交易超时",
+          "3123456": "找不到对应红包",
+          "3123457": "发送失败",
+          "3080001": "Account using more than allotted RAM usage",
+          "10001":"没有该推荐人的信息",
+          "10002":"无可提取余额"
+        }
+        this.$q.notify({
+          message: errObje[e] || "服务器繁忙，请稍后再试",
+          timeout: 1500,
+          color: 'red',
+          position:"center"
+        })
+        this.$q.loading.hide();
       })
     },
     _getInfo() {

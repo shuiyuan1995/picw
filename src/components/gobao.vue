@@ -22,6 +22,14 @@
       padding-bottom 1.44rem
       text-align center
       margin-top 0.8rem
+      .okbtn
+        height 1.6rem
+        background-color #d65c44
+        border-radius 0.8rem
+        border solid 0.02rem #cf513b
+        padding 0 3.2rem
+        font-size 0.64rem
+        color #ffffff
     h2
       font-size 0.48rem
       color #ffba41
@@ -80,15 +88,15 @@
   <div class="fullscreen">
     <div class="bg fullscreen" @click="$emit('myshow')"></div>
     <div class="gobao fixed-center column">
-      <div class="baotop column">
+      <div v-if="!win.guang" class="baotop column">
         <h2>{{$t("message.goodtitle")}}</h2>
         <p>{{win.print}} EOS</p>
         <h2>{{$t("message.wakuang")}}</h2>
         <p class="kuang">{{win.own}} OWN</p>
       </div>
-      <div class="baobottom">
+      <div v-if="!win.guang" class="baobottom">
         <div class="ewai flex">
-          <p class="column" v-if="win.reward != 0">
+          <p class="column" v-if="win.reward > 1">
             <img :src="typetxt[win.reward]">
             <span>+ {{win.rewardsum}}EOS</span>
           </p>
@@ -97,6 +105,14 @@
             <span>- {{win.eos}}EOS</span>
           </p>
         </div>
+        <p class="toview" @click="golist">{{$t("message.kan")}}>></p>
+      </div>
+      <div class="baotop column" v-if="win.guang">
+        <p class="kuang">手太慢了!</p>
+        <p class="kuang">红包已经被抢完了!</p>
+      </div>
+      <div class="baobottom" v-if="win.guang">
+        <button class="okbtn" @click="$emit('myshow')">确定</button>
         <p class="toview" @click="golist">{{$t("message.kan")}}>></p>
       </div>
       <span class="share icon icon-fenxiang3" ></span>
@@ -115,7 +131,7 @@ export default {
   },
   data(){
     return{
-      typetxt:['',require('../common/images/icon2.png'),require('../common/images/icon3.png'),require('../common/images/icon6.png'),require('../common/images/icon4.png'),require('../common/images/icon5.png')]
+      typetxt:['','',require('../common/images/icon2.png'),require('../common/images/icon3.png'),require('../common/images/icon6.png'),require('../common/images/icon4.png'),require('../common/images/icon5.png')]
     }
   },
   methods:{
@@ -123,7 +139,9 @@ export default {
       this.$router.push({
         name: 'record-this',
         params: {
-          txId:this.win.outid
+          txId:this.win.outid,
+          name:this.win.name,
+          num:this.win.num
         }
       })
     }

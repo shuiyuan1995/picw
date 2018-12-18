@@ -7,8 +7,9 @@ import {Loading, Notify} from "quasar"
 const http = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "https://manage.pickown.com/api"
-      : "http://pickown.test/api", // 基础路径
+      ? "https://test.pickown.com/api"
+      : "https://test.pickown.com/api", // 基础路径
+      // http://pickown.test/api
   timeout: 5000 // 请求延时
 });
 
@@ -38,7 +39,7 @@ http.interceptors.response.use(response => {
     const {message} = data;
     Loading.hide();
     Notify.create({
-      message: message || "服务器错误，稍后再试！",
+      message: message || "服务器繁忙，稍后再试！",
       timeout: 1500,
       color: 'red',
       position:"center"

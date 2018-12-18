@@ -77,6 +77,16 @@ var langcn = {
     jiangxiang:"奖项",
     jiangchi:"奖池的",
     login:"登录",
-    hezuo:"合作伙伴"
+    hezuo:"合作伙伴",
+    robtitle:"抢红包",
+    PC:"电脑（PC）端用户",
+    PC1:"请安装scatter桌面版",
+    PC2:"https://github.com/GetScatter/ScatterDesktop/releases/",
+    PC3:"或使用谷歌浏览器安装scatter插件。",
+    PC4:"https://chrome.google.com/webstore/search/scatter?utm_source=chrome-ntp-icon",
+    phone:"移动端用户",
+    phone1:"请使用移动钱包的dapp浏览器",
+    phone2:"（例如：meet.one，麦子，tokenpocket等）",
+    xiazai:"点击下载"
   }
 }

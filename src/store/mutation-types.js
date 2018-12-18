@@ -23,6 +23,10 @@ export const SET_ACTIVE_RED_EVELOPE_LIST = "SET_ACTIVE_RED_EVELOPE_LIST";
 export const SET_GOOGLE_MENU = "SET_GOOGLE_MENU";
 // 设置邀请人
 export const SET_INVITE_NAME = "SET_INVITE_NAME";
+// 设置自己发红包id
+export const SET_MY_SEND = "SET_MY_SEND";
+//设置抢红包结果
+export const SET_RED_RESULTS = "SET_RED_RESULTS";
 
 /* --------------- action type ------------------ */
 // 设置用户cpu，net

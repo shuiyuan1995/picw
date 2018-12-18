@@ -63,8 +63,10 @@
 import {mapGetters,mapMutations} from 'vuex'
 import { date } from 'quasar'
 import {post} from '@/api'
+import axios from "axios";
 import {login, scatSelectPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
 import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
+let time = null
 export default {
   props:{
     item:{
@@ -76,7 +78,8 @@ export default {
   },
   data(){
     return{
-      over:true
+      over:true,
+      txid:""
     }
   },
   methods:{
@@ -90,7 +93,11 @@ export default {
       // 判断时候可抢，不能抢跳转详情
       if (isgo || none) return this.$router.push({
         name: 'record-this',
-        params: {txId}
+        params: {
+          txId:this.item.txId,
+          name:this.item.name,
+          num:this.item.num
+        }
       });
       // 提示信息
       const errObje = {
@@ -102,49 +109,54 @@ export default {
         "3050003": "余额不足",
         "3080001": "Account using more than allotted RAM usage"
       }
-      // let json = {
-      //   packetAmount:2131,
-      //   isBomb:1,
-      //   isLuck:2,
-      //   luckyAmount:3,
-      //   own:1222
-      // }
-      // this.updata(json)
-      // return false
-      scatSelectPacket(this.userInfo.name, `${Number(eos).toFixed(4)} EOS`, "")
+      this.$q.loading.show();
+      console.log(Number(this.item.packetId), `${Number(eos).toFixed(4)} EOS`, this.inviteName)
+      scatSelectPacket(Number(this.item.packetId), `${Number(eos).toFixed(4)} EOS`, this.inviteName)
       .then(json => {
-        // 判断获得参数
-        if(!json.packetId){
+        this.txid = json.txid
+        this.redcss(json.islast)
+        time = setTimeout(()=>{
+          this.$q.loading.hide();
+          this.txid = ""
           this.$q.notify({
-            message: errObje[code] || "发送失败",
-            timeout: 1500,
+            message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
+            timeout: 1000,
             color: 'red',
             position:"center"
           })
-          return false
-        }
+        },10000)
+      })
+      .catch(code => {
+        this.$q.loading.hide();
         // 用户cpu查询
         scatGetAccount()
         // 查询EosBalance同步vuex， 查询OwnBalance
         scatGetAllBalance()
-        // 展示上传红包
-        this.updata(json)
-      })
-      .catch(code => {
+        if(code == 3123456){
+          let win = {
+            num:this.item.num,
+            eos:this.item.eos,
+            packetId:Number(this.item.packetId),
+            outid:this.item.txId,
+            guang:true
+          }
+          this.redcss('1')
+          // 展示抢红包结果
+          this.$emit('myshow',win)
+          // 上传红包结果
+          post('/close_packet',win).then(()=>{})
+          return false
+        }
         this.$q.notify({
           message: errObje[code] || "发送失败",
           timeout: 1500,
           color: 'red',
           position:"center"
         })
-        // 用户cpu查询
-        scatGetAccount()
-        // 查询EosBalance同步vuex， 查询OwnBalance
-        scatGetAllBalance()
       });
     },
-    // 展示上传红包data
-    updata(json){
+    // 红包样式调整
+    redcss(islast){
       let item = {}
       // 热点红包
       let _redEnvelopeList = [
@@ -155,7 +167,7 @@ export default {
         ...this.roomRedEnvelopeList,
       ]
       // 判断是否为最后一个
-      if(json.isLast == '1'){
+      if(islast == '1'){
         _redEnvelopeList[this.index] = {
           ..._redEnvelopeList[this.index],
           isgo: 1,
@@ -170,42 +182,24 @@ export default {
       _roomRedEnvelopeList[this.roomId] = _redEnvelopeList;
       this.SET_ROOM_RED_EVELOPE_LIST(_roomRedEnvelopeList)
       this.SET_ACTIVE_RED_EVELOPE_LIST(_redEnvelopeList)
-      let data = {
-        outid:this.item.txId,
-        eosid:json.packetId,
-        blocknumber:json.block_num,
-        income_sum:(json.packetAmount/10000).toFixed(4),
-        is_chailei:json.isBomb,
-        reward_type:json.isLuck,
-        reward_sum:(json.luckyAmount/10000).toFixed(4),
-        addr:this.inviteName,
-        isnone:json.isLast,
-        isgo:1,
-        own:(json.own/10000).toFixed(4),
-        newPrizePool:(json.newPrizePool/10000).toFixed(4)
-      }
+    },
+    // 展示红包data
+    updata(json){
+      this.$q.loading.hide();
       let win = {
-        print:(json.packetAmount/10000).toFixed(4),
-        is_chailei:json.isBomb,
-        reward:json.isLuck,
-        rewardsum:(json.luckyAmount/10000).toFixed(4),
+        print:json.income_sum,
+        is_chailei:json.is_chailei,
+        reward:json.is_reward,
+        rewardsum:json.reward_sum,
         num:this.item.num,
         eos:this.item.eos,
         packetId:Number(this.item.packetId),
         outid:this.item.txId,
-        own:(json.own/10000).toFixed(4)
+        own:json.own
       }
       // 展示抢红包结果
-      console.log(win)
       this.$emit('myshow',win)
-      // 上传结果
-      this._income_packet(data)
     },
-    _income_packet(data){
-      post('/income_packet',data).then((val)=>{
-        console.log(val)
-      }).catch((e)=>{})
-    }
   },
   computed:{
     ...mapGetters([
@@ -214,11 +208,32 @@ export default {
       "roomId",
       "inviteName",
       "userInfo",
+      "redresults"
     ]),
+
     // 转换时间
     timer(){
-      return date.formatDate(this.item.time, 'HH:mm:ss')
+      return date.formatDate(this.item.time*1000, 'HH:mm:ss')
     }
   },
+  watch:{
+    redresults(newobj){
+      console.log(newobj.txid,this.txid)
+      if(this.txid == ""){
+        return false
+      }
+      console.log(newobj.txid,this.txid)
+      if(newobj.txid == this.txid){
+        // 展示红包
+        this.updata(newobj)
+        // 用户cpu查询
+        scatGetAccount()
+        // 查询EosBalance同步vuex， 查询OwnBalance
+        scatGetAllBalance()
+        clearTimeout(time)
+        this.txid = ""
+      }
+    }
+  }
 }
 </script>

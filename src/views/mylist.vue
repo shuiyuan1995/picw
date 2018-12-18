@@ -23,6 +23,7 @@
     width 100%
     top 3.7rem
     bottom 0px
+    flex-wrap nowrap
     .paiitem
       margin 0 0.8rem
       height 1.52rem
@@ -30,24 +31,36 @@
       font-size 0.48rem
       align-items center
       &:nth-of-type(1) > span 
+        flex 0 0 0.88rem
+        margin 0 1.2rem 
         height 1.04rem
         background url("../common/images/one.png") no-repeat
-        background-size 100%
-        margin-top 0.24rem
+        background-size 100% 100%
+        padding-top 0.08rem
+        color #7e0808
       &:nth-of-type(2) > span 
+        flex 0 0 0.88rem
+        margin 0 1.2rem
         height 1.04rem
         background url("../common/images/two.png") no-repeat
-        background-size 100%
-        margin-top 0.28rem
+        background-size 100% 100%
+        padding-top 0.08rem
+        color #0e226a
       &:nth-of-type(3) > span 
+        flex 0 0 0.88rem
+        margin 0 1.2rem
         height 1.04rem
         background url("../common/images/three.png") no-repeat
-        background-size 100%
-        margin-top 0.28rem
+        background-size 100% 100%
+        padding-top 0.08rem
+        color #622805
     span,p
       flex 0 0 25%
       font-size 0.48rem
       text-align center
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
     .num
       flex 0 0 0.76rem
       width 0.76rem
@@ -60,6 +73,7 @@
       margin 0 1.28rem
     p:nth-of-type(1)
       color #333333
+      text-align left
     p:nth-of-type(2)
       span
         color: #ff9703;
@@ -103,21 +117,23 @@
 <script>
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters} from 'vuex';
-// import {redPacketList} from '../scattereos'
+import {scatRedPacketList} from "@common/js"
 export default {
   created(){
-    // 判断登录
-    // if(this.infos.name.length == 0){
-    //   alert('请先登录')
-    //   this.$router.push('/')
-    //   return false
-    // }else{
-    //   // 获取排行榜列表
-    //   redPacketList("pickowngames").then(val => {
-    //     console.log(val)
-    //     this.items2 = val
-    //   })
-    // }
+    // 获取排行榜列表
+    this.$q.loading.show();
+    scatRedPacketList().then(val => {
+      this.$q.loading.hide();
+      this.items2 = val
+    }).catch(()=>{
+      this.$q.loading.hide();
+      this.$q.notify({
+        message: "服务器繁忙，请稍后再试",
+        timeout: 500,
+        color: 'red',
+        position:"center"
+      })
+    })
   },
   components: {
     smallhead

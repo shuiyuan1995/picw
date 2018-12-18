@@ -24,4 +24,8 @@ export const allInfo = state => state.allInfo;
 export const roomId = state => state.roomId;
 // 获取邀请人
 export const inviteName = state => state.inviteName;
+// 获取自己发红包id列表
+export const mysend = state => state.mysend;
+// 获取抢红包结果
+export const redresults = state => state.redresults;
 

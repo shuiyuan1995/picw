@@ -70,12 +70,37 @@
         text-align center
         flex 1
         margin 0
+    .ptitle
+      font-size 0.56rem
+      color #222222
+      font-weight bold
+    .ptxt1
+      font-size 0.48rem
+      color #222222
+      word-break break-all
+    .ptxt2
+      font-size 0.48rem
+      color #666666
+      word-break break-all
+    .pbtn
+      height 1.14rem
+      background-color #e51c23
+      border-radius 0.6rem
+      outline none 
+      font-size 0.48rem
+      color #ffffff
+      border none
+      padding 0 0.8rem
+      margin-left 50%
+      transform translate3d(-50%,0,0)
+      &:first-of-type
+        margin-bottom 0.8rem
 </style>
 
 <template>
   <div class="rules fullscreen">
     <div class="bg fullscreen" @click="closein"></div>
-    <div class="rulesin fixed-center first scroll" :class="bgc == 'white'?'white':''" v-if="therules">
+    <div class="rulesin fixed-center first scroll" :class="bgc == 'white'?'white':''" v-if="therules == 0">
       <h4>{{$t("message.how")}}</h4>
       <h5>{{$t("message.sendbtn1")}}</h5>
       <p>1, {{$t("message.hair")}}</p>
@@ -92,7 +117,7 @@
       <h5 @click="openu">{{$t("message.morerule")}}</h5>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
-    <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''" v-else>
+    <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''"  v-else-if="therules == 1">
       <h4>{{$t("message.lucky")}}</h4>
       <p>{{$t("message.luckytxt")}}</p>
       <div class="rulebox">
@@ -123,6 +148,19 @@
       </div>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
+    <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''" v-else>
+      <h4 class="ptitle">{{$t("message.PC")}}</h4>
+      <p class="ptxt1">{{$t("message.PC1")}}</p>
+      <p class="ptxt2">{{$t("message.PC2")}}</p>
+      <button class="pbtn" @click="openu(1)">{{$t("message.xiazai")}}</button>
+      <p class="ptxt1">{{$t("message.PC3")}}</p>
+      <p class="ptxt2">{{$t("message.PC4")}}</p>
+      <button class="pbtn" @click="openu(2)">{{$t("message.xiazai")}}</button>
+      <h4 class="ptitle">{{$t("message.phone")}}</h4>
+      <p class="ptxt1">{{$t("message.phone1")}}</p>
+      <p class="ptxt2">{{$t("message.phone2")}}</p>
+      <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
+    </div>
   </div>
 </template>
 
@@ -137,8 +175,8 @@ export default {
     },
     // 游戏规则或者奖励规则
     therules:{
-      type:Boolean,
-      default:true
+      type:Number,
+      default:0
     }
   },
   methods:{
@@ -147,7 +185,7 @@ export default {
       this.$emit('openrule')
     },
     openu(){
-      openURL("https://www.pickown.com/Pick_Own_V1.pdf")
+      openURL("https://assets.pickown.com/PickOwnV1.pdf")
     }
   },
   computed:{

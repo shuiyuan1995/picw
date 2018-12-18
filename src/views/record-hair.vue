@@ -159,7 +159,9 @@ export default {
       this.$router.push({
         name: 'record-this',
         params: {
-          txId:item.blocknumber
+          txId:item.blocknumber,
+          name:item.user.name,
+          num:item.tail_number
         }
       })
     },
@@ -179,13 +181,10 @@ export default {
       }
       this.$q.loading.show();
       get('/my_issus_packet',data).then((val)=>{
+        console.log(val)
         this.$q.loading.hide();
         this.qingqiu = false
         this.data = val
-        this.list = [
-          ...this.list,
-          ...val.data
-        ]
         this.page = val.meta.current_page
         if(Object.keys(val.data).length != 0){
           this.data.data = val.data.map((val,i)=>{
@@ -195,6 +194,10 @@ export default {
             }
           })
         }
+        this.list = [
+          ...this.list,
+          ...this.data.data
+        ]
         this.timej = {
           first:val.last_time*1000,
           last:val.max_time*1000

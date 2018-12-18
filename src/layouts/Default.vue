@@ -278,7 +278,7 @@ li.active {
   <!-- header头部 -->
   <q-layout-header class="head">
     <q-toolbar class="headbar flex transparent">
-      <span @click="openrule" class="rules icon">{{$t("message.how")}}</span>
+      <span @click="openrule(0)" class="rules icon">{{$t("message.how")}}</span>
       <div class="logo">
         <img src="../common/images/logo.png">
       </div>
@@ -379,7 +379,7 @@ li.active {
     </transition>
   </q-page-container>
   <invitation v-show="invitation" @invitashow="invitashow"></invitation>
-  <rules v-show="rules" bgc="white" @openrule="openrule"></rules>
+  <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
 </q-layout>
 </template>
 
@@ -405,7 +405,8 @@ export default {
       changeI: 'zhCHS', //语言切换index
       page: 10, //页面nav切换样式
       invitation: false, //邀请好友
-      rules: false
+      rules: false,
+      therules:0
     };
   },
   computed: {
@@ -435,11 +436,13 @@ export default {
     },
     // 登陆
     login() {
-      login();
+      login(()=>{
+        this.openrule(2)
+      });
     },
     // 打开白皮书
     openu(){
-			openURL("https://www.pickown.com/Pick_Own_V1.pdf")
+			openURL("https://assets.pickown.com/PickOwnV1.pdf")
     },
     // 跳转页面
     thepage(i) {
@@ -464,7 +467,8 @@ export default {
       this.invitation = false;
     },
     //打开关闭游戏介绍
-    openrule() {
+    openrule(b) {
+      this.therules = b
       this.rules = !this.rules;
     },
     ...mapMutations({

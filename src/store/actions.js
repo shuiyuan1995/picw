@@ -27,10 +27,13 @@ const actions = {
   [types.SET_ROOM_RED_EVELOPE_LIST_UPDATA]({commit, state}, {packetData, index}) {
     const {roomRedEnvelopeList, roomId} = state;
     // 复制单个房间红包
-    let _ItemRoomRedEnvelopeList = [
+    let _ItemRoomRedEnvelopeList = roomRedEnvelopeList[index]? [
       ...roomRedEnvelopeList[index]
+    ] : []
+    _ItemRoomRedEnvelopeList = [
+      ..._ItemRoomRedEnvelopeList,
+      packetData
     ]
-    _ItemRoomRedEnvelopeList.push(packetData);
     // 复制所有红包
     let _roomRedEnvelopeList = [
       ...roomRedEnvelopeList
@@ -47,7 +50,7 @@ const actions = {
    * @param {*} {commit}
    * @param {*} {roomId, index, packetData}房间id，红包索引，红包数据
    */
-  [types.SET_ROOM_RED_EVELOPE_EXPIRED]({commit}, {roomId, index, packetData}) {
+  [types.SET_ROOM_RED_EVELOPE_EXPIRED]({commit,state}, {roomId, index, packetData}) {
 
     const {roomRedEnvelopeList} = state;
     // 复制单个房间红包
@@ -64,7 +67,7 @@ const actions = {
       ...roomRedEnvelopeList
     ]
     // 更新所有红包
-    _roomRedEnvelopeList[index] = _ItemRoomRedEnvelopeList;
+    _roomRedEnvelopeList[roomId] = _ItemRoomRedEnvelopeList;
     // 改变所有红包
     commit(types.SET_ROOM_RED_EVELOPE_LIST, _roomRedEnvelopeList);
     // 修改焦点红包

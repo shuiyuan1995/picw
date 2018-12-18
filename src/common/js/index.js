@@ -1,5 +1,5 @@
 import login from "./login";
-import {scatGameLogin, scatGetAllBalance, scatGameLoginOut, scatGetAccount, scatSelectPacket,scatcreateRedPacket} from "./scatter"
+import {scatGameLogin, scatGetAllBalance, scatGameLoginOut, scatGetAccount, scatSelectPacket,scatcreateRedPacket,scatWithdrawref,scatRedPacketList} from "./scatter"
 import getMoneyListget from "./monneyList"
 
 export {
@@ -10,5 +10,7 @@ export {
   scatSelectPacket,
   login,
   getMoneyListget,
-  scatcreateRedPacket
+  scatcreateRedPacket,
+  scatWithdrawref,
+  scatRedPacketList
 }

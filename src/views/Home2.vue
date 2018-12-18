@@ -165,17 +165,17 @@
   <q-page class="column home no-scroll">
     <div class="nav">
       <!-- table切换列表 -->
-      <swiper :options="{slidesPerView:2,initialSlide}" class="btn-group swiper-no-swiping">
+      <swiper :options="{slidesPerView:3,initialSlide}" class="btn-group swiper-no-swiping">
         <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
-          <div @click="changeE(index)" class="btn-item" :class="initialSlide === index ?'active':''">{{item}}</div>
-          <!-- <span class="more" v-show="">{{item[index]}}</span> -->
+          <div @click="changeE(index)" class="btn-item" :class="roomId === index ?'active':''">{{item}}</div>
+          <span class="more" v-show="roomId != index&&allroomred[index]>0">{{allroomred[index]}}</span>
         </swiper-slide>
       </swiper>
     </div>
     <div class="content">
       <!-- 红包数据展示 -->
-      <div class="info scroll column" ref="myscroll">
-        <div :is="1==1?'boxlist':'results'" :ref="`scrollitem`" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
+      <div class="info scroll column myscroll" @scroll="handleScroll" ref="myscroll">
+        <div :is="item.type==1?'boxlist':'results'" ref="scrollitem" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
       </div>
       <!-- <swiper :options="swiperOptionone" class="right">
         <swiper-slide class="itemright" :key="index" v-for="(item,index) in thelists" v-if="!item.none&&item.type==1">
@@ -183,6 +183,7 @@
         </swiper-slide>
       </swiper> -->
       <!-- <div class="inforight icon icon-shang" v-show="outn>0&&this.infos.name" @click="scrollto(listH[0].top)">{{outn}}个红包</div> -->
+      <div class="inforight icon icon-shang" v-show="outn>0&&userInfo.name" @click="scrollto(activeRedHeight[0].tops)">{{outn}}个红包</div>
     </div>
     <!-- 底部按钮 -->
     <div class="sendbtn flex">
@@ -192,11 +193,11 @@
       </div>
       <button class="btn" @click="send">{{$t("message.sendbtn")}}</button>
       <div class="send">
-        <p class="icon">{{$t("message.lucky")}}</p>
+        <p class="icon" @click="openrule">{{$t("message.lucky")}}</p>
         <p>{{allInfo.xinyunjiangchi}}</p>
       </div>
     </div>
-    <!-- <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules> -->
+    <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
     <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao>
   </q-page>
 </template>
@@ -208,7 +209,7 @@ import boxlist from '@/components/boxlist.vue'
 import results from '@/components/results.vue'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import {mapGetters,mapMutations, mapActions} from 'vuex';
-import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types"
+import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED,SET_RED_RESULTS} from "@store/mutation-types"
 // import {prizePool} from '../scattereos'
 export default {
   components: {
@@ -220,9 +221,16 @@ export default {
     results
   },
   created(){
-    console.log(111)
     console.log(this.redEnvelopeList,this.roomList)
     // this.swiperOption.initialSlide = this.packages.this
+  },
+  mounted(){
+    this.$nextTick(()=>{
+      this.scrollbottom()
+    })
+  },
+  activated(){
+    this.scrollbottom()
   },
   computed:{
     ...mapGetters([
@@ -232,30 +240,74 @@ export default {
       "hairRedEnvelopeCount",
       "prizeCount",
       "allInfo",
-      "token"
+      "token",
+      "mysend",
+      "roomId"
     ]),
+    // 获取热点可抢红包高度
+    activeRedHeight(){
+      // 当前列表
+      let redL = this.$refs.myscroll.children
+      let redH = this.redEnvelopeList
+      if(redL.length == 0||!redH){
+        return false
+      }
+      let redTop = []
+      for(let i=0;i<redH.length;i++){
+        if(redH[i].isgo==0&&redH[i].none==0){
+          redTop = [
+            ...redTop,
+            {
+              top:redL[i].offsetTop + redL[i].offsetHeight,
+              tops:redL[i].offsetTop
+            }
+          ]
+        }
+      }
+      return redTop
+    },
+    // 获取所有房间可抢红包
+    allroomred(){
+      if(!this.userInfo.name){
+        return []
+      }
+      let arr = []
+      this.roomRedEnvelopeList.map((v,i)=>{
+        v.map((v1)=>{
+          if(v1.type==1&&!v1.isgo&&!v1.none){
+            arr[i]?arr[i] += 1:arr[i] = 1
+          }
+        })
+      })
+      return arr
+    },
   },
   data() {
     return {
       initialSlide: 0,
-      roomList: ["1 Eos", "5 Eos", "10 Eos", "20eos", "50 eos", "100 eos"],
+      roomList: ["0.1Eos", "1 Eos", "5 Eos"],
       inshow:false,
-      win:{}
-      // therules: false,
-      // rules: false
+      win:{},
+      scrollTop:0,
+      outn:0,
+      itemH:0, // 单个红包高度
+      therules: 1,
+      rules: false
     }
   },
   // socket维护
   sockets: {
     // 发红包通知
     issus_packet(data) {
+      console.log("接收")
+      console.log(data)
       const {index, info, name, out_packet} = data;
       const {eosid, blocknumber, tail_number, issus_sum, created_at} = out_packet;
       // 设置展示数据
       this.SET_ALL_INFO(info);
       // 如果是自己发的红包不做处理,只同步展示数据;
-      console.log(~[1,2,3,4,5,6].indexOf(7))
-      if (data.token === token) return false;
+      // return false
+      if (this.mysend.indexOf(blocknumber) == -1) return false;
       // 红包数据
       let packetData = {
         name,
@@ -272,27 +324,38 @@ export default {
     },
     // 抢红包通知
     income_packet(data) {
-      const {info, in_packet_data, out_packet, type, index} = data;
+      const {info, in_packet_data, dantiao_in_packet, out_packet, type, index, name} = data;
       // 更新展示数据
       this.SET_ALL_INFO(info);
+      this.SET_RED_RESULTS(dantiao_in_packet)
       // 判断是否需要处理数据类型
       if(type === 3) return false;
       // 判断是否为抢完红包
       if (type === 2) {
-        const {blocknumber, eosid} = out_packet;
+        const {blocknumber, eosid, created_at, tail_number} = out_packet;
         let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
+        console.log(_roomItemEnvelopeList)
+        if(_roomItemEnvelopeList=='undefined'||!_roomItemEnvelopeList){
+          return false
+        }
+        console.log("jinru")
         // 找到对应抢完的红包，改变状态
         for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
-          if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === packetId) {
+          console.log(_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId)
+          if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId) {
             // 修改红包展示状态
-            this.SET_ROOM_RED_EVELOPE_EXPIRED({rommId: index, index: i, packetData: _roomItemEnvelopeList[i]});
-            // 添加表格信息
-            in_packet_data.map((item, index) => {
-              this.SET_ROOM_RED_EVELOPE_LIST_UPDATA(item, index);
-            })
-            return false;
+            this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i]});
           }
         }
+        let item = {
+          name:name,
+          num:tail_number,
+          time:created_at,
+          in_packet_data:in_packet_data,
+          type:2
+        }
+        // 添加表格信息
+        this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData:item, index});
       }
     }
   },
@@ -302,6 +365,9 @@ export default {
       let roomid = index;
       // 修改焦点数据
       this.SET_CLICK_ROOMID_RED_EVELOPE_LIST({roomid, redEnvelopeList: this.roomRedEnvelopeList[index]})
+      this.$nextTick(()=>{
+        this.scrollbottom()
+      })
     },
     send(){
       if (JSON.stringify(this.userInfo) === "{}") return login();
@@ -313,6 +379,54 @@ export default {
       }
       this.inshow = !this.inshow
     },
+    openrule(){
+      this.rules = !this.rules
+    },
+    // 滚动监听
+    handleScroll(e){
+      this.scrollTop = e.target.pageYOffset || e.target.scrollTop
+      this.thisgobao()
+    },
+    // 判断窗口外可抢红包
+    thisgobao(){
+      // 判断登录
+      if(!this.userInfo.name){
+        return false
+      }
+      let a = 0
+      for(let i=0;i<this.activeRedHeight.length;i++){
+        if(this.scrollTop>this.activeRedHeight[i].top){
+          a = i+1
+        }else{
+          break;
+        }
+      }
+      this.outn = a
+    },
+    // 点击滚动
+    scrollto(H){
+      // 确认目标
+      let total = H
+      let newtotal = this.scrollTop - total
+      let self = this
+      let step = newtotal / 25
+      smoothUp()
+      // 向上滚动
+      function smoothUp () {
+        if (self.scrollTop > total) {
+          self.scrollTop -= step
+          self.$refs.myscroll.scrollTop = self.scrollTop
+          setTimeout(smoothUp, 10)
+        } else {
+          self.$refs.myscroll.scrollTop = total
+        }
+      }
+    },
+    // 滚到底部
+    scrollbottom(){
+      this.$refs.myscroll.scrollTop = this.$refs.myscroll.scrollHeight
+      this.thisgobao()
+    },
     // 获取vuex方法
     ...mapActions({
       SET_CLICK_ROOMID_RED_EVELOPE_LIST,
@@ -320,8 +434,19 @@ export default {
       SET_ROOM_RED_EVELOPE_EXPIRED
     }),
     ...mapMutations({
-      SET_ALL_INFO
+      SET_ALL_INFO,
+      SET_RED_RESULTS
     })
+  },
+  watch:{
+    redEnvelopeList(newlist,oldlist){
+      if(!newlist||newlist.length==oldlist.length){
+        return false
+      }
+      this.$nextTick(()=>{
+        this.scrollbottom()
+      })
+    }
   }
 }
 </script>

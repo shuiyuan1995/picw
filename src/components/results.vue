@@ -75,7 +75,7 @@
 
 <template>
   <div class="results">
-    <p class="sendname"><span class="grey">{{item.name}}</span>{{$t("message.resultstitle")}}:<span class="red">{{item.num}}</span><span class="grey">({{item.time}})</span></p>
+    <p class="sendname"><span class="grey">{{item.name}}</span>{{$t("message.resultstitle")}}:<span class="red">{{item.num}}</span><span class="grey">({{timer}})</span></p>
     <div class="resultsbox">
       <div class="title flex">
         <span>{{$t("message.player")}}</span>
@@ -102,6 +102,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
+import { date } from 'quasar'
 export default {
   created(){
     // console.log(this.item)
@@ -144,6 +145,10 @@ export default {
         data.num += Number(lei[i].chailai_sum)
       }
       return data
+    },
+    // 转换时间
+    timer(){
+      return date.formatDate(this.item.time*1000, 'HH:mm:ss')
     }
   }
 }

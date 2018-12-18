@@ -2,15 +2,15 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from "@store";
 import DefaultLayout from './layouts/Default.vue'
-import Home from './views/Home2.vue'
-import send from './views/send.vue'
-import mylist from './views/mylist.vue'
-import recordHair from './views/record-hair.vue'
-import recordThis from './views/record-this.vue'
-import recordClosed from './views/record-closed.vue'
-import recordJiang from './views/record-jiang.vue'
-import cooperation from './views/cooperation.vue'
-import contant from './views/contant.vue'
+const Home = () => import('@views/Home2.vue')
+const send = () => import('@views/send.vue')
+const mylist = () => import('@views/mylist.vue')
+const recordHair = () => import('@views/record-hair.vue')
+const recordThis = () => import('@views/record-this.vue')
+const recordClosed = () => import('@views/record-closed.vue')
+const recordJiang = () => import('@views/record-jiang.vue')
+const cooperation = () => import('@views/cooperation.vue')
+const contant = () => import('@views/contant.vue')
 
 Vue.use(Router)
 
@@ -34,7 +34,8 @@ const router =  new Router({
           name: 'send',
           component: send,
           meta:{
-            keepAlive: true
+            keepAlive: true,
+            requireAuth: true
           }
         },
         {
@@ -51,7 +52,8 @@ const router =  new Router({
           name: 'record-hair',
           component: recordHair,
           meta:{
-            keepAlive:false
+            keepAlive:false,
+            requireAuth: true
           }
         },
         {
@@ -59,7 +61,8 @@ const router =  new Router({
           name: 'record-this',
           component: recordThis,
           meta:{
-            keepAlive:false
+            keepAlive:false,
+            requireAuth: true
           }
         },
         {
@@ -67,7 +70,8 @@ const router =  new Router({
           name: 'record-closed',
           component: recordClosed,
           meta:{
-            keepAlive:false
+            keepAlive:false,
+            requireAuth: true
           }
         },
         {
@@ -75,7 +79,8 @@ const router =  new Router({
           name: 'record-jiang',
           component: recordJiang,
           meta:{
-            keepAlive:false
+            keepAlive:false,
+            requireAuth: true
           }
         },
         {
@@ -83,7 +88,8 @@ const router =  new Router({
           name: 'cooperation',
           component: cooperation,
           meta:{
-            keepAlive:false
+            keepAlive:true,
+            requireAuth: true
           }
         },
         {
@@ -91,7 +97,8 @@ const router =  new Router({
           name: 'contant',
           component: contant,
           meta:{
-            keepAlive:false
+            keepAlive:true,
+            requireAuth: true
           }
         },
       ]

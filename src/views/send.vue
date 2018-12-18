@@ -110,15 +110,15 @@
 <script>
 import classify from '@/components/classify.vue'
 import smallhead from '@/components/smallhead.vue'
-import {mapGetters,mapMutations} from 'vuex';
+import {mapGetters,mapActions,mapMutations} from 'vuex';
 import {login, scatcreateRedPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
-import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
+import {SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_MY_SEND} from "@store/mutation-types";
 import {post} from '../api'
 export default {
   data(){
     return{
       number:Math.floor(Math.random()*9), //尾数
-      eosnum:[1,5,10,20,50,100] //房间钱数
+      eosnum:[0.1,1,5] //房间钱数
     }
   },
   components: {
@@ -126,9 +126,11 @@ export default {
     smallhead
   },
   methods:{
+    ...mapActions({
+      SET_ROOM_RED_EVELOPE_LIST_UPDATA,
+    }),
     ...mapMutations({
-      SET_ROOM_RED_EVELOPE_LIST,
-      SET_ACTIVE_RED_EVELOPE_LIST,
+      SET_MY_SEND,
     }),
     // 选择尾数
     gonum(i){
@@ -136,6 +138,8 @@ export default {
     },
     // 发红包
     send(){
+      // console.log([1,2,3,4].indexOf(3))
+      // return false
       // 判断登录
       if (JSON.stringify(this.userInfo) === "{}") return login();
       // 提示信息
@@ -163,6 +167,8 @@ export default {
           })
           return false
         }
+        // 添加自己发红包id
+        this.SET_MY_SEND(response.txId)
         // 用户cpu查询
         scatGetAccount()
         // 查询EosBalance同步vuex， 查询OwnBalance
@@ -192,7 +198,7 @@ export default {
     },
     // 展示上传红包data
     updata(response){
-      let data = {
+      let packetData = {
         name:this.userInfo.name,
         packetId:response.packetId,
         txId:response.txId,
@@ -210,22 +216,9 @@ export default {
         blocknumber:response.txId,
         addr:this.inviteName
       }
-      // 热点红包
-      let _redEnvelopeList = [
-        ...this.redEnvelopeList
-      ]
-      // 所有红包
-      let _roomRedEnvelopeList = [
-        ...this.roomRedEnvelopeList,
-      ]
-      _redEnvelopeList = [
-        ..._redEnvelopeList,
-        data
-      ]
-      _roomRedEnvelopeList[this.roomId] = _redEnvelopeList;
-      // 向房间展示红包
-      this.SET_ROOM_RED_EVELOPE_LIST(_roomRedEnvelopeList)
-      this.SET_ACTIVE_RED_EVELOPE_LIST(_redEnvelopeList)
+      let index = this.roomId
+      // 更新所有红包数据
+      this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData, index})
       // 上传红包信息
       post('/issus_packet',data1).then(()=>{})
     },

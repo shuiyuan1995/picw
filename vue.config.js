@@ -40,5 +40,6 @@ module.exports = {
     .set("@store", resolve("src/store"))
     .set("@images", resolve("src/images"))
     .set("@socket", resolve("src/socket"))
+    .set("@views", resolve("src/views"))
   }
 };
