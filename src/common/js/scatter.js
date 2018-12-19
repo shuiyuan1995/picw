@@ -40,10 +40,10 @@ const scatGameLogin = (gameName) => {
           // 登陆成功返回用户信息
           resolve(account);
         }).catch(() => {
-          reject("获取用户信息失败")
+          reject("登录失败")
         });
       }).catch(() => {
-        reject("连击网络失败")
+        reject("链接网络失败")
       });
     });
   })

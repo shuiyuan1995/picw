@@ -8,7 +8,7 @@ const http = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
       ? "https://test.pickown.com/api"
-      : "http://pickown.test/api", // 基础路径
+      : "https://test.pickown.com/api", // 基础路径
       // http://pickown.test/api
   timeout: 5000 // 请求延时
 });

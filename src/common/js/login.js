@@ -55,7 +55,7 @@ const login = (cp) => {
       return false
     }
     Notify.create({
-      message: "服务器错误，稍后再试！",
+      message: err||"服务器错误，稍后再试！",
       timeout: 1500,
       color: 'red',
       position:"center"
