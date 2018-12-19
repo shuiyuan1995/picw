@@ -1,18 +1,23 @@
 <style lang="stylus" scoped>
+  .fullscreen
+    background #ffffff
+    padding-top 1.99rem
   .recordHair
+    min-height 100%
     max-width 16rem
     margin  0 auto
     background #ffffff
+    font-size 0.48rem
   .fixed-top
     z-index 999
   .smallhead
     background #c7422f
     color #ffba41
   .top
-    background url("../common/images/bg3.jpg") no-repeat top
-    background-size 100% 100%
+    background #f1f1f1 url("../common/images/bg5.png") no-repeat top
+    background-size 100% auto
     height 10.82rem
-    padding-top 5.78rem
+    padding-top 4.78rem
     text-align center
     color #222222
     position relative
@@ -40,7 +45,7 @@
       font-size 0.56rem
       position absolute
       right 0.8rem
-      top 4.6rem
+      top 3.6rem
       cursor pointer
   .bottom
     background #ffffff
@@ -74,44 +79,56 @@
     font-size 0.56rem
     color #333333
     margin-top 2.4rem
+  .hide
+    display none
 </style>
 
 <template>
-  <div class="recordHair fullscreen scroll" ref="myscroll" @scroll="scrollHandler" @click="$refs.smallhead.open()">
+  <div class="fullscreen" @click="$refs.smallhead.open()">
     <smallhead ref="smallhead" :title='$t("message.fa")' class="fixed-top" right="jilui" left="guan"></smallhead>
-    <div class="top">
-      <p class="name">{{userInfo.name}}{{$t("message.issued")}}</p>
-      <p class="allprice">{{data.outpacketsum}}EOS</p>
-      <ul class="flex tablebox">
-        <li>
-          <p>{{data.outpacketcount}}</p>
-          <p>{{$t("message.fabao")}}</p>
+    <q-pull-to-refresh :handler="refresher"
+      :inline="true"
+      :distance="10"
+      pull-message="下拉刷新"
+      refresh-message="正在刷新"
+      release-message="释放刷新"
+      class="recordHair scroll text-justify" 
+      ref="myscroll" 
+      @scroll="scrollHandler"
+      >
+      <div class="top">
+        <p class="name">{{userInfo.name}}{{$t("message.issued")}}</p>
+        <p class="allprice">{{data.outpacketsum}}EOS</p>
+        <ul class="flex tablebox">
+          <li>
+            <p>{{data.outpacketcount}}</p>
+            <p>{{$t("message.fabao")}}</p>
+          </li>
+          <li>
+            <p>{{data.chaileicount}}</p>
+            <p>{{$t("message.shoucai")}}</p>
+          </li>
+        </ul>
+        <span class="time" @click="timer = !timer">{{thisdata}}</span>
+      </div>
+      <ul class="bottom" v-if="list.length">
+        <li :key="index" v-for="(item,index) in list">
+          <div class="info flex" @click="golist(item)">
+            <div class="left">
+              <p class="name">{{item.issus_sum}}EOS</p>
+              <p class="time">{{item.created_at}}</p>
+            </div>
+            <div class="right">
+              <p class="price">10/10</p>
+              <p class="num1"></p>
+            </div>
+          </div>
         </li>
-        <li>
-          <p>{{data.chaileicount}}</p>
-          <p>{{$t("message.shoucai")}}</p>
-        </li>
+        <li class="more" v-show="more">{{data.meta.current_page>=data.meta.last_page?$t("message.di"):$t("message.loading")}}</li>
       </ul>
-      <span class="time" @click="timer = !timer">{{thisdata}}</span>
-    </div>
-    <ul class="bottom" v-if="list.length">
-      <li :key="index" v-for="(item,index) in list">
-        <!-- <div class="info flex" @click="$router.push(`/record-this/${Number(item.eosid)}`)"> -->
-        <div class="info flex" @click="golist(item)">
-          <div class="left">
-            <p class="name">{{item.issus_sum}}EOS</p>
-            <p class="time">{{item.created_at}}</p>
-          </div>
-          <div class="right">
-            <p class="price">10/10</p>
-            <p class="num1"></p>
-          </div>
-        </div>
-      </li>
-      <li class="more" v-show="more">{{data.meta.current_page>=data.meta.last_page?$t("message.di"):$t("message.loading")}}</li>
-    </ul>
-    <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
-    <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
+      <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
+      <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
+    </q-pull-to-refresh>
   </div>
 </template>
 
@@ -198,6 +215,28 @@ export default {
           ...this.list,
           ...this.data.data
         ]
+        this.timej = {
+          first:val.last_time*1000,
+          last:val.max_time*1000
+        }
+      })
+    },
+    refresher(done){
+      this.qingqiu = true
+      get('/my_issus_packet').then((val)=>{
+        console.log(val)
+        done()
+        this.qingqiu = false
+        this.data = val
+        this.page = val.meta.current_page
+        if(Object.keys(val.data).length != 0){
+          this.list = val.data.map((val,i)=>{
+            return {
+              ...val,
+              created_at:date.formatDate(val.created_at*1000, 'HH:mm:ss')
+            }
+          })
+        }
         this.timej = {
           first:val.last_time*1000,
           last:val.max_time*1000

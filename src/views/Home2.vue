@@ -308,7 +308,7 @@ export default {
       this.SET_ALL_INFO(info);
       // 如果是自己发的红包不做处理,只同步展示数据;
       // return false
-      if (this.mysend.indexOf(blocknumber) == -1) return false;
+      if (this.mysend.indexOf(blocknumber) > -1) return false;
       // 红包数据
       let packetData = {
         name,
@@ -335,14 +335,11 @@ export default {
       if (type === 2) {
         const {blocknumber, eosid, created_at, tail_number} = out_packet;
         let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
-        console.log(_roomItemEnvelopeList)
         if(_roomItemEnvelopeList=='undefined'||!_roomItemEnvelopeList){
           return false
         }
-        console.log("jinru")
         // 找到对应抢完的红包，改变状态
         for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
-          console.log(_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId)
           if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId) {
             // 修改红包展示状态
             this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i]});

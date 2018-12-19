@@ -1,18 +1,24 @@
 <style lang="stylus" scoped>
+  .fullscreen
+    padding-top 1.99rem
   .recordHair
     max-width 16rem
     margin  0 auto
     background #ffffff
+    min-height 100%
   .smallhead
     background #c7422f
     color #ffba41
+  .fixed-top
+    z-index 999
   .top
-    background #f0f0f0 url("../common/images/bg3.jpg") no-repeat top
+    background #f0f0f0 url("../common/images/bg5.png") no-repeat top
     background-size 100% auto
     min-height 10.82rem
-    padding-top 5.78rem
+    padding-top 4.78rem
     text-align center
     color #222222
+    position relative
     .name
       font-size 0.72rem
     .allprice
@@ -37,7 +43,7 @@
       font-size 0.56rem
       position absolute
       right 0.8rem
-      top 4.6rem
+      top 3.6rem
       cursor pointer
   .bottom
     border-top 0.04rem solid #e8e8e8
@@ -95,58 +101,67 @@
 </style>
 
 <template>
-  <div class="recordHair fullscreen scroll" ref="myscroll" @scroll="scrollHandler">
+  <div class="fullscreen scroll" ref="myscroll" @scroll="scrollHandler" @click="$refs.smallhead.open()">
     <smallhead ref="smallhead" :title='$t("message.shou")' class="fixed-top" right="jilui" left="guan"></smallhead>
-    <div class="top">
-      <p class="name">{{data.name}}{{$t("message.gohuo")}}<br />{{data.packetcount}}{{$t("message.ge")}}</p>
-      <p class="allprice">{{data.packetsum?Number(data.packetsum).toFixed(4):(0).toFixed(4)}} EOS</p>
-      <ul class="flex tablebox">
-        <li>
-          <p>{{data.paris?data.paris:0}}</p>
-          <p>{{$t("message.dui")}}</p>
+    <q-pull-to-refresh  :handler="refresher"
+      :inline="true"
+      :distance="10"
+      pull-message="下拉刷新"
+      refresh-message="正在刷新"
+      release-message="释放刷新"
+      class="recordHair text-justify" 
+      >
+      <div class="top">
+        <p class="name">{{data.name}}{{$t("message.gohuo")}}<br />{{data.packetcount}}{{$t("message.ge")}}</p>
+        <p class="allprice">{{data.packetsum?Number(data.packetsum).toFixed(4):(0).toFixed(4)}} EOS</p>
+        <ul class="flex tablebox">
+          <li>
+            <p>{{data.paris?data.paris:0}}</p>
+            <p>{{$t("message.dui")}}</p>
+          </li>
+          <li>
+            <p>{{data.three?data.three:0}}</p>
+            <p>{{$t("message.san")}}</p>
+          </li>
+          <li>
+            <p>{{data.int?data.int:0}}</p>
+            <p>{{$t("message.zhen")}}</p>
+          </li>
+          <li>
+            <p>{{data.shunzi?data.shunzi:0}}</p>
+            <p>{{$t("message.shun")}}</p>
+          </li>
+          <li>
+            <p>{{data.bomb?data.bomb:0}}</p>
+            <p>{{$t("message.si")}}</p>
+          </li>
+          <li>
+            <p>{{data.chailei?data.chailei:0}}</p>
+            <p>{{$t("message.steptitle")}}</p>
+          </li>
+        </ul>
+        <span class="time" @click="timer = !timer">{{thisdata}}</span>
+      </div>
+      <ul class="bottom" v-if="list&&list.length>0">
+        <li :key="index" v-for="(item,index) in list">
+          <div class="info flex" @click="golist(item)">
+            <div class="left">
+              <p class="name">{{item.outpacket_sum}}EOS</p>
+              <p class="time">{{item.created_at}}</p>
+            </div>
+            <div class="right">
+              <p class="price">{{Number(item.income_sum)>0?item.income_sum:'待同步'}}EOS</p>
+              <p class="num1"></p>
+            </div>
+          </div>
+          <p v-show="item.reward_type>0" class="txtinfo"><span>{{$t("message.zhong")}}：{{typetxt[item.reward_type]}}，{{$t("message.huo")}}{{item.reward_sum}} EOS</span></p>
+          <p v-show="item.is_chailei==1" class="txtinfo"><span><img class="img1" src="../common/images/lei.png">{{$t("message.steptitle")}}，{{$t("message.fu")}}{{item.outpacket_sum}} EOS</span></p>
         </li>
-        <li>
-          <p>{{data.three?data.three:0}}</p>
-          <p>{{$t("message.san")}}</p>
-        </li>
-        <li>
-          <p>{{data.int?data.int:0}}</p>
-          <p>{{$t("message.zhen")}}</p>
-        </li>
-        <li>
-          <p>{{data.shunzi?data.shunzi:0}}</p>
-          <p>{{$t("message.shun")}}</p>
-        </li>
-        <li>
-          <p>{{data.bomb?data.bomb:0}}</p>
-          <p>{{$t("message.si")}}</p>
-        </li>
-        <li>
-          <p>{{data.chailei?data.chailei:0}}</p>
-          <p>{{$t("message.steptitle")}}</p>
-        </li>
+        <li class="more" v-show="more">{{data.meta.current_page>=data.meta.last_page?$t("message.di"):$t("message.loading")}}</li>
       </ul>
-      <span class="time" @click="timer = !timer">{{thisdata}}</span>
-    </div>
-    <ul class="bottom" v-if="list&&list.length>0">
-      <li :key="index" v-for="(item,index) in list">
-        <div class="info flex" @click="golist(item)">
-          <div class="left">
-            <p class="name">{{item.outpacket_sum}}EOS</p>
-            <p class="time">{{item.created_at}}</p>
-          </div>
-          <div class="right">
-            <p class="price">{{Number(item.income_sum)>0?item.income_sum:'待同步'}}EOS</p>
-            <p class="num1"></p>
-          </div>
-        </div>
-        <p v-show="item.reward_type>0" class="txtinfo"><span>{{$t("message.zhong")}}：{{typetxt[item.reward_type]}}，{{$t("message.huo")}}{{item.reward_sum}} EOS</span></p>
-        <p v-show="item.is_chailei==1" class="txtinfo"><span><img class="img1" src="../common/images/lei.png">{{$t("message.steptitle")}}，{{$t("message.fu")}}{{item.outpacket_sum}} EOS</span></p>
-      </li>
-      <li class="more" v-show="more">{{data.meta.current_page>=data.meta.last_page?$t("message.di"):$t("message.loading")}}</li>
-    </ul>
-    <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
-    <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
+      <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
+      <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
+    </q-pull-to-refresh>
   </div>
 </template>
 
@@ -228,6 +243,28 @@ export default {
           ...this.list,
           ...this.data.data
         ]
+        }
+        this.timej = {
+          first:val.last_time*1000,
+          last:val.max_time*1000
+        }
+      })
+    },
+    refresher(done){
+      this.qingqiu = true
+      get('/my_income_packet').then((val)=>{
+        console.log(val)
+        done()
+        this.qingqiu = false
+        this.data = val
+        this.page = val.meta.current_page
+        if(Object.keys(val.data).length != 0){
+          this.list = val.data.map((val,i)=>{
+          return {
+            ...val,
+            created_at:date.formatDate(val.created_at*1000, 'HH:mm:ss')
+          }
+        })
         }
         this.timej = {
           first:val.last_time*1000,
