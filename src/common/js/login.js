@@ -50,7 +50,6 @@ const login = (cp) => {
     });
   }).catch(err => {
     Loading.hide();
-    isbian(redEnvelopeList,false)
     if(err == 101){
       cp&&cp()
       return false
