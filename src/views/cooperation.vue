@@ -3,6 +3,8 @@
     background #ffffff
     padding-top 2rem
     padding-bottom 1.28rem
+    max-width 16rem
+    margin  0 auto
   h2
     padding 1.24rem 0 0.4rem 0.96rem
     border-bottom 1px solid #dddddd

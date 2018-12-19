@@ -23,8 +23,8 @@ import {get} from './api';
 export default {
   created(){
     // 获取邀请人参数
-    const {invite} = this.$route.query;
-    invite && this.SET_INVITE_NAME(invite);
+    const {ref} = this.$route.query;
+    ref && this.SET_INVITE_NAME(ref);
     // 获取红包列表
     this.$q.loading.show();
     getMoneyListget(true);

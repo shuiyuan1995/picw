@@ -1,6 +1,8 @@
 <style lang="stylus" scoped>
 .contant
   background #ffffff
+  max-width 16rem
+  margin  0 auto
 .top
   background url("../common/images/img22.png") no-repeat center top
   background-size 100% auto
