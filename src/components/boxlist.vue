@@ -190,6 +190,7 @@ export default {
     updata(json){
       this.$q.loading.hide();
       let win = {
+        name:this.item.name,
         print:json.income_sum,
         is_chailei:json.is_chailei,
         reward:json.is_reward,

@@ -35,7 +35,6 @@ const login = (cp) => {
       store.commit(SET_TOKEN, token);
       // 登陆成功获取一次红包信息
       getMoneyListget();
-      Loading.hide();
     }).catch(err => {
       Loading.hide();
       isbian(redEnvelopeList,false)
@@ -70,6 +69,7 @@ function isbian(redEnvelopeList,b){
       isgo: b?1:0
     }
   }
+  console.log(arr)
   store.commit(SET_ACTIVE_RED_EVELOPE_LIST, arr);
 }
 
