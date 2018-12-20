@@ -88,8 +88,7 @@ const router =  new Router({
           name: 'cooperation',
           component: cooperation,
           meta:{
-            keepAlive:true,
-            requireAuth: true
+            keepAlive:true
           }
         },
         {
@@ -97,8 +96,7 @@ const router =  new Router({
           name: 'contant',
           component: contant,
           meta:{
-            keepAlive:true,
-            requireAuth: true
+            keepAlive:true
           }
         },
       ]

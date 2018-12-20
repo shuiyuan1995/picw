@@ -286,7 +286,7 @@ export default {
   data() {
     return {
       initialSlide: 0,
-      roomList: ["0.1Eos", "1 Eos", "5 Eos"],
+      roomList: ["0.1EOS", "1 EOS", "5 EOS"],
       inshow:false,
       win:{},
       scrollTop:0,
@@ -351,6 +351,9 @@ export default {
           time:created_at,
           in_packet_data:in_packet_data,
           type:2
+        }
+        if(in_packet_data.length<=0){
+          return false
         }
         // 添加表格信息
         this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData:item, index});

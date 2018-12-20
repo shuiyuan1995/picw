@@ -92,7 +92,7 @@ export default {
       "userInfo"
     ]),
     href() {
-      return window.location.origin + "?invite=" + this.userInfo.name;
+      return window.location.origin + "?ref=" + this.userInfo.name;
     }
   },
 }

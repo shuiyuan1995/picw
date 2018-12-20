@@ -327,14 +327,18 @@ li.active {
     </ul>
     <!-- cpun et -->
     <div class="statistical smalltop flex">
-      <q-knob v-model="cpu" :min="0" :max="100" size="1.52rem" class="knob" readonly>
-        <p class="knobp">{{cpu}}%</p>
-        <p class="knobp">CPU</p>
-      </q-knob>
-      <q-knob v-model="net" :min="0" :max="100" size="1.52rem" class="knob" readonly>
-        <p class="knobp">{{net}}%</p>
-        <p class="knobp">NET</p>
-      </q-knob>
+      <div @click="openu(1)">
+        <q-knob v-model="cpu" :min="0" :max="100" size="1.52rem" class="knob" readonly>
+          <p class="knobp">{{cpu}}%</p>
+          <p class="knobp">CPU</p>
+        </q-knob>
+      </div>
+      <div @click="openu(1)">
+        <q-knob v-model="net" :min="0" :max="100" size="1.52rem" class="knob" readonly>
+          <p class="knobp">{{net}}%</p>
+          <p class="knobp">NET</p>
+        </q-knob>
+      </div>
     </div>
     <!-- 语言切换 -->
     <ul class="tolanguage smalltop flex">
@@ -442,8 +446,18 @@ export default {
       });
     },
     // 打开白皮书
-    openu(){
-			openURL("https://assets.pickown.com/PickOwnV1.pdf")
+    openu(i){
+      switch (i) {
+        case 0:
+          openURL("https://assets.pickown.com/PickOwnV1.pdf")
+          break;
+        case 1:
+          openURL("https://cpuemergency.com/")
+          break;
+        default:
+          break;
+      }
+			
     },
     // 跳转页面
     thepage(i) {
