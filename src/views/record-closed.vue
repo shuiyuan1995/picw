@@ -1,6 +1,7 @@
 <style lang="stylus" scoped>
   @import "../common/styl/index";
-  .fullscreen
+  .alljilu
+    background #ffffff
     padding-top 1.99rem
   .recordHair
     max-width 16rem
@@ -102,7 +103,7 @@
 </style>
 
 <template>
-  <div class="fullscreen scroll" ref="myscroll" @scroll="scrollHandler" @click="$refs.smallhead.open()">
+  <div class="alljilu fullscreen scroll" ref="myscroll" @scroll="scrollHandler" @click="$refs.smallhead.open()">
     <smallhead ref="smallhead" :title='$t("message.shou")' class="fixed-top" right="jilui" left="guan"></smallhead>
     <q-pull-to-refresh  :handler="refresher"
       :inline="true"
@@ -161,8 +162,8 @@
         <li class="more" v-show="more">{{data.meta.current_page>=data.meta.last_page?$t("message.di"):$t("message.loading")}}</li>
       </ul>
       <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
-      <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
     </q-pull-to-refresh>
+    <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
   </div>
 </template>
 
