@@ -288,7 +288,7 @@ export default {
   data() {
     return {
       initialSlide: 0,
-      roomList: ["0.1EOS", "1 EOS", "5 EOS","20 EOS"],
+      roomList: ["0.1EOS", "1 EOS", "5 EOS","100 EOS"],
       inshow:false,
       win:{},
       scrollTop:0,
@@ -296,7 +296,7 @@ export default {
       itemH:0, // 单个红包高度
       therules: 1,
       rules: false,
-      room:['0.1','1','5','20']
+      room:['0.1','1','5','100']
     }
   },
   // socket维护
