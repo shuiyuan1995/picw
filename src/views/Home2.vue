@@ -211,7 +211,7 @@ import results from '@/components/results.vue'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import {mapGetters,mapMutations, mapActions} from 'vuex';
 import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED,SET_RED_RESULTS} from "@store/mutation-types"
-// import {prizePool} from '../scattereos'
+import {login} from "@common/js"
 export default {
   components: {
     swiper,

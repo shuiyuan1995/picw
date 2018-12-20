@@ -16,7 +16,7 @@
 import {mapMutations, mapActions} from 'vuex';
 import {SET_USER_INFO, SET_USERID, SET_TOKEN, SET_EOSBALANCE, SET_INVITE_NAME, SET_ALL_INFO} from "@store/mutation-types";
 import {gameLogin, getBalance} from "@common/js/scatter";
-import {login, getMoneyListget} from "@common/js";
+import {login, getMoneyListget,imgUrl} from "@common/js";
 import rules from "@/components/rules.vue";
 import {get} from './api';
 
@@ -34,6 +34,8 @@ export default {
     });
     // 
     this._getInfo()
+    //预加载图片
+    this.preload()
   },
   data(){
     return{
@@ -53,6 +55,20 @@ export default {
     openrule(b) {
       this.therules = b
       this.rules = !this.rules;
+    },
+    //预加载图片
+    preload(){
+      let imgs = [
+        imgUrl+"bg3.png",
+        imgUrl+"bg.png",
+        imgUrl+"bg5.png",
+        imgUrl+"img22.png",
+      ]
+      for (let img of imgs) {
+        let image = new Image()
+        image.src = img
+        image.onload = () => {}
+      }
     },
     // 获取vuex方法
     ...mapMutations({
