@@ -2,6 +2,8 @@ import login from "./login";
 import {scatGameLogin, scatGetAllBalance, scatGameLoginOut, scatGetAccount, scatSelectPacket,scatcreateRedPacket,scatWithdrawref,scatRedPacketList} from "./scatter"
 import getMoneyListget from "./monneyList"
 
+const imgUrl = 'https://image.pickown.com/'
+
 export {
   scatGameLogin,
   scatGameLoginOut,
@@ -12,5 +14,6 @@ export {
   getMoneyListget,
   scatcreateRedPacket,
   scatWithdrawref,
-  scatRedPacketList
+  scatRedPacketList,
+  imgUrl
 }

@@ -1,4 +1,5 @@
 <style lang="stylus" scoped>
+  @import "../common/styl/index";
   .fullscreen
     background #ffffff
     padding-top 1.99rem
@@ -14,7 +15,7 @@
     background #c7422f
     color #ffba41
   .top
-    background #f1f1f1 url("../common/images/bg5.png") no-repeat top
+    background #f1f1f1 url($imgUrl+"bg5.png") no-repeat top
     background-size 100% auto
     height 10.82rem
     padding-top 4.78rem

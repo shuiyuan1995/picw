@@ -45,6 +45,7 @@
 
 <script>
 import smallhead from '@/components/smallhead.vue'
+import {imgUrl} from "@common/js"
 export default {
   components: {
     smallhead
@@ -53,14 +54,14 @@ export default {
     theimg(){
       let a = []
       for(let i = 0;i<4;i++){
-        a = [...a,require(`../common/images/img${i==0?'':i}.png`)]
+        a = [...a,`${imgUrl}img${i==0?'':i}.png`]
       }
       return a
     },
     theimg1(){
       let a = []
       for(let i = 4;i<22;i++){
-        a = [...a,require(`../common/images/img${i==0?'':i}.png`)]
+        a = [...a,`${imgUrl}img${i==0?'':i}.png`]
       }
       return a
     }

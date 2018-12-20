@@ -1,10 +1,11 @@
 <style lang="stylus" scoped>
+@import "../common/styl/index";
 .contant
   background #ffffff
   max-width 16rem
   margin  0 auto
 .top
-  background url("../common/images/img22.png") no-repeat center top
+  background url($imgUrl+"img22.png") no-repeat center top
   background-size 100% auto
   height 100%
   margin-top 2rem
@@ -45,7 +46,7 @@
       leave-active-class="animated fadeOut"
     >
       <div class="er fixed-center" v-show="share">
-        <img src="../common/images/icon19.png">
+        <img :src="er">
       </div>
     </transition>
     <transition
@@ -53,7 +54,7 @@
       leave-active-class="animated fadeOut"
     >
       <div class="er fixed-center" v-show="share1">
-        <img src="../common/images/icon20.png">
+        <img :src="er1">
       </div>
     </transition>
   </div>
@@ -61,11 +62,14 @@
 
 <script>
 import smallhead from '@/components/smallhead.vue'
+import {imgUrl} from "@common/js"
 export default {
   data(){
     return{ 
       share:false,
-      share1:false
+      share1:false,
+      er:imgUrl+'icon19.png',
+      er1:imgUrl+'icon20.png'
     }
   },
   components: {

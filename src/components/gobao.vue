@@ -1,11 +1,12 @@
 <style lang="stylus" scoped>
+ @import "../common/styl/index";
   .bg
     background rgba(#000000,0.4)
     z-index 999
   .gobao
     width: 13.4rem;
     min-height: 17.02rem;
-    background url("../common/images/bg3.png") no-repeat bottom
+    background url($imgUrl+"bg3.png") no-repeat bottom
     background-size 100% 100%
     z-index 1000
     align-items center

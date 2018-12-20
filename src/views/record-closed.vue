@@ -1,4 +1,5 @@
 <style lang="stylus" scoped>
+  @import "../common/styl/index";
   .fullscreen
     padding-top 1.99rem
   .recordHair
@@ -12,7 +13,7 @@
   .fixed-top
     z-index 999
   .top
-    background #f0f0f0 url("../common/images/bg5.png") no-repeat top
+    background #f0f0f0 url($imgUrl+"bg5.png") no-repeat top
     background-size 100% auto
     min-height 10.82rem
     padding-top 4.78rem

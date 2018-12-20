@@ -350,17 +350,17 @@ li.active {
     </ul>
     <ul class="topbox smalltop flex">
         <li>
-          <img src="../common/images/icon12.png">
+          <img :src="icon12">
           <p>{{allInfo.out_packet_count}}</p>
           <p>{{$t("message.packet")}}</p>
         </li>
         <li>
-          <img src="../common/images/icon13.png">
+          <img :src="icon13">
           <p>{{allInfo.transaction_info_count}}</p>
           <p>EOS</p>
         </li>
         <li>
-          <img src="../common/images/icon14.png">
+          <img :src="icon14">
            <p>{{allInfo.user_count}}</p>
           <p>{{$t("message.player")}}</p>
         </li>
@@ -389,9 +389,8 @@ import invitation from "@/components/invitation.vue";
 import rules from "@/components/rules.vue";
 import { openURL, date } from "quasar";
 import { mapGetters, mapMutations } from "vuex";
-// import { eoslogin, eosclose, getinfo, getjin } from "../scattereos";
 import { get } from "../api";
-import {scatGameLoginOut, login} from "@common/js"
+import {scatGameLoginOut, login,imgUrl} from "@common/js"
 import {SET_GOOGLE_MENU} from "@store/mutation-types.js"
 export default {
   components: {
@@ -401,13 +400,14 @@ export default {
   data() {
     return {
       openleft: false, //侧滑菜单
-      logo: require("@/common/images/logo.png"), //logo
-      // logo: require(imgUrl + "logo.png"), //logo
       changeI: 'zhCHS', //语言切换index
       page: 10, //页面nav切换样式
       invitation: false, //邀请好友
       rules: false,
-      therules:0
+      therules:0,
+      icon12:imgUrl + 'icon12.png',
+      icon13:imgUrl + 'icon13.png',
+      icon14:imgUrl + 'icon14.png'
     };
   },
   computed: {

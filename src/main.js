@@ -31,7 +31,6 @@ import './common/styl/index.styl'
 
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
-// const imgUrl = 'https://image.pickown.com/'
 Vue.use(VueAwesomeSwiper)
 
 Vue.use(Quasar, {

@@ -1,4 +1,5 @@
 <style lang="stylus" scoped>
+  @import "../common/styl/index";
   .recordHair
     max-width 16rem
     margin  0 auto
@@ -7,7 +8,7 @@
     z-index 1000
     background #eb1726
   .top
-    background url("../common/images/bg.png") no-repeat 0rem 0.08rem
+    background url($imgUrl+"bg.png") no-repeat 0rem 0.08rem
     background-size 100% 100%
     height 8.36rem
     padding-top 1.7rem
