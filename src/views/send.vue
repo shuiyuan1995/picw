@@ -139,7 +139,6 @@ export default {
     // 发红包
     send(){
       // console.log([1,2,3,4].indexOf(3))
-      // return false
       // 判断登录
       if (JSON.stringify(this.userInfo) === "{}") return login();
       // 提示信息
@@ -206,7 +205,7 @@ export default {
         type:1,
         num:this.number,
         eos:this.eosnum[this.roomId],
-        time:new Date(),
+        time:new Date().getTime()/1000,
         none:false
       }
       let data1 ={

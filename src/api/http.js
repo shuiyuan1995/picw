@@ -10,7 +10,7 @@ const http = axios.create({
       ? "https://manage.pickown.com/api"
       : "https://test.pickown.com/api", // 基础路径
       // http://pickown.test/api
-  timeout: 5000 // 请求延时
+    timeout: 15000 // 请求延时
 });
 
 // 请求拦截
