@@ -16,7 +16,7 @@
     .btn-group
       height 1.53rem
     .item
-      width 50%
+      width 25%
       height 1.53rem
       text-align center
     .btn-item
@@ -166,7 +166,7 @@
   <q-page class="column home no-scroll">
     <div class="nav">
       <!-- table切换列表 -->
-      <swiper :options="{slidesPerView:3,initialSlide}" class="btn-group swiper-no-swiping">
+      <swiper :options="{slidesPerView:4,initialSlide}" class="btn-group swiper-no-swiping">
         <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
           <div @click="changeE(index)" class="btn-item" :class="roomId === index ?'active':''">{{item}}</div>
           <span class="more" v-show="roomId != index&&allroomred[index]>0">{{allroomred[index]}}</span>
@@ -286,7 +286,7 @@ export default {
   data() {
     return {
       initialSlide: 0,
-      roomList: ["0.1EOS", "1 EOS", "5 EOS"],
+      roomList: ["0.1EOS", "1 EOS", "5 EOS","100EOS"],
       inshow:false,
       win:{},
       scrollTop:0,
@@ -325,26 +325,27 @@ export default {
     },
     // 抢红包通知
     income_packet(data) {
+      console.log(data)
       const {info, in_packet_data, dantiao_in_packet, out_packet, type, index, name} = data;
       // 更新展示数据
       this.SET_ALL_INFO(info);
       this.SET_RED_RESULTS(dantiao_in_packet)
       // 判断是否需要处理数据类型
-      if(type === 3) return false;
+      if(type === 3&&this.userInfo.name != dantiao_in_packet.name) return false;
+      const {blocknumber, eosid, created_at, tail_number} = out_packet;
+      let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
+      if(_roomItemEnvelopeList=='undefined'||!_roomItemEnvelopeList){
+        return false
+      }
+      // 找到对应抢完的红包，改变状态
+      for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
+        if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId) {
+          // 修改红包展示状态
+          this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i],type});
+        }
+      }
       // 判断是否为抢完红包
       if (type === 2) {
-        const {blocknumber, eosid, created_at, tail_number} = out_packet;
-        let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
-        if(_roomItemEnvelopeList=='undefined'||!_roomItemEnvelopeList){
-          return false
-        }
-        // 找到对应抢完的红包，改变状态
-        for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
-          if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId) {
-            // 修改红包展示状态
-            this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i]});
-          }
-        }
         let item = {
           name:name,
           num:tail_number,

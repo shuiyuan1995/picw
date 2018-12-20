@@ -50,18 +50,25 @@ const actions = {
    * @param {*} {commit}
    * @param {*} {roomId, index, packetData}房间id，红包索引，红包数据
    */
-  [types.SET_ROOM_RED_EVELOPE_EXPIRED]({commit,state}, {roomId, index, packetData}) {
+  [types.SET_ROOM_RED_EVELOPE_EXPIRED]({commit,state}, {roomId, index, packetData,type}) {
 
     const {roomRedEnvelopeList} = state;
     // 复制单个房间红包
     let _ItemRoomRedEnvelopeList = [
       ...roomRedEnvelopeList[roomId]
     ]
-    _ItemRoomRedEnvelopeList[index] = {
-      ...packetData,
-      isgo: 1,
-      none: 1
-    };
+    if(type == 3){
+      _ItemRoomRedEnvelopeList[index] = {
+        ...packetData,
+        isgo: 1
+      };
+    }else{
+      _ItemRoomRedEnvelopeList[index] = {
+        ...packetData,
+        isgo: 1,
+        none: 1
+      };
+    }
     // 复制所有红包
     let _roomRedEnvelopeList = [
       ...roomRedEnvelopeList
