@@ -331,21 +331,22 @@ export default {
       this.SET_ALL_INFO(info);
       this.SET_RED_RESULTS(dantiao_in_packet)
       // 判断是否需要处理数据类型
-      if(type === 3&&this.userInfo.name != dantiao_in_packet.name) return false;
-      const {blocknumber, eosid, created_at, tail_number} = out_packet;
-      let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
-      if(_roomItemEnvelopeList=='undefined'||!_roomItemEnvelopeList){
-        return false
-      }
-      // 找到对应抢完的红包，改变状态
-      for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
-        if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId) {
-          // 修改红包展示状态
-          this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i],type});
-        }
-      }
+      if(type === 3) return false;
+      
       // 判断是否为抢完红包
       if (type === 2) {
+        const {blocknumber, eosid, created_at, tail_number} = out_packet;
+        let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
+        if(_roomItemEnvelopeList=='undefined'||!_roomItemEnvelopeList){
+          return false
+        }
+        // 找到对应抢完的红包，改变状态
+        for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
+          if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId) {
+            // 修改红包展示状态
+            this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i]});
+          }
+        }
         let item = {
           name:name,
           num:tail_number,
