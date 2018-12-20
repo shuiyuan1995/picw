@@ -402,6 +402,7 @@ export default {
     return {
       openleft: false, //侧滑菜单
       logo: require("@/common/images/logo.png"), //logo
+      // logo: require(imgUrl + "logo.png"), //logo
       changeI: 'zhCHS', //语言切换index
       page: 10, //页面nav切换样式
       invitation: false, //邀请好友

@@ -4,9 +4,6 @@ import {SET_ROOM_RED_EVELOPE_LIST, SET_CLICK_ROOMID_RED_EVELOPE_LIST} from "@sto
 import {Notify, Loading} from 'quasar'
 // 获取红包列表接口
 const getMoneyListget = (once = false) => get('/get_money_list').then(json => {
-  if(!once){
-    Loading.hide();
-  }
   const {data} = json;
   let _roomid = 0;
   let redEnvelopeList = [];
@@ -24,6 +21,9 @@ const getMoneyListget = (once = false) => get('/get_money_list').then(json => {
   // 储存数据所有红包列表
   store.dispatch(SET_CLICK_ROOMID_RED_EVELOPE_LIST, {roomid: _roomid, redEnvelopeList});
   store.commit(SET_ROOM_RED_EVELOPE_LIST, data);
+  if(!once){
+    Loading.hide();
+  }
 })
 .catch(() => {
   Loading.hide();

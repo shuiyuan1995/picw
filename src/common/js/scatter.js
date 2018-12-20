@@ -200,7 +200,7 @@ function scatcreateRedPacket(amount, bomb) {
 			}).catch(error => {
         console.log(error)
         Loading.hide();
-        if (typeof error !== "object" && JSON.parse(error)) {
+        if (typeof error !== "object") {
           const {code} = JSON.parse(error).error;
           reject(code);
         } else {
@@ -281,7 +281,8 @@ function scatSelectPacket(roomId, transferAmount, referral) {
       }
     }).catch(error => {
       console.log(error)
-      if (typeof error !== "object" && JSON.parse(error)) {
+      Loading.hide();
+      if (typeof error !== "object") {
         const {code} = JSON.parse(error).error;
         reject(code);
       } else {

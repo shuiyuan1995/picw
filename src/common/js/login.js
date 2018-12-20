@@ -7,12 +7,9 @@ import {get} from '@api';
 // 登陆封装
 const login = (cp) => {
   Loading.show();
-  const {inviteName,redEnvelopeList} = store.state;
   scatGameLogin("PickOwn").then(account => {
     const {publicKey, name} = account;
-    
-    isbian(redEnvelopeList,true)
-   
+    const {inviteName,redEnvelopeList} = store.state;
     // 邀请人判断
     if(name == inviteName){
       store.commit(SET_INVITE_NAME, "");
@@ -33,6 +30,7 @@ const login = (cp) => {
       addr: inviteName
     }).then(json =>{
       const {token} = json.data || {};
+      isbian(redEnvelopeList,true)
       // 设置token
       store.commit(SET_TOKEN, token);
       // 登陆成功获取一次红包信息
@@ -72,7 +70,6 @@ function isbian(redEnvelopeList,b){
       isgo: b?1:0
     }
   }
-  console.log(arr)
   store.commit(SET_ACTIVE_RED_EVELOPE_LIST, arr);
 }
 
