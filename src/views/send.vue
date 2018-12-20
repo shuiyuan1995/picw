@@ -118,7 +118,7 @@ export default {
   data(){
     return{
       number:Math.floor(Math.random()*9), //尾数
-      eosnum:[0.1,1,5,100] //房间钱数
+      eosnum:[0.1,1,5,20] //房间钱数
     }
   },
   components: {
