@@ -16,7 +16,7 @@
     .btn-group
       height 1.53rem
     .item
-      width 33%
+      width 25%
       height 1.53rem
       text-align center
     .btn-item
@@ -166,7 +166,7 @@
   <q-page class="column home no-scroll">
     <div class="nav">
       <!-- table切换列表 -->
-      <swiper :options="{slidesPerView:3,initialSlide}" class="btn-group swiper-no-swiping">
+      <swiper :options="{slidesPerView:4,initialSlide}" class="btn-group swiper-no-swiping">
         <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
           <div @click="changeE(index)" class="btn-item" :class="roomId === index ?'active':''">{{item}}</div>
           <span class="more" v-show="roomId != index&&allroomred[index]>0">{{allroomred[index]}}</span>
@@ -274,11 +274,13 @@ export default {
       }
       let arr = []
       this.roomRedEnvelopeList.map((v,i)=>{
-        v.map((v1)=>{
-          if(v1.type==1&&!v1.isgo&&!v1.none){
-            arr[i]?arr[i] += 1:arr[i] = 1
-          }
-        })
+        if(v){
+          v.map((v1)=>{
+            if(v1.type==1&&!v1.isgo&&!v1.none){
+              arr[i]?arr[i] += 1:arr[i] = 1
+            }
+          })
+        }
       })
       return arr
     },
@@ -286,14 +288,15 @@ export default {
   data() {
     return {
       initialSlide: 0,
-      roomList: ["0.1EOS", "1 EOS", "5 EOS"],
+      roomList: ["0.1EOS", "1 EOS", "5 EOS","20 EOS"],
       inshow:false,
       win:{},
       scrollTop:0,
       outn:0,
       itemH:0, // 单个红包高度
       therules: 1,
-      rules: false
+      rules: false,
+      room:['0.1','1','5','20']
     }
   },
   // socket维护
@@ -302,8 +305,9 @@ export default {
     issus_packet(data) {
       console.log("接收")
       console.log(data)
-      const {index, info, name, out_packet} = data;
+      const {info, name, out_packet} = data;
       const {eosid, blocknumber, tail_number, issus_sum, created_at} = out_packet;
+      const index = this.room.indexOf(String(data.index))
       // 设置展示数据
       this.SET_ALL_INFO(info);
       // 如果是自己发的红包不做处理,只同步展示数据;
@@ -316,7 +320,7 @@ export default {
         txId: blocknumber,
         num: tail_number,
         eos: issus_sum,
-        time: created_at * 1000,
+        time: created_at,
         type: 1,
         none: false
       }
@@ -326,10 +330,12 @@ export default {
     // 抢红包通知
     income_packet(data) {
       console.log(data)
-      const {info, in_packet_data, dantiao_in_packet, out_packet, type, index, name} = data;
+      const {info, in_packet_data, dantiao_in_packet, out_packet, type, name} = data;
+      const index = this.room.indexOf(String(data.index))
       // 更新展示数据
       this.SET_ALL_INFO(info);
       this.SET_RED_RESULTS(dantiao_in_packet)
+
       // 判断是否需要处理数据类型
       if(type === 3) return false;
       
@@ -443,7 +449,7 @@ export default {
   },
   watch:{
     redEnvelopeList(newlist,oldlist){
-      if(!newlist||newlist.length==oldlist.length){
+      if(!newlist||!oldlist||newlist.length==oldlist.length){
         return false
       }
       this.$nextTick(()=>{
