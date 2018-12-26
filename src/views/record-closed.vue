@@ -3,6 +3,8 @@
   .alljilu
     background #ffffff
     padding-top 1.99rem
+    max-width 16rem
+    margin  0 auto
   .recordHair
     max-width 16rem
     margin  0 auto
@@ -152,7 +154,7 @@
               <p class="time">{{item.created_at}}</p>
             </div>
             <div class="right">
-              <p class="price">{{item.income_sum}}EOS</p>
+              <p class="price">{{Number(item.income_sum)>0?item.income_sum:"待同步"}}EOS</p>
               <p class="num1"></p>
             </div>
           </div>

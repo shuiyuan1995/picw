@@ -8,7 +8,7 @@
 <template>
   <div id="app" v-cloak class="scroll no-scroll">
     <router-view/>
-    <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
+    <!-- <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules> -->
   </div>
 </template>
 
@@ -22,15 +22,13 @@ import {get} from './api';
 
 export default {
   created(){
-    // 获取邀请人参数
-    const {ref} = this.$route.query;
-    ref && this.SET_INVITE_NAME(ref);
+    // document.body.removeChild(document.getElementById('appLoading'))
     // 获取红包列表
     this.$q.loading.show();
     getMoneyListget(true);
     // 自动登陆
     login(()=>{
-      this.openrule(2)
+      // this.openrule(2)
     });
     // 
     this._getInfo()

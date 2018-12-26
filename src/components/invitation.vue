@@ -72,7 +72,9 @@ export default {
     // 点击复制
     copy(){
       let url = document.querySelector('#copyObj');
-      url.select();
+      var NValue=url.value;
+      var valueLength = NValue.length;
+      this.selectText(url, 0, valueLength);
       document.execCommand("Copy");
       this.$q.notify({
         message: "复制成功",
@@ -81,6 +83,18 @@ export default {
         position:"center"
       })
       this.$emit('invitashow')
+    },
+    selectText(textbox, startIndex, stopIndex) {
+      if(textbox.createTextRange) {//ie
+          var range = textbox.createTextRange();
+          range.collapse(true);
+          range.moveStart('character', startIndex);//起始光标
+          range.moveEnd('character', stopIndex - startIndex);//结束光标
+          range.select();//不兼容苹果
+      }else{//firefox/chrome
+          textbox.setSelectionRange(startIndex, stopIndex);
+          textbox.focus();
+      }
     },
     // 关闭
     closein(){

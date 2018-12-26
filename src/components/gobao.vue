@@ -97,7 +97,7 @@
       </div>
       <div v-if="!win.guang" class="baobottom">
         <div class="ewai flex">
-          <p class="column" v-if="win.reward > 1">
+          <p class="column" v-if="win.reward > 0">
             <img :src="typetxt[win.reward]">
             <span>+ {{win.rewardsum}}EOS</span>
           </p>
@@ -132,7 +132,7 @@ export default {
   },
   data(){
     return{
-      typetxt:['','',require('../common/images/icon2.png'),require('../common/images/icon3.png'),require('../common/images/icon6.png'),require('../common/images/icon4.png'),require('../common/images/icon5.png')]
+      typetxt:['',require('../common/images/icon2.png'),require('../common/images/icon3.png'),require('../common/images/icon6.png'),require('../common/images/icon4.png'),require('../common/images/icon5.png')]
     }
   },
   methods:{

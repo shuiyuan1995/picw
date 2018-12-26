@@ -256,10 +256,20 @@ function scatSelectPacket(roomId, transferAmount, referral) {
       let consoleString = result.processed.action_traces[0].inline_traces[1].console;
       if (consoleString.indexOf("Cannot find Packet") > -1) {
         return reject(3123456);
+      }else if(consoleString.indexOf("Packet size not equal to transfer amount") > -1){
+        return reject(3123455)
+      }else{
+        resolve()
+      }
+      /*console.log(result)
+      let consoleString = result.processed.action_traces[0].inline_traces[1].console;
+      if (consoleString.indexOf("Cannot find Packet") > -1) {
+        return reject(3123456);
       }
       if (consoleString.indexOf("{") === -1) {
         reject(consoleString);
       }
+      console.log(consoleString)
       if (JSON.parse(consoleString).ERROR !== undefined) {
         reject(analysisException(JSON.parse(consoleString).ERROR));
       } else {
@@ -278,7 +288,7 @@ function scatSelectPacket(roomId, transferAmount, referral) {
           "oldPrizePool": JSON.parse(consoleString).old_prize_pool
         };
         resolve(response);
-      }
+      }*/
     }).catch(error => {
       console.log(error)
       Loading.hide();

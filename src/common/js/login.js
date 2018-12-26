@@ -3,6 +3,7 @@ import store from "@store"
 import {SET_USER_INFO, SET_TOKEN, SET_INVITE_NAME,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
 import {Loading, Notify} from 'quasar'
 import {get} from '@api';
+import router from '@router'
 
 // 登陆封装
 const login = (cp) => {
@@ -10,8 +11,15 @@ const login = (cp) => {
   scatGameLogin("PickOwn").then(account => {
     const {publicKey, name} = account;
     const {inviteName,redEnvelopeList} = store.state;
+    const {ref} = router.history.current.query;
+    console.log(ref)
+    if(!inviteName){
+      // 获取邀请人参数
+      ref && store.commit(SET_INVITE_NAME, ref);
+      console.log(ref)
+    }
     // 邀请人判断
-    if(name == inviteName){
+    if(name == ref){
       store.commit(SET_INVITE_NAME, "");
     }
     // 同步用户信息

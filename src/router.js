@@ -11,6 +11,7 @@ const recordClosed = () => import('@views/record-closed.vue')
 const recordJiang = () => import('@views/record-jiang.vue')
 const cooperation = () => import('@views/cooperation.vue')
 const contant = () => import('@views/contant.vue')
+const announcement = () => import('@views/announcement.vue')
 
 Vue.use(Router)
 
@@ -21,6 +22,14 @@ const router =  new Router({
       path: '/',
       component: DefaultLayout,
       children: [
+        // {
+        //   path: '/announcement',
+        //   name: 'announcement',
+        //   component: announcement,
+        //   meta:{
+        //     keepAlive: true
+        //   }
+        // },
         {
           path: '',
           name: 'home',
@@ -88,7 +97,7 @@ const router =  new Router({
           name: 'cooperation',
           component: cooperation,
           meta:{
-            keepAlive:true
+            keepAlive:true,
           }
         },
         {
@@ -96,7 +105,7 @@ const router =  new Router({
           name: 'contant',
           component: contant,
           meta:{
-            keepAlive:true
+            keepAlive:true,
           }
         },
       ]

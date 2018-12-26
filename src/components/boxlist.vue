@@ -104,6 +104,7 @@ export default {
         "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
         "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
         "3040005": "交易超时",
+        "3123455": "房间金额与押金不一致",
         "3123456": "找不到对应红包",
         "3123458": "取消操作",
         "3123457": "发送失败",
@@ -113,21 +114,23 @@ export default {
       this.$q.loading.show();
       console.log(Number(this.item.packetId), `${Number(eos).toFixed(4)} EOS`, this.inviteName)
       scatSelectPacket(Number(this.item.packetId), `${Number(eos).toFixed(4)} EOS`, this.inviteName)
-      .then(json => {
-        this.txid = json.txid
-        this.redcss(json.islast)
-        time = setTimeout(()=>{
-          this.$q.loading.hide();
-          this.txid = ""
-          this.$q.notify({
-            message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
-            timeout: 1000,
-            color: 'green',
-            position:"center"
-          })
-          post('/income_packet',json).then((val)=>{
-          }) 
-        },10000)
+      .then(() => {
+        // 向后台请求结果
+        this._getid()
+        // this.txid = json.txid
+        // this.redcss(json.islast)
+        // time = setTimeout(()=>{
+        //   this.$q.loading.hide();
+        //   this.txid = ""
+        //   this.$q.notify({
+        //     message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
+        //     timeout: 1000,
+        //     color: 'green',
+        //     position:"center"
+        //   })
+        //   post('/income_packet',json).then((val)=>{
+        //   }) 
+        // },10000)
       })
       .catch(code => {
         this.$q.loading.hide();
@@ -157,6 +160,56 @@ export default {
           position:"center"
         })
       });
+    },
+    _getid(){
+      post('/post_income_packet',{packetId:this.item.packetId}).then(json=>{
+        console.log(json)
+        const {type,in_packet,is_last} = json.data
+        switch (type) {
+          case 1:
+            this.redcss(is_last)
+            this.updata(in_packet)
+            break;
+          case 2:
+            let win = {
+              num:this.item.num,
+              eos:this.item.eos,
+              packetId:Number(this.item.packetId),
+              outid:this.item.txId,
+              guang:true
+            }
+            this.redcss('1')
+            // 展示抢红包结果
+            this.$emit('myshow',win)
+            break;
+          case 3:
+            this.txid = in_packet.id
+            this.redcss()
+            time = setTimeout(()=>{
+              this.$q.loading.hide();
+              this.txid = ""
+              this.$q.notify({
+                message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
+                timeout: 1000,
+                color: 'green',
+                position:"center"
+              })
+            },10000)
+            break;
+          default:
+            break;
+        }
+      })
+      // setTimeout(()=>{
+      //   this.$q.loading.hide();
+      //   this.redcss()
+      //   this.$q.notify({
+      //     message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
+      //     timeout: 5000,
+      //     color: 'green',
+      //     position:"center"
+      //   })
+      // },10000)
     },
     // 红包样式调整
     redcss(islast){
@@ -193,13 +246,13 @@ export default {
         name:this.item.name,
         print:json.income_sum,
         is_chailei:json.is_chailei,
-        reward:json.is_reward,
+        reward:json.reward_type,
         rewardsum:json.reward_sum,
         num:this.item.num,
         eos:this.item.eos,
         packetId:Number(this.item.packetId),
         outid:this.item.txId,
-        own:json.own
+        own:Number(json.own).toFixed(4)
       }
       // 展示抢红包结果
       this.$emit('myshow',win)
@@ -222,11 +275,14 @@ export default {
   },
   watch:{
     redresults(newobj){
+      
       if(this.txid == ""){
         return false
       }
-      if(newobj.txid == this.txid){
+      console.log(newobj)
+      if(newobj.id == this.txid){
         console.log(newobj)
+        this.redcss(newobj.islast)
         // 展示红包
         this.updata(newobj)
         // 用户cpu查询

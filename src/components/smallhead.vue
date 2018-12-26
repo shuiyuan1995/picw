@@ -13,6 +13,7 @@
       font-size 0.48rem
     .jilui
       margin-right 0 !important
+      margin-left 0.8rem
     .menu
       height 0.8125rem
       border-radius 0.16rem

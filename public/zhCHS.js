@@ -54,7 +54,7 @@ var langcn = {
     linwan:"红包已领完",
     PickOwn:"PickOwn红包",
     baotxt1:"领取红包",
-    goodtitle:"恭喜你,抢到了",
+    goodtitle:"Merry Christmas",
     wakuang:"挖矿",
     kan:"查看领取记录",
     yaoqin:"立即邀请好友领取奖励",

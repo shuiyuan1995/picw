@@ -3,6 +3,8 @@
   .alljilu
     background #ffffff
     padding-top 1.99rem
+    max-width 16rem
+    margin  0 auto
   .recordHair
     min-height 100%
     max-width 16rem

@@ -24,7 +24,8 @@
     flex: 1;
     padding-left: 0.4rem;
     cursor: pointer;
-    margin-left: 1.28rem;
+    margin-right: 1.28rem;
+    text-align center
 
     img {
       width: 4.3rem;
@@ -311,9 +312,9 @@ li.active {
     </div>
     <!--  分享 -->
     <div class="share flex">
-      <span class="icon icon-fecebook"></span>
-      <span class="icon icon-Ankerwebicon-"></span>
-      <span class="icon icon-telegram"></span>
+      <span @click="openu(2)" class="icon icon-fecebook"></span>
+      <span @click="openu(3)" class="icon icon-Ankerwebicon-"></span>
+      <span @click="openu(4)" class="icon icon-telegram"></span>
     </div>
     <!-- 路由切换 -->
     <ul class="topage smalltop">
@@ -453,6 +454,15 @@ export default {
           break;
         case 1:
           openURL("https://cpuemergency.com/")
+          break;
+        case 2:
+          openURL("https://www.facebook.com/profile.php?id=100030822884805")
+          break;
+        case 3:
+          openURL(" https://0.plus/GTBltd")
+          break;
+        case 4:
+          openURL("https://t.me/gtbredlotto")
           break;
         default:
           break;

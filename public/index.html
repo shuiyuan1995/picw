@@ -3,13 +3,36 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link rel="icon" href="<%= BASE_URL %>bitbug_favicon.ico">
     <link rel="stylesheet" href="//at.alicdn.com/t/font_837732_yyl8lc73v5k.css">
     <title>pickown --  猎人红包 The EOS game</title>
+    <style media="screen" type="text/css">
+      #appLoading { width: 100%; height: 100%; position: absolute; transition: all 3s; }
+      #appLoading img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 400px;
+        height: auto;
+        /* width: 200px;
+        height: 200px; */
+        -webkit-transform: translateY(-50%)  translateX(-50%);
+        transform: translateY(-50%)  translateX(-50%);
+      }
+    </style>
+    <script>
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1f8014dae7fe50346fc1de334c8a10dd";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
     <script>
       (function (window, document) {
         var setRem = function () {
@@ -30,6 +53,9 @@
       <strong>We're sorry but PickOwn doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
+    <!-- <div id="appLoading">
+      <img src="./oneloading.png" alt="loading" />
+    </div> -->
     <script src="https://assets.pickown.com/zhCHS.js"></script>
     <script src="https://assets.pickown.com/zhCHT.js"></script>
     <script src="https://assets.pickown.com/en.js"></script>
