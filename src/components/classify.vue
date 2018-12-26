@@ -61,7 +61,7 @@ export default {
   data(){
     return{
       initialSlide:0,
-      roomList: ["0.1 EOS","1 EOS", "5 EOS","20 EOS"],
+      roomList: ["1 EOS", "5 EOS","20 EOS"],
     }
   },
   methods:{

@@ -37,6 +37,7 @@
     padding-bottom 0.4rem
     border-bottom 0.2rem solid #f9f9f9
   .title
+    display flex
     height 1.08rem
     background #f9f9f9
     font-size 0.48rem
@@ -83,7 +84,7 @@
   <div class="results">
     <p class="sendname"><span class="grey">{{item.name}}</span>{{$t("message.resultstitle")}}:<span class="red">{{item.num}}</span><span class="grey">({{timer}})</span></p>
     <div class="resultsbox">
-      <div class="title flex">
+      <div class="title">
         <span>{{$t("message.player")}}</span>
         <span>EOS</span>
         <span>OWN</span>

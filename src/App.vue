@@ -8,7 +8,7 @@
 <template>
   <div id="app" v-cloak class="scroll no-scroll">
     <router-view/>
-    <!-- <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules> -->
+    <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
   </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
     getMoneyListget(true);
     // 自动登陆
     login(()=>{
-      // this.openrule(2)
+      this.openrule(2)
     });
     // 
     this._getInfo()

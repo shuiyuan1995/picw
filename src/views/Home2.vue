@@ -16,7 +16,7 @@
     .btn-group
       height 1.53rem
     .item
-      width 25%
+      width 33%
       height 1.53rem
       text-align center
     .btn-item
@@ -166,7 +166,7 @@
   <q-page class="column home no-scroll">
     <div class="nav">
       <!-- table切换列表 -->
-      <swiper :options="{slidesPerView:4,initialSlide}" class="btn-group swiper-no-swiping">
+      <swiper :options="{slidesPerView:3,initialSlide}" class="btn-group swiper-no-swiping">
         <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
           <div @click="changeE(index)" class="btn-item" :class="roomId === index ?'active':''">{{item}}</div>
           <span class="more" v-show="roomId != index&&allroomred[index]>0">{{allroomred[index]}}</span>
@@ -288,7 +288,7 @@ export default {
   data() {
     return {
       initialSlide: 0,
-      roomList: ["0.1EOS", "1 EOS", "5 EOS","20 EOS"],
+      roomList: ["1 EOS", "5 EOS","20 EOS"],
       inshow:false,
       win:{},
       scrollTop:0,
@@ -296,7 +296,7 @@ export default {
       itemH:0, // 单个红包高度
       therules: 1,
       rules: false,
-      room:['0.1','1','5','20']
+      room:['1','5','20']
     }
   },
   // socket维护
