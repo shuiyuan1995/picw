@@ -95,6 +95,9 @@
       transform translate3d(-50%,0,0)
       &:first-of-type
         margin-bottom 0.8rem
+  .ahref
+    color blue !important
+    text-decoration underline
 </style>
 
 <template>
@@ -102,19 +105,19 @@
     <div class="bg fullscreen" @click="closein"></div>
     <div class="rulesin fixed-center first scroll" :class="bgc == 'white'?'white':''" v-if="therules == 0">
       <h4>{{$t("message.how")}}</h4>
-      <h5>{{$t("message.sendbtn1")}}</h5>
-      <p>1, {{$t("message.hair")}}</p>
-      <p>2, {{$t("message.hair1")}}</p>
-      <p>3, {{$t("message.hair2")}}</p>
-      <h5>{{$t("message.robtitle")}}</h5>
+      <h5>{{$t("message.sendbtn1")}} ({{$t("message.lieren")}})</h5>
+      <p>{{$t("message.hair")}}</p>
+      <h5>{{$t("message.robtitle")}} ({{$t("message.yeshou")}})</h5>
       <p>{{$t("message.rob")}}</p>
+      <p>{{$t("message.rob1")}}</p>
+      <p>{{$t("message.rob2")}}</p>
       <h5>{{$t("message.steptitle")}}</h5>
       <p>{{$t("message.step")}}</p>
       <h5>{{$t("message.watitle")}}</h5>
       <p>{{$t("message.wa")}}</p>
       <h5>{{$t("message.jiangtitle")}}</h5>
       <p>{{$t("message.jiang")}}</p>
-      <h5 @click="openu">{{$t("message.morerule")}}</h5>
+      <h5 @click="openu" class="ahref">{{$t("message.morerule")}}</h5>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
     <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''"  v-else-if="therules == 1">

@@ -166,7 +166,7 @@
   <q-page class="column home no-scroll">
     <div class="nav">
       <!-- table切换列表 -->
-      <swiper :options="{slidesPerView:3,initialSlide}" class="btn-group swiper-no-swiping">
+      <swiper :options="{slidesPerView:4,initialSlide}" class="btn-group swiper-no-swiping">
         <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
           <div @click="changeE(index)" class="btn-item" :class="roomId === index ?'active':''">{{item}}</div>
           <span class="more" v-show="roomId != index&&allroomred[index]>0">{{allroomred[index]}}</span>
@@ -176,7 +176,7 @@
     <div class="content">
       <!-- 红包数据展示 -->
       <div class="info scroll column myscroll" @scroll="handleScroll" ref="myscroll">
-        <div :is="item.type==1?'boxlist':'results'" ref="scrollitem" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
+        <div :is="item.type==1?'boxlist':item.type==2?'results':'dantiao'" ref="scrollitem" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
       </div>
       <!-- <swiper :options="swiperOptionone" class="right">
         <swiper-slide class="itemright" :key="index" v-for="(item,index) in thelists" v-if="!item.none&&item.type==1">
@@ -208,6 +208,7 @@ import rules from '@/components/rules.vue'
 import gobao from '@/components/gobao.vue'
 import boxlist from '@/components/boxlist.vue'
 import results from '@/components/results.vue'
+import dantiao from '@/components/dantiao.vue'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import {mapGetters,mapMutations, mapActions} from 'vuex';
 import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED,SET_RED_RESULTS} from "@store/mutation-types"
@@ -219,7 +220,8 @@ export default {
     rules,
     gobao,
     boxlist,
-    results
+    results,
+    dantiao
   },
   created(){
     console.log(this.redEnvelopeList,this.roomList)
@@ -288,7 +290,7 @@ export default {
   data() {
     return {
       initialSlide: 0,
-      roomList: ["1 EOS", "5 EOS","20 EOS"],
+      roomList: ["0.1 体验场","1 EOS", "5 EOS","20 EOS"],
       inshow:false,
       win:{},
       scrollTop:0,
@@ -296,7 +298,7 @@ export default {
       itemH:0, // 单个红包高度
       therules: 1,
       rules: false,
-      room:['1','5','20']
+      room:['0.1','1','5','20']
     }
   },
   // socket维护
@@ -336,12 +338,8 @@ export default {
       this.SET_ALL_INFO(info);
       this.SET_RED_RESULTS(dantiao_in_packet)
 
-      // 判断是否需要处理数据类型
-      if(type === 3) return false;
-      
-      // 判断是否为抢完红包
-      if (type === 2) {
-        const {blocknumber, eosid, created_at, tail_number} = out_packet;
+      const {blocknumber, eosid, created_at, tail_number} = out_packet;
+      if(type == 2||(type == 3&&dantiao_in_packet.name == this.userInfo.name)){
         let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
         if(_roomItemEnvelopeList=='undefined'||!_roomItemEnvelopeList){
           return false
@@ -349,10 +347,26 @@ export default {
         // 找到对应抢完的红包，改变状态
         for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
           if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId) {
+            console.log(index)
+            console.log(i)
+            console.log(_roomItemEnvelopeList[i])
             // 修改红包展示状态
-            this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i]});
+            this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i],type:type});
           }
         }
+      }
+      let item = {
+          name:name,
+          name1:dantiao_in_packet.name,
+          is_chailei:dantiao_in_packet.is_chailei,
+          reward_type:dantiao_in_packet.reward_type,
+          type:3
+        }
+      // 添加表格信息
+      this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData:item, index});
+      // 判断是否为抢完红包
+      if (type === 2) {
+        if (JSON.stringify(in_packet_data) === "{}") return false;
         let item = {
           name:name,
           num:tail_number,

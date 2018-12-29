@@ -89,7 +89,7 @@
 import smallhead from '@/components/smallhead.vue'
 import {scatWithdrawref} from "@common/js"
 import {mapGetters} from 'vuex';
-import {get} from "@api"
+import {get,post} from "@api"
 export default {
   created(){
     this._getInfo();
@@ -118,6 +118,7 @@ export default {
       // 余额提现
       this.$q.loading.show();
       scatWithdrawref().then((val)=>{
+        console.log(val)
         post('/post_tixian', {
           money:(val/10000).toFixed(4)
         }).then(json => {
@@ -130,6 +131,21 @@ export default {
           this.$q.loading.hide();
         })
       }).catch(e =>{
+        if(e == 10002){
+          post('/post_tixian', {
+            money:this.shengyu_sum
+          }).then(json => {
+            this.SET_LOADING(false)
+            const {shengyu_sum, sum, tixian_sum} = json.data;
+            this.shengyu_sum = shengyu_sum;
+            this.sum = sum;
+            this.tixian_sum = tixian_sum;
+            return false
+          }).catch(e => {
+            this.SET_LOADING(false)
+            return false
+          })
+        }
         // 提示信息
         const errObje = {
           "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",

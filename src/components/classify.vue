@@ -5,7 +5,7 @@
     border-radius 0.1rem
     background #ffffff
   .item
-    width 25%
+    width 33%
   .item:not(:last-of-type) .btn-item
     border-right solid 0.02rem #d2d2d2
   .btn-item
@@ -61,7 +61,7 @@ export default {
   data(){
     return{
       initialSlide:0,
-      roomList: ["1 EOS", "5 EOS","20 EOS"],
+      roomList: ["0.1 EOS","1 EOS", "5 EOS","20 EOS"],
     }
   },
   methods:{

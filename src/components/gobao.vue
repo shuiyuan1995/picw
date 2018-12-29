@@ -6,7 +6,7 @@
   .gobao
     width: 13.4rem;
     min-height: 17.02rem;
-    background url($imgUrl+"bg3.png") no-repeat bottom
+    background url("../common/images/bg3.png") no-repeat bottom
     background-size 100% 100%
     z-index 1000
     align-items center

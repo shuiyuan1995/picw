@@ -7,8 +7,8 @@ import {Loading, Notify} from "quasar"
 const http = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "https://test.pickown.com/api"
-      : "https://test.pickown.com/api", // 基础路径
+      ? "https://manage.pickown.com/api"
+      : "https://manage.pickown.com/api", // 基础路径
       // http://pickown.test/api
       // https://test.pickown.com/api
       // https://manage.pickown.com/api

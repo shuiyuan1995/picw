@@ -23,8 +23,6 @@
       margin-bottom 0.6rem
       img 
         height 2.16rem
-  .zhan
-    margin-bottom 1rem
 </style>
 
 <template>

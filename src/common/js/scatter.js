@@ -93,12 +93,7 @@ const getBalance = (symbol, code) => {
 const scatGetEosBalance = () => {
   return getBalance("eos", "eosio.token")
     .then(eosbalance => store.commit(SET_EOSBALANCE, eosbalance))
-    .catch(err => Notify.create({
-      message: err,
-      timeout: 1500,
-      color: 'red',
-      position:"center"
-    }))
+    .catch(err => console.log(err))
 }
 
 /**
@@ -108,12 +103,7 @@ const scatGetEosBalance = () => {
 const scatGetOwnBalance = () => {
   return getBalance("OWN", "pickowntoken")
     .then(ownbalance => store.commit(SET_OWNBALANCE, ownbalance))
-    .catch(err => Notify.create({
-      message: err,
-      timeout: 1500,
-      color: 'red',
-      position:"center"
-    }))
+    .catch(err => console.log(err))
 }
 
 // 查询EosBalance同步vuex， 查询OwnBalance
@@ -144,12 +134,7 @@ const scatGetAccount = () => {
       // 设置SET_CPU_NET
       store.dispatch(SET_CPU_NET, {cup: cup > 100 ? 100 : cup, net: net > 100 ? 100 : net})
     })
-    .catch(err =>Notify.create({
-      message: err,
-      timeout: 1500,
-      color: 'red',
-      position:"center"
-    }))
+    .catch(err => console.log(err))
   })
 }
 

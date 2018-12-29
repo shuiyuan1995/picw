@@ -176,6 +176,11 @@ li.active {
     text-align: center;
     line-height: 1.3rem;
     cursor: pointer;
+    img {
+      width 1rem
+      height 1rem
+      margin-top 0.1rem
+    }
 
     &:before {
       font-size: 0.56rem;
@@ -313,7 +318,9 @@ li.active {
     <!--  分享 -->
     <div class="share flex">
       <span @click="openu(2)" class="icon icon-fecebook"></span>
-      <span @click="openu(3)" class="icon icon-Ankerwebicon-"></span>
+      <span @click="openu(3)" class="biyong">
+        <img src="../common/images/icon21.png">
+      </span>
       <span @click="openu(4)" class="icon icon-telegram"></span>
     </div>
     <!-- 路由切换 -->
@@ -459,7 +466,7 @@ export default {
           openURL("https://www.facebook.com/profile.php?id=100030822884805")
           break;
         case 3:
-          openURL(" https://0.plus/GTBltd")
+          openURL("https://t.me/gtbredlotto")
           break;
         case 4:
           openURL("https://t.me/gtbredlotto")
