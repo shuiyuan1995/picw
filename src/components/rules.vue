@@ -195,7 +195,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "thislang","packages"
+      "packages"
     ])
   }
 }

@@ -206,6 +206,7 @@ export default {
       this.timer = false
     },
     golist(item){
+      console.log(item)
       this.$router.push({
         name: 'record-this',
         params: {
@@ -269,11 +270,23 @@ export default {
             created_at:date.formatDate(val.created_at*1000, 'HH:mm:ss')
           }
         })
+        this.list = [
+          ...this.list,
+          ...this.data.data
+        ]
         }
         this.timej = {
           first:val.last_time*1000,
           last:val.max_time*1000
         }
+      }).catch(()=>{
+        this.$q.loading.hide()
+        this.$q.notify({
+          message: "服务器繁忙，请稍后再试",
+          timeout: 100,
+          color: 'green',
+          position:"center"
+        })
       })
     },
     scrollHandler(e){

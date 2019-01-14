@@ -59,6 +59,7 @@
       .num1
         text-align right
         align-items center
+        justify-content flex-end
         span 
           display flex
           align-items center
@@ -141,6 +142,7 @@ export default {
     let data = {
       outid:this.packetId
     }
+    this.$q.loading.show()
     // 获取当前红包抽奖信息
     this.$q.loading.show();
     get('/red_packet',data).then((obj)=>{
@@ -172,10 +174,6 @@ export default {
     ...mapGetters([
       "userInfo"
     ]),
-    // 红包获奖状态判断
-    // typetxt(){
-    //   return ['',this.thislang.dui,this.thislang.san,this.thislang.small,this.thislang.zhen,this.thislang.shun,this.thislang.si,this.thislang.big]
-    // },
   }
 }
 </script>

@@ -507,6 +507,9 @@ export default {
       SET_GOOGLE_MENU
     }),
     changeL(i) {
+      if(i != "zhCHS"){
+        return false
+      }
       this.changeI = i;
       this.$i18n.locale=i
       this.leftDrawerOpen = !this.leftDrawerOpen;

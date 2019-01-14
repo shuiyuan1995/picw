@@ -101,7 +101,6 @@
         <p>{{$t("message.explain")}}</p>
         <div class="two flex"><span>{{$t("message.explain1")}}</span></div>
       </div>
-      <!-- <q-btn dense :label="thislang.sendbtn1" class="gobtn" @click="send"/> -->
       <button class="gobtn" @click="send" v-ripple>{{$t("message.sendbtn1")}}</button>
     </div>
   </div>

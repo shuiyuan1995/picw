@@ -96,14 +96,10 @@
         <span class="orange1">{{it.own}}</span>
         <span>
           <img v-if="it.reward_type != 0" :src="typetxt[it.reward_type]">
-          <!-- <i class="jiangimg zhen"></i> -->
           <img class="lei" v-if="it.is_chailei == 1" src="../common/images/lei.png">
         </span>
       </div>
     </div>
-    <!-- <p class="txtinfo" :key="index" v-for="(it,index) in item.in_packet_data"><img class="img" src="../common/images/bao.png">{{it.name}}领取了红包，获得{{it.income_sum}} EOS</p>
-    <p class="txtinfo" :key="`v-${index}`" v-for="(it,index) in item.reward_data">{{it.name}}抽中：{{typetxt[it.reward_type]}}，获得{{it.reward_sum}} EOS</p>
-    <p class="txtinfo" v-if="cailei.show"><img class="img1" src="../common/images/lei.png">{{cailei.name}} 踩雷，{{item.name}}获得{{cailei.num}} EOS</p> -->
   </div>
 </template>
 
@@ -111,9 +107,6 @@
 import {mapGetters} from 'vuex';
 import { date } from 'quasar'
 export default {
-  created(){
-    // console.log(this.item)
-  },
   data(){
     return{
       typetxt:['',require('../common/images/icon7.png'),require('../common/images/icon10.png'),require('../common/images/icon16.png'),require('../common/images/icon11.png'),require('../common/images/icon15.png')]
@@ -125,13 +118,6 @@ export default {
     }
   },
   computed:{
-    ...mapGetters([
-      "thislang"
-    ]),
-    // 奖励类型判断
-    // typetxt(){
-    //   return ['',this.thislang.dui,this.thislang.san,this.thislang.zhen,this.thislang.shun,this.thislang.si]
-    // },
     // 踩雷消息处理
     cailei(){
       let lei = this.item.chailei_data
