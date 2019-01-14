@@ -13,6 +13,8 @@
     z-index 1000
     &.first
       padding 0 0.4rem 1.52rem
+      p
+        margin-bottom 0.2rem
     &.white
       background-color #ffffff
       h4,h5,p
