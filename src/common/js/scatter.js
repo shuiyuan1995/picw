@@ -2,19 +2,29 @@ import ScatterJS from 'scatterjs-core';
 import ScatterEOS from 'scatterjs-plugin-eosjs';
 import Eos from 'eosjs';
 import store from "@store"
-import {SET_OWNBALANCE, SET_EOSBALANCE, SET_CPU_NET, SET_LOGINOUT} from "@store/mutation-types";
-import {Notify, Loading} from 'quasar'
+import {SET_OWNBALANCE, SET_EOSBALANCE, SET_CPU_NET, SET_LOGINOUT, SET_LOADING} from "@store/mutation-types";
+import { Toast } from 'cube-ui'
 import {getMoneyListget} from "./"
 
 ScatterJS.plugins( new ScatterEOS() );
-let chainId = 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906';
-let endpoint = 'https://eospro.pickown.com';
+// let chainId = 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906';
+// let endpoint = 'https://eospro.pickown.com';
+// let network = {
+//     blockchain: 'eos',
+//     host: 'eospro.pickown.com',
+//     port: "",
+//     chainId: chainId,
+//     protocol: "https",
+//     httpEndpoint : endpoint,
+// };
+let chainId = 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f';
+let endpoint = 'http://35.197.130.214:8888';
 let network = {
     blockchain: 'eos',
-    host: 'eospro.pickown.com',
-    port: "",
+    host: '35.197.130.214',
+    port: "8888",
     chainId: chainId,
-    protocol: "https",
+    protocol: "http",
     httpEndpoint : endpoint,
 };
 
@@ -66,7 +76,7 @@ const scatGameLoginOut = () => {
  * @param {*} code code
  * @returns
  */
-const getBalance = (symbol, code) => {
+const getBalance = (symbol, code,name) => {
   return new Promise((resolve, reject) => {
     // 获取vuex用户信息
     const {userInfo} = store.state;
@@ -75,10 +85,11 @@ const getBalance = (symbol, code) => {
     // 查询eos
     eos.getCurrencyBalance({
       code,
-      account: userInfo.name,
+      account: name?name:userInfo.name,
       symbol
     })
     .then(result => {
+      console.log(symbol,result)
       let balance = result[0] ? result[0].split(" ")[0] : "00.0000";
       resolve(balance);
     })
@@ -148,7 +159,7 @@ const scatGetAccount = () => {
  */
 function scatcreateRedPacket(amount, bomb) {
   console.log(amount, bomb)
-  Loading.show();
+  store.commit(SET_LOADING, true);
   const {name, authority} = store.state.userInfo;
 	return new Promise(function (resolve, reject) {
       let eos = ScatterJS.scatter.eos(network, Eos);
@@ -171,7 +182,7 @@ function scatcreateRedPacket(amount, bomb) {
           }
         ]
 			}).then(result => {
-        Loading.hide();
+        store.commit(SET_LOADING, false);
         let consoleJson = JSON.parse(result.processed.action_traces[0].inline_traces[1].console);
         if (consoleJson.ERROR !== undefined) {
           reject(3123457);
@@ -184,7 +195,7 @@ function scatcreateRedPacket(amount, bomb) {
         }
 			}).catch(error => {
         console.log(error)
-        Loading.hide();
+        store.commit(SET_LOADING, false);
         if (typeof error !== "object") {
           const {code} = JSON.parse(error).error;
           reject(code);
@@ -238,6 +249,7 @@ function scatSelectPacket(roomId, transferAmount, referral) {
         }
       }]
     }).then(result => {
+      console.log(result)
       let consoleString = result.processed.action_traces[0].inline_traces[1].console;
       if (consoleString.indexOf("Cannot find Packet") > -1) {
         return reject(3123456);
@@ -246,37 +258,35 @@ function scatSelectPacket(roomId, transferAmount, referral) {
       }else{
         resolve()
       }
-      /*console.log(result)
-      let consoleString = result.processed.action_traces[0].inline_traces[1].console;
-      if (consoleString.indexOf("Cannot find Packet") > -1) {
-        return reject(3123456);
-      }
-      if (consoleString.indexOf("{") === -1) {
-        reject(consoleString);
-      }
-      console.log(consoleString)
-      if (JSON.parse(consoleString).ERROR !== undefined) {
-        reject(analysisException(JSON.parse(consoleString).ERROR));
-      } else {
-        consoleString = consoleString.substring(consoleString.indexOf("{"), consoleString.indexOf("}") + 1);
-        let response = {
-          "packetId": JSON.parse(consoleString).packet_id,
-          "block_num": result.processed.action_traces[0].block_num,
-          "packetAmount": JSON.parse(consoleString).packet_amount,
-          "isBomb": JSON.parse(consoleString).bomb,
-          "isLast": JSON.parse(consoleString).is_last,
-          "isLuck": JSON.parse(consoleString).luck,
-          "luckyAmount": JSON.parse(consoleString).prize_amount,
-          "own": JSON.parse(consoleString).own_mined,
-          "txid": JSON.parse(consoleString).txid,
-          "newPrizePool": JSON.parse(consoleString).new_prize_pool,
-          "oldPrizePool": JSON.parse(consoleString).old_prize_pool
-        };
-        resolve(response);
-      }*/
+      // let consoleString = result.processed.action_traces[0].inline_traces[1].console;
+      // if (consoleString.indexOf("Cannot find Packet") > -1) {
+      //   return reject(3123456);
+      // }
+      // if (consoleString.indexOf("{") === -1) {
+      //   reject(consoleString);
+      // }
+      // if (JSON.parse(consoleString).ERROR !== undefined) {
+      //   reject(analysisException(JSON.parse(consoleString).ERROR));
+      // } else {
+      //   consoleString = consoleString.substring(consoleString.indexOf("{"), consoleString.indexOf("}") + 1);
+      //   let response = {
+      //     "packetId": JSON.parse(consoleString).packet_id,
+      //     "block_num": result.processed.action_traces[0].block_num,
+      //     "packetAmount": JSON.parse(consoleString).packet_amount,
+      //     "isBomb": JSON.parse(consoleString).bomb,
+      //     "isLast": JSON.parse(consoleString).is_last,
+      //     "isLuck": JSON.parse(consoleString).luck,
+      //     "luckyAmount": JSON.parse(consoleString).prize_amount,
+      //     "own": JSON.parse(consoleString).own_mined,
+      //     "txid": JSON.parse(consoleString).txid,
+      //     "newPrizePool": JSON.parse(consoleString).new_prize_pool,
+      //     "oldPrizePool": JSON.parse(consoleString).old_prize_pool
+      //   };
+      //   resolve(response);
+      // }
     }).catch(error => {
       console.log(error)
-      Loading.hide();
+      store.commit(SET_LOADING, false);
       if (typeof error !== "object") {
         const {code} = JSON.parse(error).error;
         reject(code);
@@ -369,6 +379,201 @@ function scatRedPacketList() {
 	})
 }
 
+/**
+ * 添加白名单
+ * @param contractOwner 合约所有者
+ * @param user 需要添加的账户
+ */
+function addwlist(){
+  console.log(11)
+  const {userInfo} = store.state;
+  return new Promise(function (resolve, reject) {
+      let eos = ScatterJS.scatter.eos(network, Eos);
+      eos.contract("pickowngames").then(result => {
+        // console.log("result",result)
+        // console.log('result.addwlist',result.addwlist)
+        result.addwlist(userInfo.name, {
+          authorization: [{
+              actor: userInfo.name,
+              permission: userInfo.authority
+          }]
+        }).then((v) => {
+          console.log(v)
+            resolve(true);
+        }).catch(e => {
+          console.log(e)
+            reject(e)
+        });
+      }).catch(e=>{
+        console.log(e)
+        reject(e)
+      });
+  })
+}
+
+/**
+*查询分红表的数据
+*@param contractOwner 合约名称(String)
+*@param table 表名(String)
+*/
+function bonustable(table){
+  const {name} = store.state.userInfo;
+  return new Promise(function (resolve, reject) {
+      let eos = ScatterJS.scatter.eos(network, Eos);
+      eos.getTableRows({
+        "code": 'pickownbonus',
+        "scope": 'pickownbonus',
+        "table": table,
+        "json":true,
+        "lower_bound":name,
+        'limit':1
+      }).then(rs => {
+        console.log('rs: ', rs);
+        if(rs.rows.length>0){
+          resolve(rs.rows[0])
+        }else{
+          resolve('')
+        }
+      })
+      .catch(e => console.log(e))
+  })
+}
+
+/**
+*查询排行榜表
+*@param contractOwner 合约名称(String)
+*@param table 表名(String)
+*/
+function userboard(table,contractOwner){
+  const {name} = store.state.userInfo;
+  return new Promise(function (resolve, reject) {
+    let eos = ScatterJS.scatter.eos(network, Eos)
+    eos.getTableRows({
+      "code": contractOwner,
+      "scope": contractOwner,
+      "table": table,
+      "json":true,
+    }).then(rs => {
+      console.log('panhang',rs)
+      if(rs.rows.length>0){
+        resolve(rs.rows[0])
+      }else{
+        resolve('')
+      }
+    })
+    .catch(e => console.log(e))
+  })
+}
+
+/**
+ * 质押OWN
+ * @param OWN 质押金额
+ */
+function pledgeOWN(OWN){
+  const {name, authority} = store.state.userInfo;
+  return new Promise(function (resolve, reject) {
+    let eos = ScatterJS.scatter.eos(network, Eos);
+    console.log(OWN)
+    eos.transaction({
+      actions: [{
+        account: "pickowntoken",
+        name: 'transfer',
+        authorization: [{
+          actor: name,
+          permission: authority
+        }],
+        data: {
+          from: name,
+          to: "pickownbonus",
+          quantity: OWN,
+          memo:""
+        }
+      }]
+    }).then(json => {
+      console.log(json)
+      resolve()
+    })
+    .catch(e => {
+      if(e.code == 402) return false
+      reject()
+    })
+  })
+}
+/**
+ * 提取用户的分红
+ * @param user 账户名
+ * @param contractOwner 建立该合约的账户名(string)
+ */
+function wdbonus() {
+  const {name, authority} = store.state.userInfo;
+  return new Promise(function (resolve, reject) {
+    let eos = ScatterJS.scatter.eos(network, Eos);
+    eos.transaction({
+      actions: [
+        {
+          account: 'pickownbonus',
+          name: 'wdbonus',
+          authorization: [{
+            actor: name,
+            permission: authority
+          }],
+          data: {
+            "user": name
+          }
+        }
+      ]
+    }).then(result => {
+      console.log(result);
+      console.log(result);
+      if (result !== undefined) {
+        resolve("wdbonus success");
+      }else{
+        resolve()
+      }
+    }).catch(e => {
+      reject(e)
+    });
+  })
+}
+/**
+* 提取质押的own
+* @param String user 账户名  
+* @param String amount own数量
+* @param String contractOwner 建立该合约的账户名(string)
+*/
+function withdrawown(amount) {
+  const {name, authority} = store.state.userInfo;
+  return new Promise(function (resolve, reject) {
+    let eos = ScatterJS.scatter.eos(network, Eos);
+    console.log(amount)
+    eos.transaction({
+      actions: [
+        {
+          account: 'pickownbonus',
+          name: 'withdrawown',
+          authorization: [{
+            actor: name,
+            permission: authority
+          }],
+          data: {
+            "user": name,
+            "amount":amount
+          }
+        }
+      ]
+    }).then(result => {
+      console.log(result);
+      if (result !== undefined) {
+        resolve("withdrawown success");
+      }else{
+        resolve()
+      }
+    }).catch(e => {
+      console.log(e)
+      reject(e)
+    });
+  })
+}
 
  export {
   scatGameLogin,
@@ -378,5 +583,12 @@ function scatRedPacketList() {
   scatGetAccount,
   scatcreateRedPacket,
   scatWithdrawref,
-  scatRedPacketList
+  scatRedPacketList,
+  addwlist,
+  pledgeOWN,
+  wdbonus,
+  withdrawown,
+  bonustable,
+  getBalance,
+  userboard
  }

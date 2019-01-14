@@ -1,6 +1,10 @@
 import * as types from "./mutation-types";
 
 const mutations = {
+  // 设置loading开关
+  [types.SET_LOADING](state, loading) {
+    state.loading = loading;
+  },
   // 设置token
   [types.SET_TOKEN](state, token) {
     state.token = token;
@@ -59,6 +63,14 @@ const mutations = {
   //设置抢红包结果
   [types.SET_RED_RESULTS](state, obj) {
     state.redresults = obj;
+  },
+  //设置当前币种
+  [types.SET_THISMONEY](state, str) {
+    state.thismoney = str;
+  },
+  //设置发抢红包记录状态
+  [types.SET_THISJULU](state, num) {
+    state.thisjilu = num;
   }
 };
 

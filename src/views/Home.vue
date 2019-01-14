@@ -1,80 +1,45 @@
 <style lang="stylus" scoped>
-  @import '~variables'
   .home
+    position absolute
+    width 100%
+    top 0
+    height 100%
+  .hometop
+    height 1.64rem
+    background #f9f9f9
     display flex
-    top 0rem
-    bottom 0rem
-    max-width 16rem
-    margin  0 auto
-    background #ffffff
-  .nav
-    margin-top 0.46rem
-    max-width 16rem
-    height 1.54rem
-    border-bottom 0.1rem solid #eeeeee
+    justify-content space-between
     padding 0 0.8rem
-    .btn-group
-      height 1.53rem
-    .item
-      width 33%
-      height 1.53rem
-      text-align center
-    .btn-item
+    .gonggao
       font-size 0.56rem
-      height 1.53rem
-      line-height 1.53rem
-      font-weight bold
-      position relative
+      line-height 1.64rem
+      &:before
+        margin-right 0.16rem
+    .rules
+      font-size 0.56rem
       cursor pointer
-      &.active
-        color #eb1726
-        &::after
-          position absolute
-          bottom 0rem
-          left 0rem
-          content ""
-          height 0.1rem
-          width 100%
-          background #eb1726
-    .more
-      position absolute
-      top 0px
-      right 0px
-      width 1.06rem
-      height 0.62rem
-      background-color #ff0000
-      border-radius 0.28rem
-      font-size 0.48rem
-      color #ffffff
-      line-height 0.62rem
-      text-align center
+      position relative
+      margin-right 0.8rem
+      line-height 1.64rem
+      &:after
+        position absolute
+        content '\e63d'
+        margin-left 0.1667rem
+        font-size 0.64rem
   .content
     position absolute
-    top 2.4rem
-    bottom 2.1rem
+    top 5.8rem
+    bottom 2.2rem
     width 100%
     max-width 16rem
-    // padding 0 0.8rem
+    padding 0 0.8rem
+    box-sizing border-box
     width 100%
     display flex
     justify-content space-between
-    .info 
-      flex 1
-      flex-wrap nowrap
-      padding 0 0.8rem
-      // &::-webkit-scrollbar
-      //   display: none;
-      // &::-webkit-scrollbar-track
-      //   box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-      //   border-radius: 10px;
-      //   background-color: #F5F5F5;
-      // &::-webkit-scrollbar
-      //   width: 12px;
-      //   background-color: #F5F5F5;
-      // &::-webkit-scrollbar-thumb
-      //   border-radius: 10px;
-      //   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-      //   background-color: #dddddd;
+    .contentinfo
+      width 100%
+      height auto
     .inforight
       position absolute
       right 0
@@ -87,35 +52,9 @@
       line-height 1.44rem
       color #16b900
       font-size 0.48rem
+      z-index 3
       &:before
         margin-right 0.24rem
-    .right-num
-      position absolute
-      right 0.8rem
-      width: 1.54rem
-      height: 0.8rem
-      line-height 0.8rem
-      border-radius: 0.4rem
-      border: solid 0.04rem #eeeeee
-      font-size: 12px
-      text-align center
-    .right
-      position absolute
-      top 0.8rem
-      bottom 0
-      right 0.8rem
-      width 1.54rem
-      align-items center
-      flex-wrap nowrap
-      padding 0.4rem 0
-    .itemright
-      width 1.54rem
-      height 1.9rem
-      align-self center
-      cursor pointer
-      img 
-        width 100%
-        height 100%
   .sendbtn
     width 100%
     max-width 16rem
@@ -127,6 +66,8 @@
     align-items center
     justify-content center
     border-top 0.02rem solid #f3f3f3
+    display flex
+    background #f9f9f9
     .send
       flex 1
       p:first-of-type
@@ -148,84 +89,89 @@
         color #f99c3b
     .btn
       flex 1
-      margin-left 0.24rem
-      max-width 6rem
-      background-color #56b416
       height 1.44rem
-      margin 0 0.4rem
-      border-radius 1.84rem
+      background url("../common/images/btn.png") no-repeat
+      background-size 100% 100%
+      border none
       font-size 0.64rem
       color #ffffff
       font-weight bold
-      border none
       outline none
 </style>
 
 
 <template>
-  <q-page class="column home no-scroll">
-    <div class="nav">
-      <!-- table切换列表 -->
-      <swiper :options="{slidesPerView:4,initialSlide}" class="btn-group swiper-no-swiping">
-        <swiper-slide class="item" v-for="(item, index) in roomList" :key="index">
-          <div @click="changeE(index)" class="btn-item" :class="roomId === index ?'active':''">{{item}}</div>
-          <span class="more" v-show="roomId != index&&allroomred[index]>0">{{allroomred[index]}}</span>
-        </swiper-slide>
-      </swiper>
+  <div class="home">
+    <smallhead left="rule" center="logo" right="menu"></smallhead>
+    <div class="hometop">
+      <span class="gonggao icon icon-gonggao" @click="openrule(2)">{{$t("message.newgonggao")}}</span>
+      <span class="rules icon"  @click="openrule(0)">{{$t("message.how")}}</span>
     </div>
+    <mynav :allroomred="allroomred"></mynav>
     <div class="content">
       <!-- 红包数据展示 -->
-      <div class="info scroll column myscroll" @scroll="handleScroll" ref="myscroll">
+      <cube-scroll class="contentinfo" :options="options" ref="scroll" :scroll-events="['scroll']" @scroll="onScrollHandle">
         <div :is="item.type==1?'boxlist':item.type==2?'results':'dantiao'" ref="scrollitem" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
-      </div>
-      <!-- <swiper :options="swiperOptionone" class="right">
-        <swiper-slide class="itemright" :key="index" v-for="(item,index) in thelists" v-if="!item.none&&item.type==1">
-          <img src="../common/images/bao.png" @click="scrollto(item.packetId)">
-        </swiper-slide>
-      </swiper> -->
-      <!-- <div class="inforight icon icon-shang" v-show="outn>0&&this.infos.name" @click="scrollto(listH[0].top)">{{outn}}个红包</div> -->
+      </cube-scroll>
       <div class="inforight icon icon-shang" v-show="outn>0&&userInfo.name" @click="scrollto(activeRedHeight[0].tops)">{{outn}}个红包</div>
     </div>
     <!-- 底部按钮 -->
-    <div class="sendbtn flex">
+    <div class="sendbtn">
       <div class="send">
         <p>{{$t("message.leifa")}}</p>
         <p>{{allInfo.out_packet_count}}</p>
       </div>
       <button class="btn" @click="send">{{$t("message.sendbtn")}}</button>
       <div class="send">
-        <p class="icon" @click="openrule">{{$t("message.lucky")}}</p>
+        <p class="icon" @click="openrule(1)">{{$t("message.lucky")}}</p>
         <p>{{allInfo.xinyunjiangchi}}</p>
       </div>
     </div>
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
     <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao>
-  </q-page>
+  </div>
 </template>
 
 <script>
-import rules from '@/components/rules.vue'
-import gobao from '@/components/gobao.vue'
+// @ is an alias to /src
 import boxlist from '@/components/boxlist.vue'
 import results from '@/components/results.vue'
+import mynav from '@/components/mynav.vue'
 import dantiao from '@/components/dantiao.vue'
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import gobao from '@/components/gobao.vue'
+import smallhead from "@/components/smallhead.vue";
+import rules from "@/components/rules.vue";
 import {mapGetters,mapMutations, mapActions} from 'vuex';
 import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED,SET_RED_RESULTS} from "@store/mutation-types"
 import {login} from "@common/js"
 export default {
-  components: {
-    swiper,
-    "swiper-slide":swiperSlide,
-    rules,
-    gobao,
-    boxlist,
-    results,
-    dantiao
-  },
-  created(){
-    console.log(this.redEnvelopeList,this.roomList)
-    // this.swiperOption.initialSlide = this.packages.this
+  data(){
+    return{
+      options:{
+        startY:true,
+        click:true,
+        probeType:3
+      },
+      inshow:false,
+      win:{
+        num:1234,
+        eos:2,
+        packetId:344,
+        outid:'334555',
+        name:'qwerqr',
+        print:123242,
+        is_chailei:1,
+        reward:1,
+        rewardsum:23421,
+        own:2342
+      },
+      scrollTop:0,
+      outn:0,
+      itemH:0, // 单个红包高度
+      therules: 1,
+      rules: false,
+      room:['0.1','1','5','20']
+    }
   },
   mounted(){
     this.$nextTick(()=>{
@@ -234,6 +180,15 @@ export default {
   },
   activated(){
     this.scrollbottom()
+  },
+  components: {
+    smallhead,
+    boxlist,
+    results,
+    rules,
+    mynav,
+    dantiao,
+    gobao
   },
   computed:{
     ...mapGetters([
@@ -250,7 +205,7 @@ export default {
     // 获取热点可抢红包高度
     activeRedHeight(){
       // 当前列表
-      let redL = this.$refs.myscroll.children
+      let redL = this.$refs.scroll.$children
       let redH = this.redEnvelopeList
       if(redL.length == 0||!redH){
         return false
@@ -261,8 +216,8 @@ export default {
           redTop = [
             ...redTop,
             {
-              top:redL[i].offsetTop + redL[i].offsetHeight,
-              tops:redL[i].offsetTop
+              top:redL[i].$el.offsetTop + redL[i].$el.offsetHeight,
+              tops:redL[i].$el.offsetTop
             }
           ]
         }
@@ -286,20 +241,6 @@ export default {
       })
       return arr
     },
-  },
-  data() {
-    return {
-      initialSlide: 0,
-      roomList: ["0.1 体验场","1 EOS", "5 EOS","20 EOS"],
-      inshow:false,
-      win:{},
-      scrollTop:0,
-      outn:0,
-      itemH:0, // 单个红包高度
-      therules: 1,
-      rules: false,
-      room:['0.1','1','5','20']
-    }
   },
   // socket维护
   sockets: {
@@ -402,12 +343,15 @@ export default {
       }
       this.inshow = !this.inshow
     },
-    openrule(){
+    openrule(i){
+      if(i != 'undefined'){
+        this.therules = i
+      }
       this.rules = !this.rules
     },
     // 滚动监听
-    handleScroll(e){
-      this.scrollTop = e.target.pageYOffset || e.target.scrollTop
+    onScrollHandle(e){
+      this.scrollTop = Math.abs(e.y)
       this.thisgobao()
     },
     // 判断窗口外可抢红包
@@ -429,25 +373,13 @@ export default {
     // 点击滚动
     scrollto(H){
       // 确认目标
-      let total = H
-      let newtotal = this.scrollTop - total
-      let self = this
-      let step = newtotal / 25
-      smoothUp()
-      // 向上滚动
-      function smoothUp () {
-        if (self.scrollTop > total) {
-          self.scrollTop -= step
-          self.$refs.myscroll.scrollTop = self.scrollTop
-          setTimeout(smoothUp, 10)
-        } else {
-          self.$refs.myscroll.scrollTop = total
-        }
-      }
+      this.$refs.scroll.scrollTo(0,-H,1000,'ease')
     },
     // 滚到底部
     scrollbottom(){
-      this.$refs.myscroll.scrollTop = this.$refs.myscroll.scrollHeight
+      let x = 0
+      let y = this.$refs.scroll.scroll.maxScrollY
+      this.$refs.scroll.scrollTo(x,y,1)
       this.thisgobao()
     },
     // 获取vuex方法
@@ -467,6 +399,7 @@ export default {
         return false
       }
       this.$nextTick(()=>{
+        this.$refs.scroll.refresh()
         this.scrollbottom()
       })
     }

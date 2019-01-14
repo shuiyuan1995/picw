@@ -1,160 +1,244 @@
 <style lang="stylus" scoped>
   @import "../common/styl/index";
+  .column
+    display flex
+    flex-direction column
+  .flex
+    display flex
+  .fullscreen
+    position absolute
+    top 0
+    width 100%
+    height 100%
   .recordHair
     max-width 16rem
     margin  0 auto
+    background #f2f2f2
+  .nav
+    display flex
+    margin-top 0.16rem
+    max-width 16rem
+    height 1.54rem
+    border-bottom 0.1rem solid #eeeeee
+    padding 0 0.8rem
     background #ffffff
-  .fixed-top
-    z-index 1000
-    background #eb1726
-  .top
-    background url($imgUrl+"bg.png") no-repeat 0rem 0.08rem
-    background-size 100% 100%
-    height 8.36rem
-    padding-top 1.7rem
-    text-align center
-    color #222222
-    align-items center
-    justify-content center
-    .img
-      width 1.2rem
-      height 1.9rem
-    .num
-      margin-top 0.32rem
-      font-size 21px
-      color #ffffff
-    .over
-      color #ffffff
-      font-size 0.48rem
-      margin-top 0.4rem
-  .center
-    height 1.4rem
-    color #999999
-    font-size 0.48rem
-    line-height 1.4rem
-    background #f9f9f9
-    padding-left 0.8rem
-  .bottom
-    border-top 0.04rem solid #e8e8e8
-    background #ffffff
-    li
-      border-bottom 0.04rem solid #e8e8e8
-      padding 0.68rem 20px
-      .info
-        justify-content space-between
-      .name,.price
-        font-size 14px
-        color #000000
-        span 
-          color #ff8400
-          font-weight bold
-      .name
-        font-weight bold
-      .time,.num1
-        font-size 0.48rem
-        color #999999
-        margin-top 0.24rem
-      .time
-        margin-top 0.32rem
-      .num1
-        text-align right
-        align-items center
-        span 
-          display flex
-          align-items center
-      .lei
-        width 0.8rem
-        height 0.68rem
-        margin-left 0.4rem
-      .san
-        width 0.68rem
-        height 0.68rem
-      .txtinfo
-        text-align center
-        span
-          position relative
-          height: 0.82rem
-          line-height 0.82rem
-          background-color #dddddd
-          display inline-block
-          border-radius 0.2rem
-          font-size 0.48rem
-          padding 0 0.28rem 0 0.7rem
-          color #ffffff
-          margin-left 0.4rem
-          z-index 0
-        .img1
-          width 0.82rem
-          height 0.68rem
+    .item
+      flex 1
+      height 1.65rem
+      text-align center
+      font-size 0.56rem
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
+      font-weight bold
+      cursor pointer
+      line-height 1.53rem
+      position relative
+      &.active
+        color #eb1726
+        &::after
           position absolute
-          top 0.04rem
-          left 0.12rem
-          z-index 0
-  .bottomtxt
+          bottom 0rem
+          left 0rem
+          content ""
+          height 0.1rem
+          width 100%
+          background #eb1726
+  .box
+    margin 0.7rem 0 0
+    padding 0 0.8rem
+    position absolute
+    top 3.8rem
+    bottom 0.6rem
+    width 100%
+    box-sizing border-box
+  .boxinfo
+    height 100%
+    padding 1rem 0.72rem
+    background #ffffff
+    box-sizing border-box
+    position relative
+    .close
+      position absolute
+      top 0.32rem
+      right 0.4rem
+      font-size 0.8rem
+      color #bebebe
+    .sendname
+      font-size 12px
+      margin-bottom 0.32rem
+      .big
+        font-size 0.6rem
+      .time
+        color: #cccccc;
+    .bao
+      width 100%
+      height 3.7rem
+      border-radius 0.24rem
+      border solid 0.04rem #dedede
+      overflow hidden
+      .box-top
+        display flex
+        height: 2.58rem;
+        background #f99c3b
+        align-items center
+        flex-wrap nowrap
+        img 
+          width: 1.54rem;
+          height: 1.9rem;
+          margin 0 0.44rem 0 0.48rem;
+        p:first-of-type
+          color: #ffffff;
+          font-size: 0.6rem;
+          margin-bottom 0.28rem
+        p:last-of-type
+          color: #ffffff;
+          font-size: 0.48rem;
+      .box-bottom
+        height 1.12rem
+        line-height 1.12rem
+        margin-right 0.48rem
+        font-size 0.48rem
+        text-align right
+  .recordscroll
+    position absolute
+    top 5.76rem
+    left 0rem
+    width 100%
+    bottom 0rem
+    height auto
+    box-sizing border-box
+    padding 0 0.8rem
+  .recordlist
+    padding 0.5rem 0
+    border-bottom 1px solid #e8e8e8
+    p,div
+      display flex
+      justify-content space-between
+      flex-wrap nowrap
+      &:last-of-type
+        margin-top 0.16rem
+    .name
+      font-size 0.64rem
+      color #000000
+      font-weight bold
+      span 
+        font-size 0.48rem
+        line-height 0.72rem
+    .num
+      font-size 0.56rem
+      color #999999
+    .money
+      font-size 0.48rem
+      color #222222
+    .time
+      font-size 0.48rem
+      color #999999
+    .orange
+      color #ff8400
+      font-weight bold
+    .img 
+      display flex
+      flex-wrap nowrap
+      img
+        width 1.52rem
+        height 0.52rem
+        margin-left 0.2rem
+  .recordsnone
     text-align center
-    font-size 0.56rem
-    color #333333
-    margin-top 2.4rem
+    padding-top 30%
+    img 
+      width 3.16rem
+      height 2.64rem
+    p
+      font-size 0.48rem
+      color #888888
+      margin-top 0.4rem
 </style>
 
 <template>
-  <div class="recordHair fullscreen scroll" @click="$refs.smallhead.open()">
-    <smallhead ref="smallhead" :title='`${name}${$t("message.debao")}`' :data="name" class="fixed-top" right="jilu"></smallhead>
-    <div class="top column">
-      <img class="img" src="../common/images/icon.png" />
-      <p class="num">{{$t("message.wei")}}:{{num}}</p>
-      <p class="over" v-if="data.data && data.data.length > 0">{{$t("message.linwan")}}</p>
+  <div class="recordHair fullscreen scroll">
+    <smallhead left="huitui" :center='`${name}${$t("message.debao")}`' right="jilu"></smallhead>
+    <div class="nav">
+      <div class="item" @click="changeN(0)" :class="thisjilu==0?'active':''">
+        {{$t("message.fa")}}
+      </div>
+      <div class="item" @click="changeN(1)" :class="thisjilu==1?'active':''">
+        {{$t("message.shou")}}
+      </div>
     </div>
-    <div class="center">{{$t("message.gong")}}{{data.outpacketsum}}eos</div>
-    <ul class="bottom" v-if="data.data&&data.data.length>0">
-      <li :key="index" v-for="(item,index) in data.data">
-        <div class="info flex">
-          <div class="left">
-            <p class="name">{{item.user}}</p>
-            <p class="time">{{item.created_at}}</p>
+    <div class="box">
+      <div class="boxinfo">
+        <p class="sendname"><span class="big">{{name}}</span>{{$t("message.debao")}}<span class="time">({{timer}})</span></p>
+        <div class="bao">
+          <div class="box-top">
+            <img src="../common/images/bao.png">
+            <div>
+              <p>{{$t("message.wei")}}:{{num}}</p>
+              <p>{{$t("message.linwan")}}</p>
+            </div>
           </div>
-          <div class="right">
-            <p class="price"><span>{{item.income_sum}}</span> EOS+<span>{{item.own}}</span> OWN</p>
-            <p class="num1 flex">
-              <span v-if="item.reward_type != 0"><img class="san" :src="typetxt[item.reward_type]" />+{{item.reward_sum}}EOS</span>
-              <span v-if="item.is_chailei == 1"><img class="lei" src="../common/images/lei.png" />-{{data.outpacketsum}}EOS</span>
-            </p>
-          </div>
+          <div class="box-bottom">{{$t("message.gong")}}{{data.outpacketsum}} EOS</div>
         </div>
-      </li>
-    </ul>
-    <div class="bottomtxt" v-else>{{$t("message.jinxin")}}</div>
+        <cube-scroll class="recordscroll" ref="scroll">
+          <ul v-if="data.data&&data.data.length>0">
+            <li class="recordlist" :key="index" v-for="(item,index) in data.data">
+              <div>
+                <p class="name">{{item.user}}</p>
+                <p class="money">
+                  <span class="orange">{{item.income_sum}}</span>&nbsp;EOS+<span class="orange">{{item.own}}</span>&nbsp;OWN
+                </p>
+              </div>
+              <p>
+                <span class="time">{{item.created_at}}</span>
+                <span class="img">
+                  <img v-if="item.is_chailei == 1" src="../common/images/icon26.png">
+                  <img v-if="item.reward_type > 0" :src="typeImg[item.reward_type]">
+                </span>
+              </p>
+            </li>
+          </ul>
+          <div class="recordsnone" v-else>
+            <img src="../common/images/bao.gif" />
+            <p>{{$t("message.jinxin1")}}</p>
+          </div>
+        </cube-scroll>
+        <span class="close icon icon-close" @click="$router.go(-1)"></span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import smallhead from '@/components/smallhead.vue'
-import {mapGetters} from 'vuex';
+import {mapGetters,mapMutations} from 'vuex';
 import {get} from '../api'
-import { date } from 'quasar'
+import {SET_LOADING,SET_THISJULU} from "@store/mutation-types"
+import {changedata} from "@common/js"
 export default {
   created(){
     // 获取红包id
     this.packetId = this.$route.params.txId
     this.name = this.$route.params.name
     this.num = this.$route.params.num
+    this.time = this.$route.params.time
     let data = {
       outid:this.packetId
     }
     // 获取当前红包抽奖信息
-    this.$q.loading.show();
+    this.SET_LOADING(true)
     get('/red_packet',data).then((obj)=>{
-      this.$q.loading.hide();
+      this.SET_LOADING(false)
       console.log(obj)
       this.data = obj
       this.data.data = obj.data.map((val,i)=>{
         return {
           ...val,
-          created_at:date.formatDate(val.updated_at*1000, 'HH:mm:ss')
+          created_at:changedata(val.updated_at*1000,'MM-dd hh:mm')
         }
       })
     }).catch(()=>{
-      this.$q.loading.hide();
+      this.SET_LOADING(false)
       // console.log(e)
     })
   },
@@ -162,7 +246,6 @@ export default {
     return{
       packetId:'', //红包id
       data:{}, //红包数据
-      typetxt:['',require('../common/images/icon2.png'),require('../common/images/icon3.png'),require('../common/images/icon6.png'),require('../common/images/icon4.png'),require('../common/images/icon5.png')]
     }
   },
   components: {
@@ -170,12 +253,27 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "userInfo"
+      "userInfo",
+      "thisjilu"
     ]),
     // 红包获奖状态判断
-    // typetxt(){
-    //   return ['',this.thislang.dui,this.thislang.san,this.thislang.small,this.thislang.zhen,this.thislang.shun,this.thislang.si,this.thislang.big]
-    // },
+    typeImg(){
+      return ['',require('../common/images/icon22.png'),require('../common/images/icon23.png'),require('../common/images/icon27.png'),require('../common/images/icon25.png'),require('../common/images/icon24.png')]
+    },
+    // 转换时间
+    timer(){
+      return changedata(this.time,'hh:mm:ss')
+    }
+  },
+  methods:{
+    ...mapMutations({
+      SET_LOADING,
+      SET_THISJULU
+    }),
+    changeN(i){
+      this.SET_THISJULU(i)
+      this.$router.push('/record-hair')
+    }
   }
 }
 </script>

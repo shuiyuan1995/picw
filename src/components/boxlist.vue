@@ -2,9 +2,9 @@
   .boxlist
     width 10.04rem
     cursor pointer
+    float left
   .baoright
-    align-self flex-end
-    // float right
+    float right
   .over
     opacity 0.6
   .sendname
@@ -15,11 +15,12 @@
   .box
     width 100%
     height: 3.7rem;
-    border-radius: 0.48rem;
+    border-radius: 0.24rem;
     border: solid 0.04rem #dedede;
     overflow hidden
     margin-bottom 0.98rem
     .box-top
+      display flex
       height: 2.58rem;
       background #f99c3b
       align-items center
@@ -46,7 +47,7 @@
   <div class="boxlist" :class="{'over':item.none||item.isgo,'baoright':item.name == userInfo.name}" @click="go">
     <p class="sendname">{{item.name}} <span class="time">({{timer}})</span></p>
     <div class="box">
-      <div class="box-top flex">
+      <div class="box-top">
         <img v-if="item.none||item.isgo" src="../common/images/bao1.png">
         <img v-else src="../common/images/bao.png">
         <div class="bao">
@@ -61,11 +62,10 @@
 
 <script>
 import {mapGetters,mapMutations} from 'vuex'
-import { date } from 'quasar'
 import {post} from '@/api'
 import axios from "axios";
-import {login, scatSelectPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
-import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
+import {login, scatSelectPacket, scatGetAccount, scatGetAllBalance,changedata} from "@common/js"
+import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST,SET_LOADING,SET_THISJULU} from "@store/mutation-types";
 let time = null
 export default {
   props:{
@@ -85,20 +85,26 @@ export default {
   methods:{
     ...mapMutations({
       SET_ROOM_RED_EVELOPE_LIST,
-      SET_ACTIVE_RED_EVELOPE_LIST
+      SET_ACTIVE_RED_EVELOPE_LIST,
+      SET_LOADING,
+      SET_THISJULU
     }),
     go(){
       if (JSON.stringify(this.userInfo) === "{}") return login();
       const {isgo, none, txId, packetId, eos} = this.item;
       // 判断时候可抢，不能抢跳转详情
-      if (isgo || none) return this.$router.push({
-        name: 'record-this',
-        params: {
-          txId:this.item.txId,
-          name:this.item.name,
-          num:this.item.num
-        }
-      });
+      if (isgo || none) {
+        this.SET_THISJULU(1)
+        return this.$router.push({
+          name: 'record-this',
+          params: {
+            txId:this.item.txId,
+            name:this.item.name,
+            num:this.item.num,
+            time:this.item.time*1000
+          }
+        });
+      }
       // 提示信息
       const errObje = {
         "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
@@ -111,29 +117,15 @@ export default {
         "3050003": "余额不足",
         "3080001": "Account using more than allotted RAM usage"
       }
-      this.$q.loading.show();
+      this.SET_LOADING(true)
       console.log(Number(this.item.packetId), `${Number(eos).toFixed(4)} EOS`, this.inviteName)
       scatSelectPacket(Number(this.item.packetId), `${Number(eos).toFixed(4)} EOS`, this.inviteName)
       .then(() => {
         // 向后台请求结果
         this._getid()
-        // this.txid = json.txid
-        // this.redcss(json.islast)
-        // time = setTimeout(()=>{
-        //   this.$q.loading.hide();
-        //   this.txid = ""
-        //   this.$q.notify({
-        //     message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
-        //     timeout: 1000,
-        //     color: 'green',
-        //     position:"center"
-        //   })
-        //   post('/income_packet',json).then((val)=>{
-        //   }) 
-        // },10000)
       })
       .catch(code => {
-        this.$q.loading.hide();
+        this.SET_LOADING(false)
         // 用户cpu查询
         scatGetAccount()
         // 查询EosBalance同步vuex， 查询OwnBalance
@@ -153,12 +145,11 @@ export default {
           post('/close_packet',win).then(()=>{})
           return false
         }
-        this.$q.notify({
-          message: errObje[code] || "发送失败",
-          timeout: 1500,
-          color: 'red',
-          position:"center"
-        })
+        this.$createToast({
+          txt: errObje[code] || "发送失败",
+          time: 2000,
+          type:'txt'
+        }).show()
       });
     },
     _getid(){
@@ -186,30 +177,19 @@ export default {
             this.txid = in_packet.id
             this.redcss()
             time = setTimeout(()=>{
-              this.$q.loading.hide();
+              this.SET_LOADING(false)
               this.txid = ""
-              this.$q.notify({
-                message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
-                timeout: 1000,
-                color: 'green',
-                position:"center"
-              })
+              this.$createToast({
+                txt: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
+                time: 2000,
+                type:'txt'
+              }).show()
             },10000)
             break;
           default:
             break;
         }
       })
-      // setTimeout(()=>{
-      //   this.$q.loading.hide();
-      //   this.redcss()
-      //   this.$q.notify({
-      //     message: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
-      //     timeout: 5000,
-      //     color: 'green',
-      //     position:"center"
-      //   })
-      // },10000)
     },
     // 红包样式调整
     redcss(islast){
@@ -241,7 +221,7 @@ export default {
     },
     // 展示红包data
     updata(json){
-      this.$q.loading.hide();
+      this.SET_LOADING(false)
       let win = {
         name:this.item.name,
         print:json.income_sum,
@@ -255,6 +235,7 @@ export default {
         own:Number(json.own).toFixed(4)
       }
       // 展示抢红包结果
+      console.log(win)
       this.$emit('myshow',win)
     },
   },
@@ -270,7 +251,7 @@ export default {
 
     // 转换时间
     timer(){
-      return date.formatDate(this.item.time*1000, 'HH:mm:ss')
+      return changedata(this.item.time*1000,'hh:mm:ss')
     }
   },
   watch:{

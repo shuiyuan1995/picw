@@ -1,137 +1,198 @@
 <style lang="stylus" scoped>
-  .smallhead
+.smallhead
+  height 2rem
+  max-width 16rem
+  width 100%
+  margin 0 auto
+  background #e51c23
+  color #ffffff
+  display flex
+  justify-content space-between
+  z-index 10
+  &>div
+    flex 1
+.logo
+  cursor pointer
+  text-align left
+  line-height 2.4rem
+  margin-left 0.8rem
+  img
+    width 4.32rem
+    height 1.04rem
+.menu
+  display inline-block
+  text-align center
+  width 1.5rem
+  height 1.14rem
+  border-radius 0.16rem
+  border solid 0.0208rem #ffffff
+  float right
+  margin-right 0.8rem
+  margin-top 0.4rem
+  cursor pointer
+  &:before
+    font-size 1.12rem
+.huitui
+  font-size 18px
+  line-height 2rem
+  font-weight bold
+  margin-left 0.8rem
+.title
+  text-align center
+  font-size 0.64rem
+  font-weight bold
+  line-height 2rem
+.jilu
+  font-size 0.48rem
+  line-height 2rem
+  float right
+  margin-right 0.8rem
+.guanbi
+  margin-left 0.8rem
+  line-height 2rem
+  font-size 0.48rem
+.more
+  float right
+  line-height 2rem
+  margin-right 0.8rem
+  font-size 0.88rem
+.money
+  float right
+  font-size 0.56rem
+  line-height 2rem
+  margin-right 0.4rem
+  display flex
+  align-items center
+  position relative
+  cursor pointer
+  &:hover .moneydown
+    display block
+.moneyeos
+  width 0.64rem
+  height 0.94rem
+  background url('../common/images/icon28.png')
+  background-size 100% 100%
+  margin-right 0.16rem
+.moneyown
+  width 0.94rem
+  height 0.94rem
+  background url('../common/images/icon29.png')
+  background-size 100% 100%
+  margin-right 0.16rem
+.moneydown
+  position absolute
+  display none
+  background red
+  top 2rem
+  left -1.52rem
+  width 5.1rem
+  z-index 2
+  border-radius 0px 0rem 0.12rem 0.12rem
+  li
+    display flex
+    height 1.6rem
     align-items center
-    height 2rem
-    max-width 16rem
-    width 100%
-    margin 0 auto
-    background #e51c23
-    color #ffffff
-    span 
-      flex 0 0 60px
-    .jilu
-      font-size 0.48rem
-    .jilui
-      margin-right 0 !important
-      margin-left 0.8rem
-    .menu
-      height 0.8125rem
-      border-radius 0.16rem
-      border solid 0.0208rem #ffffff
-      margin-left 0.6875rem
-      &:before
-        font-size 0.96rem
-    .icon
-      text-align center
-      &:before
-        font-size 0.8rem
-      &:last-of-type  
-        margin-right 0.6rem
-    .guan
-      font-size 0.56rem
-      margin-left 0.8rem
-    p
-      font-size 0.64rem
-      flex 1
-      text-align center
-      font-weight bold
-    .more
-      position absolute
-      top 2rem
-      right 0.4rem
-      background #ffffff
-      width 6.7rem
-      li
-        height 1.54rem
-        font-size 0.56rem
-        color #000000
-        line-height 1.54rem
-        padding-left 0.72rem
-        &.active
-          background #f0f0f0
+    cursor pointer
+    justify-content center
+    border-top 0.04rem solid #b70000
+    div 
+      margin-right 0.36rem
 </style>
 
 <template>
-  <div class="smallhead flex" @click="open">
-    <span :class="left" v-if="left == 'guan'" @click="$router.push('/')">{{$t("message.close")}}</span>
-    <span v-else @click="prev" class="icon icon-Left" v-show="!judge"></span>
-    <p>{{title}}</p>
-    <span v-if="!right"></span>
-    <span :class="right" v-if="right == 'jilu'" @click="togojilu">{{$t("message.record")}}</span>
-    <span :class="right" class="icon icon-moreread" v-if="right == 'jilui'" @click.stop="more = !more"></span>
-    <q-btn v-if="right&&typeof right == 'Boolean'" flat dense round aria-label="Menu" class="menu icon icon-menu" @click="menu"/>
-    <ul class="more" v-show="more">
-      <li :class="$route.path == '/record-hair'?'active':''" @click="$router.push('/record-hair')">{{$t("message.fa")}}</li>
-      <li :class="$route.path == '/record-closed'?'active':''" @click="$router.push('/record-closed')">{{$t("message.shou")}}</li>
-    </ul>
-    <!-- <span v-show="share" class="icon icon-fenxiang3"></span> -->
+  <div class="smallhead">
+    <div class="left">
+      <div class="logo"><img @click="$router.push('/')" src="../common/images/logo.png"></div>
+      <span @click="$router.push('/')" v-if="left=='guanbi'" class="guanbi icon">{{$t("message.close")}}</span>
+    </div>
+    <div class="right">
+      <span class="menu icon icon-menu" @click="openright"></span>
+      <!-- <div class="money">
+        <div :class="thismoney=='EOS'?'moneyeos':'moneyown'"></div>
+        <span>{{thismoney}}</span>
+        <i class="icon icon-xiangxia"></i>
+        <ul class="moneydown">
+          <li @click="changemoney(0)">
+            <div class="moneyeos"></div>
+            <span>EOS</span>
+          </li>
+          <li @click="changemoney(1)">
+            <div class="moneyown"></div>
+            <span>OWN</span>
+          </li>
+        </ul>
+      </div> -->
+    </div>
   </div>
 </template>
 
 <script>
-import {mapGetters,mapMutations} from 'vuex';
-import {SET_GOOGLE_MENU} from "@store/mutation-types"
+import { mapGetters, mapMutations } from "vuex";
+import {SET_GOOGLE_MENU,SET_THISMONEY} from "@store/mutation-types"
 export default {
   props:{
-    // 标题
-    title:{
-      type:String
-    },
-    // 两侧显示影藏标识
-    right:{
-      default:true
-    },
     left:{
-      default:true
+      type:String,
+      default:''
     },
-    // 数据
-    data:{
-      default:""
+    center:{
+      type:String,
+      default:''
     },
-    share:{
-      type:Boolean,
-      default:false
-    },
-    judge:{
-      type:String
-    }
-  },
-  data(){
-    return{
-      more:false
+    right:{
+      type:String,
+      default:''
     }
   },
   computed:{
     ...mapGetters([
-      "userInfo"
+      "thismoney"
     ])
   },
   methods:{
-    // 后退
-    prev(){
-      this.$router.go(-1)
-    },
-    // 打开菜单
-    menu(){
+    ...mapMutations({
+      SET_GOOGLE_MENU,
+      SET_THISMONEY
+    }),
+    openright(){
       this.SET_GOOGLE_MENU(true)
     },
-    open(){
-      this.more = false
-    },
-    togojilu(){
-      // console.log()
-      if(!this.data){
-        this.$router.push('/record-hair')
-      }
-      if(this.data == this.userInfo.name){
-        this.$router.push('/record-hair')
-      }else{
-        this.$router.push('/record-closed')
+    // 切换币种
+    changemoney(i){
+      switch (i) {
+        case 0:
+          this.SET_THISMONEY('EOS')
+          break;
+        default:
+          this.SET_THISMONEY('OWN')
+          break;
       }
     },
-    ...mapMutations({
-     SET_GOOGLE_MENU
-    }),
+    tomore(){
+      this.$createActionSheet({
+        title: '红包记录',
+        pickerStyle: true,
+        active:this.$route.path == '/record-hair'?0:1,
+        data: [
+          {
+            content: '发红包记录'
+          },
+          {
+            content: '抢红包记录'
+          }
+        ],
+        onSelect: (item, index) => {
+          switch (index) {
+            case 0:
+              this.$router.push('/record-hair')
+              break;
+            default:
+              this.$router.push('/record-closed')
+              break;
+          }
+        }
+      }).show()
+    }
   }
 }
 </script>

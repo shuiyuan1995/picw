@@ -10,6 +10,8 @@ const state = {
     data:[[],[],[],[],[],[]],
     thisdata:[]
   },
+  // loading开关
+  loading:false,
   // 邀请人名称
   inviteName: "",
   // 用户标示
@@ -42,7 +44,11 @@ const state = {
   // 自己发红包id列表
   mysend:[],
   // 抢红包结果
-  redresults:{}
+  redresults:{},
+  // 当前币种
+  thismoney:'EOS',
+  // 发抢红包记录状态
+  thisjilu:0
 };
 
 export default state;

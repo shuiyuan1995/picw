@@ -1,9 +1,56 @@
 <style lang="stylus" scoped>
+  .flex
+    display flex
   .home
     z-index 2000
-    background #ebebeb
+    background #ffffff
     max-width 16rem
     margin 0 auto
+  .nav
+    margin-top 0.6rem
+  .title
+    font-size 0.64rem
+    color #eb0000
+    font-weight bold
+    margin 1.4rem 0 0 0.8rem
+  .numlist
+    padding 0 0.8rem
+    display flex
+    flex-wrap wrap
+    justify-content space-between
+    margin-top 0.72rem
+    li
+      width 2.56rem
+      height 1.78rem
+      text-align center
+      line-height 1.78rem
+      background-color #eeeeee
+      border-radius 0.08rem
+      margin-bottom 0.16rem
+      box-shadow 0px 1px 0px #a6a6a6
+      font-size 0.72rem
+      cursor pointer
+      &.active
+        background #eb0000
+        color #ffffff
+  .contant
+    padding 0 0.8rem
+    font-size 0.56rem
+    font-weight 400
+    margin-top 0.8rem
+  .btn
+    padding 0 0.8rem
+    .gobtn
+      height 1.8rem
+      width 100%
+      margin-top 2.08rem
+      background url("../common/images/btn1.png") no-repeat
+      background-size 100% 100%
+      border 0
+      color #ffffff
+      font-size 0.64rem
+      font-weight bold
+      outline none
   .send
     min-height calc(100vh - 50px)
     background-size 100%
@@ -67,71 +114,79 @@
       outline none
       position relative
     .classify
+      display flex
+      align-items center
+      width 100%
+      border solid 1px #d2d2d2
+      border-radius 0.1rem
+      background #ffffff
       width 100%
       height 1.64rem
-  .numlist
-    justify-content space-between
-    li
-      width 2.16rem
-      height 1.5rem
-      background-color #ffffff
-      border-radius 0.08rem
-      margin-top 0.12rem
-      font-size 0.56rem
-      color #222222
-      text-align center
-      line-height 1.5rem
-      cursor pointer
-      &.active
-        background #e0010d
-        color #ffffff
+      span
+        flex 1
+        height 100%
+        line-height 1.64rem
+        text-align center
+        border-right solid 0.02rem #d2d2d2
+        font-size 0.56rem
+        font-weight bold
+        color #222222
+        &:last-of-type
+          border-right none
+        &.active
+          background #eb1726
+          color #ffffff
 </style>
 
 <template>
   <div class="home fullscreen">
-    <smallhead :title='$t("message.sendbtn1")' :right="false"></smallhead>
-    <div class="send column">
-      <p>{{$t("message.choosenum")}}</p>
-      <classify class="classify"></classify>
-      <p>{{$t("message.chooseluck")}}</p>
-      <div class="content">
-        <ul class="numlist flex">
-          <li :class="number == item-1?'active':'shadow-1'" :key="item" v-for="item in 10" @click="gonum(item)">{{item-1}}</li>
-        </ul>
-        <p>{{$t("message.explain")}}</p>
-        <div class="two flex"><span>{{$t("message.explain1")}}</span></div>
-      </div>
-      <!-- <q-btn dense :label="thislang.sendbtn1" class="gobtn" @click="send"/> -->
-      <button class="gobtn" @click="send" v-ripple>{{$t("message.sendbtn1")}}</button>
+    <smallhead left="huitui" center="发红包"></smallhead>
+    <mynav class="nav" :allroomred="allroomred"></mynav>
+    <p class="title">{{$t("message.chooseluck")}}</p>
+    <ul class="numlist flex">
+      <li :class="number == item-1?'active':''" :key="item" v-for="item in 10" @click="gonum(item)">{{item-1}}</li>
+    </ul>
+    <p class="contant">{{$t("message.explain")}}</p>
+    <p class="contant">{{$t("message.explain1")}}</p>
+    <div class="btn">
+      <button class="gobtn" @click="send">{{$t("message.sendbtn1")}}</button>
     </div>
   </div>
 </template>
 
 <script>
-import classify from '@/components/classify.vue'
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters,mapActions,mapMutations} from 'vuex';
+import mynav from '@/components/mynav.vue'
 import {login, scatcreateRedPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
-import {SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_MY_SEND} from "@store/mutation-types";
+import {SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_MY_SEND,SET_ROOMID,SET_CLICK_ROOMID_RED_EVELOPE_LIST} from "@store/mutation-types";
 import {post} from '../api'
 export default {
   data(){
     return{
       number:Math.floor(Math.random()*9), //尾数
-      eosnum:[0.1,1,5,20] //房间钱数
+      eosnum:[0.1,1,5,20], //房间钱数
+      allroomred:[]
     }
   },
   components: {
-    classify,
-    smallhead
+    smallhead,
+    mynav
   },
   methods:{
     ...mapActions({
       SET_ROOM_RED_EVELOPE_LIST_UPDATA,
+      SET_CLICK_ROOMID_RED_EVELOPE_LIST
     }),
     ...mapMutations({
       SET_MY_SEND,
+      SET_ROOMID
     }),
+    // 房间选择切换
+    changeE(i){
+      let roomid = i;
+      this.SET_CLICK_ROOMID_RED_EVELOPE_LIST({roomid, redEnvelopeList: this.roomRedEnvelopeList[i]})
+    },
     // 选择尾数
     gonum(i){
       this.number = i-1
@@ -159,12 +214,12 @@ export default {
         console.log(response)
         // 判断参数是否正确
         if(!response.packetId||!response.txId){
-          this.$q.notify({
-            message: "发送失败",
-            timeout: 100,
-            color: 'green',
-            position:"center"
+          const toast = this.$createToast({
+            txt: '发送失败',
+            time: 2000,
+            type: 'txt'
           })
+          toast.show()
           return false
         }
         // 添加自己发红包id
@@ -176,20 +231,20 @@ export default {
         // 展示上传红包data
         this.updata(response)
 
-        this.$q.notify({
-          message: '发送成功',
-          timeout: 100,
-          color: 'green',
-          position:"center"
+        const toast = this.$createToast({
+          txt: '发送成功',
+          time: 2000,
+          type: 'txt'
         })
+        toast.show()
         this.$router.push('/')
       }).catch(code => {
-        this.$q.notify({
-          message: errObje[code] || "发送失败",
-          timeout: 1500,
-          color: 'red',
-          position:"center"
+        const toast = this.$createToast({
+          txt: errObje[code] || "发送失败",
+          time: 2000,
+          type: 'txt'
         })
+        toast.show()
         // 用户cpu查询
         scatGetAccount()
         // 查询EosBalance同步vuex， 查询OwnBalance

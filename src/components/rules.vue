@@ -1,4 +1,20 @@
 <style lang="stylus" scoped>
+  .fullscreen
+    position absolute
+    top 0
+    width 100%
+    height 100%
+  .fixed-center
+    position absolute
+    top 50%
+    left 50%
+    transform translate(-50%, -50%)
+  .flex
+    display flex
+  .absolute-top-right
+    position absolute
+    top 0
+    right 0
   .bg
     background rgba(#000000,0.4)
     z-index 999
@@ -13,8 +29,6 @@
     z-index 1000
     &.first
       padding 0 0.4rem 1.52rem
-      p
-        margin-bottom 0.2rem
     &.white
       background-color #ffffff
       h4,h5,p
@@ -97,19 +111,41 @@
       transform translate3d(-50%,0,0)
       &:first-of-type
         margin-bottom 0.8rem
-  .ahref
-    color blue !important
-    text-decoration underline
+  .first
+    overflow-y auto
+    text-align center
+    h5:not(:last-of-type)
+      height 1.76rem
+      display inline-block
+      line-height 1.76rem
+      padding 0 20px
+      color #ffffff !important
+      background url('../common/images/icon31.png')
+      background-size 100% 100%
+    h5:last-of-type
+      margin-top 1.4rem
+      color #999999
+    p
+      margin-bottom 0.2rem
+  .yougonggao
+    p
+      margin-bottom 0.2rem
+    .red
+      color #ff0000
+  .pledgerule p
+    margin-bottom 0.4rem
+    &.next
+      text-indent 1rem
 </style>
 
 <template>
   <div class="rules fullscreen">
     <div class="bg fullscreen" @click="closein"></div>
-    <div class="rulesin fixed-center first scroll" :class="bgc == 'white'?'white':''" v-if="therules == 0">
+    <div class="rulesin fixed-center first" :class="bgc == 'white'?'white':''" v-if="therules == 0">
       <h4>{{$t("message.how")}}</h4>
-      <h5>{{$t("message.sendbtn1")}} ({{$t("message.lieren")}})</h5>
+      <h5>{{$t("message.sendbtn1")}}</h5>
       <p>{{$t("message.hair")}}</p>
-      <h5>{{$t("message.robtitle")}} ({{$t("message.yeshou")}})</h5>
+      <h5>{{$t("message.robtitle")}}</h5>
       <p>{{$t("message.rob")}}</p>
       <p>{{$t("message.rob1")}}</p>
       <p>{{$t("message.rob2")}}</p>
@@ -119,7 +155,7 @@
       <p>{{$t("message.wa")}}</p>
       <h5>{{$t("message.jiangtitle")}}</h5>
       <p>{{$t("message.jiang")}}</p>
-      <h5 @click="openu" class="ahref">{{$t("message.morerule")}}</h5>
+      <h5 @click="openu('https://assets.pickown.com/PickOwnV1.pdf')">{{$t("message.morerule")}}>></h5>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
     <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''"  v-else-if="therules == 1">
@@ -153,14 +189,44 @@
       </div>
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
+    <div class="rulesin fixed-center yougonggao" :class="bgc == 'white'?'white':''" v-else-if="therules == 2">
+      <h4>{{$t("message.yougonggao")}}</h4>
+      <p>{{$t("message.announcement")}}</p>
+      <p>{{$t("message.announcement1")}}</p>
+      <p>{{$t("message.announcement2")}}</p>
+      <p>- - - - - - - - - - - - -</p>
+      <p>{{$t("message.announcement3")}}<span class="red">{{$t("message.announcement4")}}</span>{{$t("message.announcement5")}}<span class="red">{{$t("message.announcement6")}}</span>{{$t("message.announcement7")}}</p>
+      <p>{{$t("message.announcement8")}}</p>
+      <p>{{$t("message.announcement9")}}</p>
+      <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
+    </div>
+    <div class="rulesin fixed-center pledgerule" :class="bgc == 'white'?'white':''" v-else-if="therules == 3">
+      <h4>{{$t("message.pledgerule")}}</h4>
+      <p>1.{{$t("message.pledgerule1")}}</p>
+      <p>2.{{$t("message.pledgerule2")}}</p>
+      <p>3.{{$t("message.pledgerule3")}}</p>
+      <p>4.{{$t("message.pledgerule4")}}</p>
+      <p>5.{{$t("message.pledgerule5")}}</p>
+      <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
+    </div>
+    <div class="rulesin fixed-center pledgerule" :class="bgc == 'white'?'white':''" v-else-if="therules == 4">
+      <h4>{{$t("message.paigui")}}</h4>
+      <p>{{$t("message.paihang")}}</p>
+      <p>{{$t("message.paihang1")}}</p>
+      <p class="next">{{$t("message.paihang2")}}</p>
+      <p class="next">{{$t("message.paihang3")}}</p>
+      <p class="next">{{$t("message.paihang4")}}</p>
+      <p>{{$t("message.paihang5")}}</p>
+      <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
+    </div>
     <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''" v-else>
       <h4 class="ptitle">{{$t("message.PC")}}</h4>
       <p class="ptxt1">{{$t("message.PC1")}}</p>
       <p class="ptxt2">{{$t("message.PC2")}}</p>
-      <button class="pbtn" @click="openu(1)">{{$t("message.xiazai")}}</button>
+      <button class="pbtn" @click="openu('https://github.com/GetScatter/ScatterDesktop/releases/')">{{$t("message.xiazai")}}</button>
       <p class="ptxt1">{{$t("message.PC3")}}</p>
       <p class="ptxt2">{{$t("message.PC4")}}</p>
-      <button class="pbtn" @click="openu(2)">{{$t("message.xiazai")}}</button>
+      <button class="pbtn" @click="openu('https://chrome.google.com/webstore/search/scatter?utm_source=chrome-ntp-icon')">{{$t("message.xiazai")}}</button>
       <h4 class="ptitle">{{$t("message.phone")}}</h4>
       <p class="ptxt1">{{$t("message.phone1")}}</p>
       <p class="ptxt2">{{$t("message.phone2")}}</p>
@@ -171,7 +237,6 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import { openURL} from "quasar";
 export default {
   props:{
     // 背景
@@ -189,8 +254,8 @@ export default {
     closein(){
       this.$emit('openrule')
     },
-    openu(){
-      openURL("https://assets.pickown.com/PickOwnV1.pdf")
+    openu(b){
+      window.open(b,'_blank');
     }
   },
   computed:{

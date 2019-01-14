@@ -6,7 +6,7 @@ const socket = new VueSocketIO({
   debug: debug,
   connection: process.env.NODE_ENV === "production"
     ? window.location.origin
-    : "www.pickown.com",
+    : "t1.pickown.com",
 })
 
 export default socket;

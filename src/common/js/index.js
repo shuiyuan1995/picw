@@ -1,6 +1,7 @@
 import login from "./login";
-import {scatGameLogin, scatGetAllBalance, scatGameLoginOut, scatGetAccount, scatSelectPacket,scatcreateRedPacket,scatWithdrawref,scatRedPacketList} from "./scatter"
+import {userboard,getBalance,bonustable,withdrawown,wdbonus,pledgeOWN,addwlist,scatGameLogin, scatGetAllBalance, scatGameLoginOut, scatGetAccount, scatSelectPacket,scatcreateRedPacket,scatWithdrawref,scatRedPacketList} from "./scatter"
 import getMoneyListget from "./monneyList"
+import {changedata} from "./datafetch"
 
 const imgUrl = 'https://image.pickown.com/'
 
@@ -15,5 +16,13 @@ export {
   scatcreateRedPacket,
   scatWithdrawref,
   scatRedPacketList,
-  imgUrl
+  addwlist,
+  imgUrl,
+  changedata,
+  pledgeOWN,
+  wdbonus,
+  withdrawown,
+  bonustable,
+  getBalance,
+  userboard
 }

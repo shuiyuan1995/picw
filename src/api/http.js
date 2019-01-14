@@ -1,16 +1,16 @@
 import axios from "axios";
 import qs from "qs";
 import store from "@store";
-import {Loading, Notify} from "quasar"
+import {SET_LOADING} from "@store/mutation-types";
+import { Toast } from 'cube-ui'
 
 // 请求配置参数
 const http = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "https://manage.pickown.com/api"
-      : "https://manage.pickown.com/api", // 基础路径
+      ? "https://test.pickown.com/api"
+      : "https://test.pickown.com/api", // 基础路径
       // http://pickown.test/api
-      // https://test.pickown.com/api
       // https://manage.pickown.com/api
     timeout: 15000 // 请求延时
 });
@@ -39,14 +39,24 @@ http.interceptors.response.use(response => {
   } else {
     // 返回错误提示
     const {message} = data;
-    Loading.hide();
-    Notify.create({
-      message: message || "服务器繁忙，稍后再试！",
-      timeout: 1500,
-      color: 'red',
-      position:"center"
+    store.commit(SET_LOADING, false);
+    const toast = Toast.$create({
+      txt: message || "服务器繁忙，稍后再试！",
+      time: 2000,
+      type:'txt'
     })
+    toast.show()
     return Promise.reject(data);
+  }
+},error=>{
+  if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {
+    const toast = Toast.$create({
+      txt: "请求超时，请重新请求",
+      time: 2000,
+      type:'txt'
+    })
+    toast.show()
+    return false
   }
 });
 

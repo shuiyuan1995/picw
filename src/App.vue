@@ -1,34 +1,69 @@
-<style lang="stylus" scoped>
-  .q-item
-    font-size 12px !important
-  #app
-    background rgb(31,41,36)
+<style lang="stylus">
+#app
+  background #ffffff
+  max-width 16rem
+  height 100%
+  margin 0 auto
+  overflow hidden
+  position relative
+  .faderight-enter-active, .faderight-leave-active {
+    transition: all 0.3s;s;
+  }
+  .faderight-enter, .faderight-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    transform translateX(100%)
+  }
+  .bg
+    position absolute
+    top 0
+    width 100%
+    height 100%
+    background rgba(0,0,0,0.2)
+    z-index 99
+  .transitionRouter-enter-active,
+  .transitionRouter-leave-active {
+    transition: all .5s;
+  }
+  .transitionRouter-enter,
+  .transitionRouter-leave-to{
+    opacity: 0;
+  }
 </style>
 
 <template>
-  <div id="app" v-cloak class="scroll no-scroll">
-    <router-view/>
+  <div id="app">
+    <transition name="transitionRouter">
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"/>
+      </keep-alive>
+    </transition>
+    <transition name="transitionRouter">
+      <router-view v-if="!$route.meta.keepAlive"/>
+    </transition>
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
+    <loading v-show="loading"></loading>
+    <transition name="faderight">
+      <drawer v-show="menuStatus"></drawer>
+    </transition>
+    <div v-show="menuStatus" class="bg" @click="theclose"></div>
   </div>
 </template>
 
 <script>
-import {mapMutations, mapActions} from 'vuex';
-import {SET_USER_INFO, SET_USERID, SET_TOKEN, SET_EOSBALANCE, SET_INVITE_NAME, SET_ALL_INFO} from "@store/mutation-types";
-import {gameLogin, getBalance} from "@common/js/scatter";
+import {mapMutations, mapActions,mapGetters} from 'vuex';
+import {SET_LOADING,SET_ALL_INFO,SET_GOOGLE_MENU} from "@store/mutation-types";
 import {login, getMoneyListget,imgUrl} from "@common/js";
 import rules from "@/components/rules.vue";
 import {get} from './api';
-
+import loading from "@/components/loading.vue";
+import drawer from "@/components/drawer.vue";
 export default {
   created(){
-    // document.body.removeChild(document.getElementById('appLoading'))
     // 获取红包列表
-    this.$q.loading.show();
+    this.SET_LOADING(true)
     getMoneyListget(true);
     // 自动登陆
     login(()=>{
-      this.openrule(2)
+      this.openrule(9)
     });
     // 
     this._getInfo()
@@ -41,11 +76,32 @@ export default {
       therules:2
     }
   },
+  computed:{
+    ...mapGetters([
+      "loading",
+      "menuStatus"
+    ])
+  },
+  components:{
+    loading,
+    rules,
+    drawer
+  },
   methods:{
+    // 获取vuex方法
+    ...mapMutations({
+      SET_LOADING,
+      SET_ALL_INFO,
+      SET_GOOGLE_MENU
+    }),
+    theclose(){
+      this.SET_GOOGLE_MENU(false)
+    },
     // 获取展示数据，只展示一次
     _getInfo() {
       get("/get_info").then(json => {
         const {data} = json;
+        console.log(data)
         this.SET_ALL_INFO(data)
       })
     },
@@ -68,19 +124,6 @@ export default {
         image.onload = () => {}
       }
     },
-    // 获取vuex方法
-    ...mapMutations({
-      SET_USER_INFO,
-      SET_USERID,
-      SET_TOKEN,
-      SET_EOSBALANCE,
-      SET_INVITE_NAME,
-      SET_ALL_INFO
-    })
-  },
-  components:{
-    rules
   }
 }
 </script>
-

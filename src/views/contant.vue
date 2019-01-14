@@ -4,11 +4,11 @@
   background #ffffff
   max-width 16rem
   margin  0 auto
+  height 100%
 .top
   background url($imgUrl+"img22.png") no-repeat center top
   background-size 100% auto
   height 100%
-  margin-top 2rem
   padding-top 11.28rem
   p
     color #333333
@@ -28,17 +28,24 @@
   img 
     width 100%
     height 100%
+.flex
+  display flex
+.fixed-center
+  position fixed
+  top 50%
+  left 50%
+  transform translate(-50%,-50%) 
 </style>
 
 <template>
   <div class="contant fullscreen" @click="closeall">
-    <smallhead  class="fixed-top" :title='$t("message.contact")' :right="false"></smallhead>
+    <smallhead  class="fixed-top" left="huitui" :center='$t("message.contact")'></smallhead>
     <div class="top">
-      <p>telegram链接：https://t.me/gtbredlotto</p>
-      <p>添加微信客服，备注猎人红包，进群领福利。</p>
+      <p>telegram{{$t("message.lianjie")}}：https://t.me/gtbredlotto</p>
+      <p>{{$t("message.kefu")}}</p>
       <div class="topinfo flex">
-        <img src="../common/images/icon17.png" @click.stop="share = !share">
-        <img src="../common/images/icon18.png" @click.stop="share1 = !share1">
+        <img src="../common/images/icon17.png" @click.stop="open(0)">
+        <img src="../common/images/icon18.png" @click.stop="open(1)">
       </div>
     </div>
     <transition
@@ -80,6 +87,18 @@ export default {
       console.log(1)
       this.share = false,
       this.share1 = false
+    },
+    open(i){
+      switch (i) {
+        case 0:
+          this.share = !this.share,
+          this.share1 = false
+          break;
+        default:
+          this.share = false,
+          this.share1 = !this.share1
+          break;
+      }
     }
   }
 }

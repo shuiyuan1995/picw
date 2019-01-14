@@ -2,6 +2,8 @@
   .results
     margin-bottom 0.56rem
     font-size 0
+    float left
+    width 100%
   .sendname
     font-size 12px
     margin-bottom 0.32rem
@@ -48,6 +50,7 @@
       text-align center
     }
   .tr
+    display flex
     margin-top 0.16rem
     align-items center
     line-height 0.68rem
@@ -61,6 +64,7 @@
       &:first-of-type
         text-align left
       &:last-of-type
+        box-sizing border-box
         text-align right
         padding-right 0.4rem
     img
@@ -90,7 +94,7 @@
         <span>OWN</span>
         <span></span>
       </div>
-      <div class="tr flex" :key="index" v-for="(it,index) in item.in_packet_data">
+      <div class="tr" :key="index" v-for="(it,index) in item.in_packet_data">
         <span class="grey">{{it.name}}</span>
         <span class="orange">{{it.income_sum}}</span>
         <span class="orange1">{{it.own}}</span>
@@ -109,7 +113,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import { date } from 'quasar'
+import {changedata} from "@common/js"
 export default {
   created(){
     // console.log(this.item)
@@ -155,7 +159,7 @@ export default {
     },
     // 转换时间
     timer(){
-      return date.formatDate(this.item.time*1000, 'HH:mm:ss')
+      return changedata(this.item.time*1000,'hh:mm:ss')
     }
   }
 }

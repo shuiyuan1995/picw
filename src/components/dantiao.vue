@@ -1,6 +1,8 @@
 <style lang="stylus" scoped>
 .dantiao
   margin 0.3rem 0 0.1rem
+  float left
+  width 100%
   div
     display flex
     height 0.8rem

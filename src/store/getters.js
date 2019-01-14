@@ -28,4 +28,10 @@ export const inviteName = state => state.inviteName;
 export const mysend = state => state.mysend;
 // 获取抢红包结果
 export const redresults = state => state.redresults;
+// 获取loading开关
+export const loading = state => state.loading;
+// 获取当前币种
+export const thismoney = state => state.thismoney;
+// 获取发抢红包记录状态
+export const thisjilu = state => state.thisjilu;
 

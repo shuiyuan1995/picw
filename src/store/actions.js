@@ -30,7 +30,6 @@ const actions = {
     let _ItemRoomRedEnvelopeList = roomRedEnvelopeList[index]? [
       ...roomRedEnvelopeList[index]
     ] : []
-    console.log(_ItemRoomRedEnvelopeList)
     _ItemRoomRedEnvelopeList = [
       ..._ItemRoomRedEnvelopeList,
       packetData
@@ -39,7 +38,6 @@ const actions = {
     let _roomRedEnvelopeList = [
       ...roomRedEnvelopeList
     ]
-    console.log(_ItemRoomRedEnvelopeList)
     // 更新所有红包
     _roomRedEnvelopeList[index] = _ItemRoomRedEnvelopeList;
     // 改变所有红包

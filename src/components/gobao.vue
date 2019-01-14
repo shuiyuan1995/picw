@@ -1,5 +1,20 @@
 <style lang="stylus" scoped>
  @import "../common/styl/index";
+  .fullscreen
+    position absolute
+    top 0rem
+    height 100%
+    width 100%
+  .fixed-center
+    position absolute
+    top 50%
+    left 50%
+    transform translate(-50%,-50%)
+  .flex
+    display flex
+  .column
+    display flex
+    flex-direction column
   .bg
     background rgba(#000000,0.4)
     z-index 999
@@ -25,7 +40,7 @@
       margin-top 0.8rem
       .okbtn
         height 1.6rem
-        background-color #d65c44
+        background-color #dc1500
         border-radius 0.8rem
         border solid 0.02rem #cf513b
         padding 0 3.2rem

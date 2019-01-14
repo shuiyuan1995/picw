@@ -1,28 +1,49 @@
 <style lang="stylus" scoped>
   @import "../common/styl/index";
+  .fullscreen
+    position absolute
+    top 0rem
+    width 100%
+    height 100%
+    overflow hidden
+  .flex
+    display flex
   .alljilu
     background #ffffff
-    padding-top 1.99rem
     max-width 16rem
     margin  0 auto
   .recordHair
+    position absolute
+    top 2rem
+    bottom 0rem
+    width 100%
+    height auto
     max-width 16rem
-    margin  0 auto
+    margin -1px auto
     background #ffffff
-    min-height 100%
-  .smallhead
-    background #c7422f
-    color #ffba41
+    font-size 0.48rem
   .fixed-top
     z-index 999
   .top
-    background #f0f0f0 url($imgUrl+"bg5.png") no-repeat top
+    background #f1f1f1 url("../common/images/bg5.png") no-repeat top
     background-size 100% auto
-    min-height 10.82rem
-    padding-top 4.78rem
+    min-height 7.82rem
     text-align center
     color #222222
     position relative
+    padding-top 0.52rem
+    .toptitle
+      font-size 0.72rem
+      color #ffba41
+      margin-bottom 4rem
+      position relative
+      .more
+        position absolute
+        right 0.8rem
+        top -0.16rem
+        font-size 1.12rem
+      p
+        font-weight bold
     .name
       font-size 0.72rem
     .allprice
@@ -33,6 +54,7 @@
         font-size 0.96rem
     .tablebox
       margin-top 0.7rem
+      flex-wrap wrap
       li
         flex 0 0 33%
         margin 0.4rem 0
@@ -47,13 +69,12 @@
       font-size 0.56rem
       position absolute
       right 0.8rem
-      top 3.6rem
+      top 4.2rem
       cursor pointer
   .bottom
     border-top 0.04rem solid #e8e8e8
     background #ffffff
     position relative
-    padding-bottom 1.6rem
     li
       border-bottom 0.04rem solid #e8e8e8
       padding 0.68rem 0.8rem
@@ -105,17 +126,17 @@
 </style>
 
 <template>
-  <div class="alljilu fullscreen scroll" ref="myscroll" @scroll="scrollHandler" @click="$refs.smallhead.open()">
-    <smallhead ref="smallhead" :title='$t("message.shou")' class="fixed-top" right="jilui" left="guan"></smallhead>
-    <q-pull-to-refresh  :handler="refresher"
-      :inline="true"
-      :distance="10"
-      pull-message="下拉刷新"
-      refresh-message="正在刷新"
-      release-message="释放刷新"
-      class="recordHair text-justify" 
-      >
+  <div class="alljilu fullscreen">
+    <smallhead ref="smallhead" left="guanbi" :center='$t("message.shou")' right="more"></smallhead>
+    <cube-scroll class="recordHair" ref="scroll"
+      :options="scrollOptions"
+      @pulling-down="onPullingDown"
+      @pulling-up="onPullingUp">
       <div class="top">
+        <div class="toptitle">
+          <span @click="tomore" class="more icon icon-moreread"></span>
+          <p>{{$t("message.shou")}}</p>
+        </div>
         <p class="name">{{data.name}}{{$t("message.gohuo")}}<br />{{data.packetcount}}{{$t("message.ge")}}</p>
         <p class="allprice">{{data.packetsum?Number(data.packetsum).toFixed(4):(0).toFixed(4)}} EOS</p>
         <ul class="flex tablebox">
@@ -144,7 +165,7 @@
             <p>{{$t("message.steptitle")}}</p>
           </li>
         </ul>
-        <span class="time" @click="timer = !timer">{{thisdata}}</span>
+        <span class="time" @click="showDatePicker">{{thisdata}}</span>
       </div>
       <ul class="bottom" v-if="list&&list.length>0">
         <li :key="index" v-for="(item,index) in list">
@@ -161,26 +182,36 @@
           <p v-show="item.reward_type>0" class="txtinfo"><span>{{$t("message.zhong")}}：{{typetxt[item.reward_type]}}，{{$t("message.huo")}}{{item.reward_sum}} EOS</span></p>
           <p v-show="item.is_chailei==1" class="txtinfo"><span><img class="img1" src="../common/images/lei.png">{{$t("message.steptitle")}}，{{$t("message.fu")}}{{item.outpacket_sum}} EOS</span></p>
         </li>
-        <li class="more" v-show="more">{{data.meta.current_page>=data.meta.last_page?$t("message.di"):$t("message.loading")}}</li>
       </ul>
       <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
-    </q-pull-to-refresh>
-    <datetime v-show="timer" @newtime="newtime" :timej="timej"></datetime>
+    </cube-scroll>
   </div>
 </template>
 
 <script>
 import smallhead from '@/components/smallhead.vue'
-import datetime from '@/components/datetime.vue'
-import { date } from 'quasar'
-import {mapGetters} from 'vuex';
+import {changedata} from "@common/js"
+import {mapGetters,mapMutations} from 'vuex';
 import {get} from '../api'
+import {SET_LOADING} from "@store/mutation-types"
 export default {
   created(){
+    this.SET_LOADING(true)
     this.getinfo()
   },
   data(){
     return{
+      scrollOptions:{
+        pullDownRefresh: {
+          threshold: 60,
+          stop: 40,
+          txt: '更新成功'
+        },
+        pullUpLoad:{
+          threshold:40,
+          txt: '加载成功'
+        },
+      },
       model:new Date(),//时间
       timer:false, //时间选择展示
       data:{}, //信息
@@ -192,14 +223,46 @@ export default {
     }
   },
   components: {
-    smallhead,
-    datetime
+    smallhead
   },
   methods:{
+    ...mapMutations({
+      SET_LOADING
+    }),
+    onPullingDown(){
+      this.qingqiu = true
+      get('/my_income_packet').then((val)=>{
+        console.log(val)
+        this.$refs.scroll.forceUpdate(true)
+        this.qingqiu = false
+        this.data = val
+        this.page = val.meta.current_page
+        console.log(this.page)
+        if(Object.keys(val.data).length != 0){
+          this.list = val.data.map((val,i)=>{
+            return {
+              ...val,
+              created_at:changedata(val.created_at*1000,'hh:mm:ss')
+            }
+          })
+        }
+        this.timej = {
+          first:val.last_time*1000,
+          last:val.max_time*1000
+        }
+      })
+    },
+    onPullingUp(){
+      if(!this.qingqiu&&this.data.meta.last_page&&this.page<this.data.meta.last_page){
+        this.getinfo()
+      }else{
+        this.$refs.scroll.forceUpdate()
+      }
+    },
     // 获取新时间
     newtime(newtime){
       if(newtime){
-        let time = date.formatDate(newtime, 'X')
+        // let time = date.formatDate(newtime, 'X')
         this.getinfo(time)
         this.model = newtime
       }
@@ -215,6 +278,31 @@ export default {
         }
       })
     },
+    tomore(){
+      this.$createActionSheet({
+        title: '红包记录',
+        pickerStyle: true,
+        active:this.$route.path == '/record-hair'?0:1,
+        data: [
+          {
+            content: '发红包记录'
+          },
+          {
+            content: '抢红包记录'
+          }
+        ],
+        onSelect: (item, index) => {
+          switch (index) {
+            case 0:
+              this.$router.push('/record-hair')
+              break;
+            default:
+              this.$router.push('/record-closed')
+              break;
+          }
+        }
+      }).show()
+    },
     // 获取列表信息
     getinfo(time){
       this.qingqiu = true
@@ -222,78 +310,69 @@ export default {
       if(time){
         data = {
           time:time,
-          page:this.page+1
+          page:1
         }
       }else{
         data = {
           page:this.page+1
         }
       }
-      this.$q.loading.show();
       get('/my_income_packet',data).then((val)=>{
         console.log(val)
-        this.$q.loading.hide();
+        this.SET_LOADING(false)
+        console.log('89e')
         this.qingqiu = false
         this.data = val
         this.page = val.meta.current_page
         if(Object.keys(val.data).length != 0){
           this.data.data = val.data.map((val,i)=>{
-          return {
-            ...val,
-            created_at:date.formatDate(val.created_at*1000, 'HH:mm:ss')
-          }
-        })
-        this.list = [
-          ...this.list,
-          ...this.data.data
-        ]
+            return {
+              ...val,
+              created_at:changedata(val.created_at*1000,'hh:mm:ss')
+            }
+          })
         }
-        this.timej = {
-          first:val.last_time*1000,
-          last:val.max_time*1000
-        }
-      })
-    },
-    refresher(done){
-      this.qingqiu = true
-      get('/my_income_packet').then((val)=>{
-        console.log(val)
-        done()
-        this.qingqiu = false
-        this.data = val
-        this.page = val.meta.current_page
-        if(Object.keys(val.data).length != 0){
-          this.list = val.data.map((val,i)=>{
-          return {
-            ...val,
-            created_at:date.formatDate(val.created_at*1000, 'HH:mm:ss')
-          }
-        })
-        }
-        this.timej = {
-          first:val.last_time*1000,
-          last:val.max_time*1000
-        }
-      })
-    },
-    scrollHandler(e){
-      let scrollTop = e.target.pageYOffset || e.target.scrollTop
-      if(this.$refs.myscroll.scrollHeight-scrollTop-this.$refs.myscroll.offsetHeight < 30){
-        this.more = true
-        if(this.qingqiu||this.data.meta.last_page&&this.page>=this.data.meta.last_page){
-          return false
+        if(time){
+          this.list = [
+            ...this.data.data
+          ]
         }else{
-          this.getinfo()
+          this.list = [
+            ...this.list,
+            ...this.data.data
+          ]
         }
-      }else{
-        this.more = false
+        this.timej = {
+          first:val.last_time*1000,
+          last:val.max_time*1000
+        }
+        this.$nextTick(()=>{
+          this.$refs.scroll.forceUpdate(true)
+        })
+      })
+    },
+    showDatePicker() {
+      if (!this.datePicker) {
+        this.datePicker = this.$createDatePicker({
+          title: '选择日期',
+          min: new Date(this.timej.first),
+          max: new Date(this.timej.last),
+          value: new Date(),
+          onSelect: this.selectHandle
+        })
       }
-    }
+      this.datePicker.show()
+    },
+    selectHandle(date, selectedVal, selectedText) {
+      this.model = date
+      this.SET_LOADING(true)
+      this.getinfo(date.getTime())
+    },
   },
   computed:{
     // 时间转换
     thisdata(){
-      return  `${date.formatDate(this.model, 'MM')}月${date.formatDate(this.model, 'DD')}日`
+      return changedata(this.model,'MM月dd日')
     },
     // 奖励类型判断
     typetxt(){

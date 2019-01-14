@@ -7,6 +7,20 @@ function resolve (dir) {
 }
 
 module.exports = {
+  css: {
+    loaderOptions: {
+      stylus: {
+        'resolve url': true,
+        'import': []
+      }
+    }
+  },
+  pluginOptions: {
+    'cube-ui': {
+      postCompile: true,
+      theme: false
+    }
+  },
   devServer: {
     overlay: {
       warnings: false,
@@ -20,15 +34,7 @@ module.exports = {
   productionSourceMap: false,
 
   lintOnSave: undefined,
-
-  pluginOptions: {
-    quasar: {
-      theme: 'mat',
-      rtlSupport: true,
-      importAll: true
-    }
-  },
-
+  
   chainWebpack: config => {
     config.resolve.alias
     .set("@", resolve("src"))
@@ -42,4 +48,4 @@ module.exports = {
     .set("@socket", resolve("src/socket"))
     .set("@views", resolve("src/views"))
   }
-};
+}

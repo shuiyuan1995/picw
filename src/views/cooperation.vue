@@ -1,8 +1,12 @@
 <style lang="stylus" scoped>
+  .fullscreen
+    position absolute
+    top 0
+    width 100%
+    height 100%
+    overflow hidden
   .cooperation
     background #ffffff
-    padding-top 2rem
-    padding-bottom 1.28rem
     max-width 16rem
     margin  0 auto
   h2
@@ -23,21 +27,33 @@
       margin-bottom 0.6rem
       img 
         height 2.16rem
+  .zhan
+    margin-bottom 1rem
+  .top
+    position absolute
+    top 2rem
+    bottom 0rem
+    width 100%
+    height auto
+    box-sizing border-box
+  .flex
+    display flex
+    flex-wrap wrap
 </style>
 
 <template>
-  <div class="cooperation fullscreen scroll">
-    <smallhead  class="fixed-top" :title='$t("message.hezuo")' :right="false"></smallhead>
-    <div class="top">
-      <h2>EOS 钱包</h2>
+  <div class="cooperation fullscreen">
+    <smallhead  class="fixed-top" left="huitui" :center='$t("message.hezuo")' ></smallhead>
+    <cube-scroll class="top">
+      <h2>EOS {{$t("message.qian")}}</h2>
       <ul class="flex">
         <li class="img" :key="index" v-for="(item,index) in theimg"><img :src="item"></li>
       </ul>
-      <h2 class="zhan">战略合作机构</h2>
+      <h2 class="zhan">{{$t("message.heji")}}</h2>
       <ul class="flex">
         <li class="img1" :key="index" v-for="(item,index) in theimg1"><img :src="item"></li>
       </ul>
-    </div>
+    </cube-scroll>
   </div>
 </template>
 

@@ -1,25 +1,17 @@
-import {scatGameLogin, scatGetAllBalance, getMoneyListget, scatGetAccount, scatSelectPacket} from "./"
+import {addwlist,scatGameLogin, scatGetAllBalance, getMoneyListget, scatGetAccount, scatSelectPacket} from "./"
 import store from "@store"
-import {SET_USER_INFO, SET_TOKEN, SET_INVITE_NAME,SET_ACTIVE_RED_EVELOPE_LIST} from "@store/mutation-types";
-import {Loading, Notify} from 'quasar'
+import {SET_USER_INFO, SET_TOKEN, SET_INVITE_NAME,SET_ACTIVE_RED_EVELOPE_LIST,SET_LOADING} from "@store/mutation-types";
+import { Toast } from 'cube-ui'
 import {get} from '@api';
-import router from '@router'
 
 // 登陆封装
 const login = (cp) => {
-  Loading.show();
+  store.commit(SET_LOADING, true);
   scatGameLogin("PickOwn").then(account => {
     const {publicKey, name} = account;
     const {inviteName,redEnvelopeList} = store.state;
-    const {ref} = router.history.current.query;
-    console.log(ref)
-    if(!inviteName){
-      // 获取邀请人参数
-      ref && store.commit(SET_INVITE_NAME, ref);
-      console.log(ref)
-    }
     // 邀请人判断
-    if(name == ref){
+    if(name == inviteName){
       store.commit(SET_INVITE_NAME, "");
     }
     // 同步用户信息
@@ -44,27 +36,27 @@ const login = (cp) => {
       // 登陆成功获取一次红包信息
       getMoneyListget();
     }).catch(err => {
-      Loading.hide();
+      store.commit(SET_LOADING, false);
       isbian(redEnvelopeList,false)
-      Notify.create({
-        message: "服务器错误，稍后再试！",
-        timeout: 1500,
-        color: 'red',
-        position:"center"
+      const toast = Toast.$create({
+        txt: "服务器繁忙，稍后再试！",
+        time: 2000,
+        type:'txt'
       })
+      toast.show()
     });
   }).catch(err => {
-    Loading.hide();
+    store.commit(SET_LOADING, false);
     if(err == 101){
       cp&&cp()
       return false
     }
-    Notify.create({
-      message: err||"服务器错误，稍后再试！",
-      timeout: 1500,
-      color: 'red',
-      position:"center"
+    const toast = Toast.$create({
+      txt: "服务器繁忙，稍后再试！",
+      time: 2000,
+      type:'txt'
     })
+    toast.show()
   })
 }
 

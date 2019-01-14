@@ -1,4 +1,6 @@
 /* --------------- mutation type ------------------ */
+// 设置loading开关
+export const SET_LOADING = "SET_LOADING";
 // 设置token
 export const SET_TOKEN = "SET_TOKEN";
 // 设置用户id
@@ -27,6 +29,10 @@ export const SET_INVITE_NAME = "SET_INVITE_NAME";
 export const SET_MY_SEND = "SET_MY_SEND";
 //设置抢红包结果
 export const SET_RED_RESULTS = "SET_RED_RESULTS";
+// 修改当前币种
+export const SET_THISMONEY = "SET_THISMONEY"
+// 修改发抢红包记录状态
+export const SET_THISJULU = "SET_THISJULU"
 
 /* --------------- action type ------------------ */
 // 设置用户cpu，net

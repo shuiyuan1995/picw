@@ -1,7 +1,23 @@
 <style lang="stylus" scoped>
+  .fullscreen
+    position fixed
+    left 0rem
+    top 0rem
+    height 100%
+    width 100%
+  .invitation
+    z-index 102
+  .fixed-center
+    position absolute
+    top 50%
+    left 50%
+    transform translate(-50%,-50%)
+  .absolute-top-right
+    position absolute
+    top 0rem
+    right 0rem
   .bg
     background rgba(#000000,0.4)
-    z-index 999
   .info
     width 13.4rem
     height 7.4rem
@@ -76,12 +92,12 @@ export default {
       var valueLength = NValue.length;
       this.selectText(url, 0, valueLength);
       document.execCommand("Copy");
-      this.$q.notify({
-        message: "复制成功",
-        timeout: 100,
-        color: 'green',
-        position:"center"
+      const toast = this.$createToast({
+        txt: "复制成功",
+        time: 2000,
+        type: 'txt'
       })
+      toast.show()
       this.$emit('invitashow')
     },
     selectText(textbox, startIndex, stopIndex) {

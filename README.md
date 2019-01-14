@@ -1,4 +1,4 @@
-# PickOwn
+# PickOwnT
 
 ## Project setup
 ```
