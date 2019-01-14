@@ -109,7 +109,7 @@
       <div class="banner">
         <p class="pledgenum">OWN{{$t("message.pledgeallnum")}}</p>
         <img src="../common/images/icon29.png">
-        <p class="num"><span class="orange">{{data.allOWN}}</span> OWN</p>
+        <p class="num"><span class="orange">{{Number(data.allOWN).toFixed(4)}}</span> OWN</p>
         <!-- <p class="txt">({{$t("message.zhan")}} 236467758 OWN 87.90%)</p> -->
       </div>
       <div class="mybox">
