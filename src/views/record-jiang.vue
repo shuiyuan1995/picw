@@ -263,14 +263,14 @@ export default {
           // this.data.balown = depositown?Number(depositown/10000).toFixed(4):0
         }
       })
-      userboard('statetable','pickownbouns').then(json=>{
+      userboard('statetable','pickownbonus').then(json=>{
         if(json != ''){
           const {totaleos,totalown} = json
           this.data.allOWN = (totalown/10000).toFixed(4)
           this.allfenhong = (totaleos/10000).toFixed(4)
         }
       })
-      userboard('wdowntab','pickownbouns').then(json=>{
+      userboard('wdowntab','pickownbonus').then(json=>{
         
       })
       scatGetAllBalance()

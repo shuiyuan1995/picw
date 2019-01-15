@@ -294,12 +294,14 @@ export default {
     // 推出登陆
     scatGameLoginOut() {
       scatGameLoginOut();
+      this.$router.push("/");
     },
     // 登陆
     login() {
       login(()=>{
         this.$parent.openrule(9)
       });
+      this.SET_GOOGLE_MENU(false)
     },
     // 跳转页面
     thepage(i) {

@@ -172,6 +172,8 @@ export default {
             this.redcss('1')
             // 展示抢红包结果
             this.$emit('myshow',win)
+            // 上传红包结果
+            post('/close_packet',win).then(()=>{})
             break;
           case 3:
             this.txid = in_packet.id

@@ -140,10 +140,10 @@
         </div>
         <cube-scroll class="contentinfo" ref="scroll">
           <ul>
-            <li class="tr" v-for="item in 5" :key="item">
-              <p>2018.12.23 </p>
-              <p>1</p>
-              <p><span class="orange">1.2359</span> EOS</p>
+            <li class="tr" v-for="(item,index) in list" :key="index">
+              <p>{{item.created_at}}</p>
+              <p>{{item.ranking}}</p>
+              <p><span class="orange">{{item.prize}}</span> EOS</p>
             </li>
           </ul>
         </cube-scroll>
@@ -155,15 +155,26 @@
 
 <script>
 import {get} from "@api"
+import {changedata} from "@common/js"
 export default {
   created(){
     get('/get_my_history_paihangbang').then(json=>{
-      console.log('json: ', json);
+      this.list = json.data.map(v=>{
+        return {
+          ...v,
+          created_at:changedata(v.created_at*1000,'yyyy-MM-dd')
+        }
+      })
     })
   },
   props:{
     listshow:{
       type:Boolean
+    }
+  },
+  data(){
+    return{
+      list:[]
     }
   },
   watch:{

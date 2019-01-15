@@ -421,8 +421,8 @@ function bonustable(table){
   return new Promise(function (resolve, reject) {
       let eos = ScatterJS.scatter.eos(network, Eos);
       eos.getTableRows({
-        "code": 'pickownbouns',
-        "scope": 'pickownbouns',
+        "code": 'pickownbonus',
+        "scope": 'pickownbonus',
         "table": table,
         "json":true,
         "lower_bound":name,
@@ -484,7 +484,7 @@ function pledgeOWN(OWN){
         }],
         data: {
           from: name,
-          to: "pickownbouns",
+          to: "pickownbonus",
           quantity: OWN,
           memo:""
         }
@@ -511,7 +511,7 @@ function wdbonus() {
     eos.transaction({
       actions: [
         {
-          account: 'pickownbouns',
+          account: 'pickownbonus',
           name: 'wdbonus',
           authorization: [{
             actor: name,
@@ -549,7 +549,7 @@ function withdrawown(amount) {
     eos.transaction({
       actions: [
         {
-          account: 'pickownbouns',
+          account: 'pickownbonus',
           name: 'withdrawown',
           authorization: [{
             actor: name,
