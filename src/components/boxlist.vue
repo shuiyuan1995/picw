@@ -89,6 +89,7 @@ export default {
       SET_LOADING,
       SET_THISJULU
     }),
+    // 抢红包
     go(){
       if (JSON.stringify(this.userInfo) === "{}") return login();
       const {isgo, none, txId, packetId, eos} = this.item;
@@ -152,6 +153,7 @@ export default {
         }).show()
       });
     },
+    // 向后台请求结果
     _getid(){
       post('/post_income_packet',{packetId:this.item.packetId}).then(json=>{
         console.log(json)

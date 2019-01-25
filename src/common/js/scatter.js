@@ -7,26 +7,26 @@ import { Toast } from 'cube-ui'
 import {getMoneyListget} from "./"
 
 ScatterJS.plugins( new ScatterEOS() );
-let chainId = 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906';
-let endpoint = 'https://eospro.pickown.com';
-let network = {
-    blockchain: 'eos',
-    host: 'eospro.pickown.com',
-    port: "",
-    chainId: chainId,
-    protocol: "https",
-    httpEndpoint : endpoint,
-};
-// let chainId = 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f';
-// let endpoint = 'http://35.197.130.214:8888';
+// let chainId = 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906';
+// let endpoint = 'https://eospro.pickown.com';
 // let network = {
 //     blockchain: 'eos',
-//     host: '35.197.130.214',
-//     port: "8888",
+//     host: 'eospro.pickown.com',
+//     port: "",
 //     chainId: chainId,
-//     protocol: "http",
+//     protocol: "https",
 //     httpEndpoint : endpoint,
 // };
+let chainId = 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f';
+let endpoint = 'http://35.197.130.214:8888';
+let network = {
+    blockchain: 'eos',
+    host: '35.197.130.214',
+    port: "8888",
+    chainId: chainId,
+    protocol: "http",
+    httpEndpoint : endpoint,
+};
 
 /**
  * 登陆scatter
@@ -374,6 +374,11 @@ function scatRedPacketList() {
 		}).then(result => {
 			resolve(JSON.parse(result.processed.action_traces[0].console).data);
 		}).catch(e => {
+      console.log('e: ', e);
+      if(e.code == 402){
+        store.commit(SET_LOADING, false);
+        return false
+      }
 			reject(e.message)
 		});
 	})

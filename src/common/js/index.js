@@ -4,6 +4,7 @@ import getMoneyListget from "./monneyList"
 import {changedata} from "./datafetch"
 
 const imgUrl = 'https://image.pickown.com/'
+// const imgUrl = '../common/images/'
 
 export {
   scatGameLogin,

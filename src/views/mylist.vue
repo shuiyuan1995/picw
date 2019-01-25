@@ -237,7 +237,8 @@
     <smallhead left="huitui" :center='$t("message.board")'></smallhead>
     <cube-scroll class="homescroll">
       <div class="hometop">
-        <span class="gonggao icon icon-gonggao" @click="openlist">{{$t("message.myjiang")}}</span>
+        <span class="gonggao"></span>
+        <!-- <span class="gonggao icon icon-gonggao" @click="openlist">{{$t("message.myjiang")}}</span> -->
         <span class="title">{{$t("message.paijiang")}}</span>
         <span class="rules icon"  @click="openrule(4)">{{$t("message.how1")}}</span>
       </div>
@@ -293,7 +294,7 @@
         </div>
       </div>
     </cube-scroll>
-    <mylist v-show="listshow" :listshow="listshow"></mylist>
+    <!-- <mylist v-show="listshow" :listshow="listshow"></mylist> -->
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
   </div>
 </template>
@@ -303,7 +304,7 @@
 
 <script>
 import smallhead from '@/components/smallhead.vue'
-import mylist from '@/components/mylist.vue'
+// import mylist from '@/components/mylist.vue'
 import rules from '@/components/rules.vue'
 import {mapGetters,mapMutations} from 'vuex';
 import {scatRedPacketList,userboard} from "@common/js"
@@ -332,7 +333,7 @@ export default {
   },
   components: {
     smallhead,
-    mylist,
+    // mylist,
     rules
   },
   data(){
@@ -369,21 +370,32 @@ export default {
     // 获取排行榜数据
     getlist(){
       this.SET_LOADING(true)
-      get('/get_paihangbang').then(json=>{
+      scatRedPacketList().then(val => {
         this.SET_LOADING(false)
-        console.log(json)
-        if(json.data&&json.data.length>0){
-          this.items2 = json.data
-          this.jiangchi = (json.data[0].prize/10000)*5
+        if(val&&val.length>0){
+          this.items2 = val
+          this.jiangchi = (val[0].prize/10000)*5
           // 获取自己排行
           this.getmypai()
         }
+      }).catch(()=>{
+        this.SET_LOADING(false)
+        const toast = this.$createToast({
+          txt: "服务器繁忙，请稍后再试",
+          time: 2000,
+          type: 'txt'
+        })
+        toast.show()
       })
-      // userboard('cstatus','pickowngames').then(json=>{
+      // get('/get_paihangbang').then(json=>{
+      //   this.SET_LOADING(false)
       //   console.log(json)
-      // })
-      // userboard('userboard','pickowngames').then(json=>{
-      //   console.log(json)
+      //   if(json.data&&json.data.length>0){
+      //     this.items2 = json.data
+      //     this.jiangchi = (json.data[0].prize/10000)*5
+      //     // 获取自己排行
+      //     this.getmypai()
+      //   }
       // })
     },
     getmypai(){

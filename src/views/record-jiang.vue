@@ -181,6 +181,7 @@ export default {
   created(){
     // this._getInfo();
     // 查询信息
+    this.SET_LOADING(true)
     this.getdata()
   },
   mounted(){
@@ -262,6 +263,7 @@ export default {
           // this.totaleos = dist[2] | 0
           // this.data.balown = depositown?Number(depositown/10000).toFixed(4):0
         }
+        this.SET_LOADING(false)
       })
       userboard('statetable','pickownbonus').then(json=>{
         if(json != ''){

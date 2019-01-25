@@ -8,21 +8,25 @@
   padding 0 0.8rem
   .item
     position relative
-    flex 1
+    flex 0 0 25%
+    width 25%
     height 1.53rem
     text-align center
   .btn-item
     font-size 0.56rem
-    height 1.53rem
+    height 1.6rem
     line-height 1.53rem
     font-weight bold
     position relative
     cursor pointer
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
     &.active
       color #eb1726
       &::after
         position absolute
-        bottom -0.12rem
+        bottom 0px
         left 0rem
         content ""
         height 0.1rem

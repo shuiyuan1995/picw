@@ -8,8 +8,9 @@ import { Toast } from 'cube-ui'
 const http = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "https://test.pickown.com/api"
-      : "https://test.pickown.com/api", // 基础路径
+      ? "https://manage.pickown.com/api"
+      : "http://pickown.test/api", // 基础路径
+      // https://test.pickown.com/api
       // http://pickown.test/api
       // https://manage.pickown.com/api
     timeout: 15000 // 请求延时

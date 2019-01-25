@@ -167,7 +167,7 @@
 
 <template>
   <div class="drawer">
-    <cube-scroll class="contentinfo">
+    <cube-scroll class="contentinfo" ref="scroll">
       <div class="bigin flex">
         <!-- 登陆 -->
         <button class="bigining icon capitalize icon-dengluyonghuming" v-if="!userInfo.islogin" @click="login">{{$t("message.login")}}</button>
@@ -227,7 +227,7 @@
           <img src="../common/images/icon1.png">
         </div>
         <div class="langitem" :class="changeI == 'zhCHT'?'active':''" @click="changeL('zhCHT')">
-          <img src="../common/images/icon9.png">
+          <img src="../common/images/icon33.png">
         </div>
       </ul>
       <ul class="topbox smalltop flex">
@@ -278,7 +278,6 @@ export default {
       "net",
       "menuStatus",
       "allInfo",
-      "menuStatus"
     ]),
   },
   components:{
@@ -336,5 +335,12 @@ export default {
       this.leftDrawerOpen = !this.leftDrawerOpen;
     },
   },
+  watch:{
+    menuStatus(newdata){
+      if(newdata){
+        this.$refs.scroll.refresh()
+      }
+    }
+  }
 }
 </script>

@@ -22,6 +22,7 @@ module.exports = {
     }
   },
   devServer: {
+    port:80,
     overlay: {
       warnings: false,
       errors: true

@@ -111,7 +111,7 @@
     <ul class="footer">
       <li @click="openinvitation">
         <p>{{$t("message.leiyao")}}（{{$t("message.player")}}）</p>
-        <p><span class="orange">{{sum}}</span><i class="icon icon-pagenext"></i></p>
+        <p><span class="orange">{{sum?sum:0}}</span><i class="icon icon-pagenext"></i></p>
       </li>
       <li @click="openinvitation">
         <p>{{$t("message.leijiang")}}</p>

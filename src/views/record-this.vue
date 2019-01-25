@@ -178,7 +178,7 @@
               <p>{{$t("message.linwan")}}</p>
             </div>
           </div>
-          <div class="box-bottom">{{$t("message.gong")}}{{data.outpacketsum}} EOS</div>
+          <div class="box-bottom">{{$t("message.gong")}}{{data.outpacketsum?data.outpacketsum:'0.0000'}} EOS</div>
         </div>
         <cube-scroll class="recordscroll" ref="scroll">
           <ul v-if="data.data&&data.data.length>0">

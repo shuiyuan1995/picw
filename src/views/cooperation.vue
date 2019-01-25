@@ -36,6 +36,8 @@
     width 100%
     height auto
     box-sizing border-box
+    .topin
+      height 26.48rem
   .flex
     display flex
     flex-wrap wrap
@@ -45,14 +47,16 @@
   <div class="cooperation fullscreen">
     <smallhead  class="fixed-top" left="huitui" :center='$t("message.hezuo")' ></smallhead>
     <cube-scroll class="top">
-      <h2>EOS {{$t("message.qian")}}</h2>
-      <ul class="flex">
-        <li class="img" :key="index" v-for="(item,index) in theimg"><img :src="item"></li>
-      </ul>
-      <h2 class="zhan">{{$t("message.heji")}}</h2>
-      <ul class="flex">
-        <li class="img1" :key="index" v-for="(item,index) in theimg1"><img :src="item"></li>
-      </ul>
+      <div class="topin">
+        <h2>EOS {{$t("message.qian")}}</h2>
+        <ul class="flex">
+          <li class="img" :key="index" v-for="(item,index) in theimg"><img :src="item"></li>
+        </ul>
+        <h2 class="zhan">{{$t("message.heji")}}</h2>
+        <ul class="flex">
+          <li class="img1" :key="index" v-for="(item,index) in theimg1"><img :src="item"></li>
+        </ul>
+      </div>
     </cube-scroll>
   </div>
 </template>
@@ -79,6 +83,6 @@ export default {
       }
       return a
     }
-  }
+  },
 }
 </script>

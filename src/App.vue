@@ -113,15 +113,35 @@ export default {
     //预加载图片
     preload(){
       let imgs = [
-        imgUrl+"bg3.png",
-        imgUrl+"bg.png",
-        imgUrl+"bg5.png",
+        imgUrl+"img.png",
+        imgUrl+"img1.png",
+        imgUrl+"img2.png",
+        imgUrl+"img3.png",
+        imgUrl+"img4.png",
+        imgUrl+"img5.png",
+        imgUrl+"img6.png",
+        imgUrl+"img7.png",
+        imgUrl+"img8.png",
+        imgUrl+"img9.png",
+        imgUrl+"img10.png",
+        imgUrl+"img11.png",
+        imgUrl+"img12.png",
+        imgUrl+"img13.png",
+        imgUrl+"img14.png",
+        imgUrl+"img15.png",
+        imgUrl+"img16.png",
+        imgUrl+"img17.png",
+        imgUrl+"img18.png",
+        imgUrl+"img19.png",
+        imgUrl+"img20.png",
+        imgUrl+"img21.png",
         imgUrl+"img22.png",
       ]
       for (let img of imgs) {
         let image = new Image()
         image.src = img
-        image.onload = () => {}
+        image.onload = () => {
+        }
       }
     },
   }
