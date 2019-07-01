@@ -21,7 +21,7 @@
   .gobao
     width: 13.4rem;
     min-height: 17.02rem;
-    background url("../common/images/bg3.png") no-repeat bottom
+    background url("../assets/images/bg3.png") no-repeat bottom
     background-size 100% 100%
     z-index 1000
     align-items center
@@ -117,7 +117,7 @@
             <span>+ {{win.rewardsum}}EOS</span>
           </p>
           <p class="column" v-if="win.is_chailei == 1">
-            <img class="lei" src="../common/images/lei.png">
+            <img class="lei" src="../assets/images/lei.png">
             <span>- {{win.eos}}EOS</span>
           </p>
         </div>
@@ -147,7 +147,7 @@ export default {
   },
   data(){
     return{
-      typetxt:['',require('../common/images/icon2.png'),require('../common/images/icon3.png'),require('../common/images/icon6.png'),require('../common/images/icon4.png'),require('../common/images/icon5.png')]
+      typetxt:['',require('../assets/images/icon2.png'),require('../assets/images/icon3.png'),require('../assets/images/icon6.png'),require('../assets/images/icon4.png'),require('../assets/images/icon5.png')]
     }
   },
   methods:{
@@ -155,7 +155,6 @@ export default {
       this.$router.push({
         name: 'record-this',
         params: {
-          txId:this.win.outid,
           name:this.win.name,
           num:this.win.num
         }

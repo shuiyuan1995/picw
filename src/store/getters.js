@@ -22,6 +22,8 @@ export const prizeCount = state => state.prizeCount;
 export const allInfo = state => state.allInfo;
 // 获取房间id
 export const roomId = state => state.roomId;
+// 获取房间列表
+export const roomList = state => state.roomList;
 // 获取邀请人
 export const inviteName = state => state.inviteName;
 // 获取自己发红包id列表

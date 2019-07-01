@@ -17,6 +17,8 @@ export const SET_CPU = "SET_CPU";
 export const SET_NET = "SET_NET";
 // 设置房间id
 export const SET_ROOMID = "SET_ROOMID";
+// 设置房间列表
+export const SET_ROOMLIST = "SET_ROOMLIST";
 // 设置所有房间红包列表
 export const SET_ROOM_RED_EVELOPE_LIST = "SET_ROOM_RED_EVELOPE_LIST";
 // 设置焦点红包列表

@@ -8,15 +8,13 @@ Vue.use(Router)
 const router = new Router({
   mode: "history",
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'home',
-    //   component: () => import('./views/demo.vue')
-    // },
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      meta:{
+        keepAlive:false,
+      }
     },
     {
       path: '/record-this',
@@ -76,15 +74,6 @@ const router = new Router({
       path: '/record-hair',
       name: 'record-hair',
       component: () => import('./views/record-hair.vue'),
-      meta:{
-        keepAlive:false,
-        requireAuth: true
-      }
-    },
-    {
-      path: '/record-closed',
-      name: 'record-closed',
-      component: () => import('./views/record-closed.vue'),
       meta:{
         keepAlive:false,
         requireAuth: true

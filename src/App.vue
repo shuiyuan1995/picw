@@ -44,18 +44,20 @@
     <transition name="faderight">
       <drawer v-show="menuStatus"></drawer>
     </transition>
+    <recharge v-show="recharge"></recharge>
     <div v-show="menuStatus" class="bg" @click="theclose"></div>
   </div>
 </template>
 
 <script>
 import {mapMutations, mapActions,mapGetters} from 'vuex';
-import {SET_LOADING,SET_ALL_INFO,SET_GOOGLE_MENU} from "@store/mutation-types";
+import {SET_LOADING,SET_ALL_INFO,SET_GOOGLE_MENU,SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types";
 import {login, getMoneyListget,imgUrl} from "@common/js";
 import rules from "@/components/rules.vue";
-import {get} from './api';
+import {get} from '@api';
 import loading from "@/components/loading.vue";
 import drawer from "@/components/drawer.vue";
+import recharge from "@/components/recharge.vue";
 export default {
   created(){
     // 获取红包列表
@@ -63,31 +65,108 @@ export default {
     getMoneyListget(true);
     // 自动登陆
     login(()=>{
+      // this.openrule(9)
+      this.$socket.emit('login', this.userInfo.name);
+    },()=>{
       this.openrule(9)
     });
     // 
     this._getInfo()
     //预加载图片
-    this.preload()
+    // this.preload()
+  },
+  mounted(){
+    this.$socket.on('issus_packet', json => {
+      const {data,info} = json;
+      const index = data.eos;
+      // 设置展示数据
+      this.SET_ALL_INFO({...this.allInfo,...info});
+      // 更新所有红包数据
+      this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData:data, index})
+    })
+    this.$socket.on('income_packet', json => {
+      const {info,data} = json;
+      const index = data.eos;
+      // // 设置展示数据
+      this.SET_ALL_INFO({...this.allInfo,...info});
+      let item = {
+        name:data.send_user,
+        name1:data.get_user,
+        is_chailei:data.is_cailei,
+        reward_type:data.send_user,
+        type:3
+      }
+      // 更新所有红包数据
+      this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData:item, index});
+
+      // 改变红包状态
+      let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
+      // 判断列表是否为空
+      if(_roomItemEnvelopeList=='undefined'||!this.roomRedEnvelopeList){
+        return false
+      }
+      // 找到对应抢完的红包，改变状态
+      if(data.type||data.get_user==this.userInfo.name){
+        for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
+          console.log(_roomItemEnvelopeList[i].type,data.packetId,_roomItemEnvelopeList[i].packetId)
+          console.log(_roomItemEnvelopeList[i].type==1&&data.packetId === _roomItemEnvelopeList[i].packetId)
+          if (_roomItemEnvelopeList[i].type==1&&data.packetId === _roomItemEnvelopeList[i].packetId) {
+            // 修改红包展示状态
+            console.log(index,i,_roomItemEnvelopeList[i],data.type?2:1)
+            this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i],type:data.type?2:1});
+            break;
+          }
+        }
+      }
+      if(data.type){
+        let item = {
+          name:data.send_user,
+          num:data.num,
+          time:data.time,
+          in_packet_data:data.in_packet_data,
+          type:2
+        }
+        // 添加表格信息
+        this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData:item, index});
+      }
+    })
+    this.$socket.on('user_money', json=>{
+      let data = {
+        ...this.allInfo,
+        ...json
+      }
+      this.SET_ALL_INFO(data)
+    })
   },
   data(){
     return{
       rules: false,
-      therules:2
+      therules:2,
+      num:0,
+      recharge:false
     }
   },
   computed:{
     ...mapGetters([
+      "allInfo",
+      "userInfo",
       "loading",
-      "menuStatus"
+      "menuStatus",
+      "roomRedEnvelopeList"
     ])
   },
   components:{
     loading,
     rules,
-    drawer
+    drawer,
+    recharge
   },
   methods:{
+    // 获取vuex方法
+    ...mapActions({
+      SET_ROOM_RED_EVELOPE_LIST_UPDATA,
+      SET_ROOM_RED_EVELOPE_EXPIRED
+    }),
     // 获取vuex方法
     ...mapMutations({
       SET_LOADING,
@@ -101,7 +180,6 @@ export default {
     _getInfo() {
       get("/get_info").then(json => {
         const {data} = json;
-        console.log(data)
         this.SET_ALL_INFO(data)
       })
     },
@@ -136,14 +214,30 @@ export default {
         imgUrl+"img20.png",
         imgUrl+"img21.png",
         imgUrl+"img22.png",
+        imgUrl+"chun.png",
+        imgUrl+"chun1.png",
+        imgUrl+"chun2.png",
+        imgUrl+"chun3.png",
+        imgUrl+"chun4.png",
+        imgUrl+"chun5.png",
+        imgUrl+"chun6.png",
+        imgUrl+"chun7.png",
+        imgUrl+"chun8.png",
+        imgUrl+"chun9.png",
+        imgUrl+"chun10.png",
+        imgUrl+"chun11.png",
       ]
-      for (let img of imgs) {
+      imgs.map((img,i)=>{
         let image = new Image()
         image.src = img
         image.onload = () => {
+          if(i+1==imgs.length) console.log('图片加载完成')
         }
-      }
+      })
     },
+    close(b){
+      this.recharge = b
+    }
   }
 }
 </script>

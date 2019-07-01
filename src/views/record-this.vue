@@ -172,34 +172,34 @@
         <p class="sendname"><span class="big">{{name}}</span>{{$t("message.debao")}}<span class="time">({{timer}})</span></p>
         <div class="bao">
           <div class="box-top">
-            <img src="../common/images/bao.png">
+            <img src="../assets/images/bao.png">
             <div>
               <p>{{$t("message.wei")}}:{{num}}</p>
-              <p>{{$t("message.linwan")}}</p>
+              <p>{{status==1?'红包未领完':$t("message.linwan")}}</p>
             </div>
           </div>
-          <div class="box-bottom">{{$t("message.gong")}}{{data.outpacketsum?data.outpacketsum:'0.0000'}} EOS</div>
+          <div class="box-bottom">{{$t("message.gong")}}{{sum}} EOS</div>
         </div>
         <cube-scroll class="recordscroll" ref="scroll">
-          <ul v-if="data.data&&data.data.length>0">
-            <li class="recordlist" :key="index" v-for="(item,index) in data.data">
+          <ul v-if="data&&data.length>0">
+            <li class="recordlist" :key="index" v-for="(item,index) in data">
               <div>
-                <p class="name">{{item.user}}</p>
+                <p class="name">{{item.name}}</p>
                 <p class="money">
-                  <span class="orange">{{item.income_sum}}</span>&nbsp;EOS+<span class="orange">{{item.own}}</span>&nbsp;OWN
+                  <span class="orange">{{item.money}}</span>&nbsp;EOS+<span class="orange">{{item.own}}</span>&nbsp;OWN
                 </p>
               </div>
               <p>
-                <span class="time">{{item.created_at}}</span>
+                <span class="time">{{item.time}}</span>
                 <span class="img">
-                  <img v-if="item.is_chailei == 1" src="../common/images/icon26.png">
+                  <img v-if="item.is_lei == 1" src="../assets/images/icon26.png">
                   <img v-if="item.reward_type > 0" :src="typeImg[item.reward_type]">
                 </span>
               </p>
             </li>
           </ul>
           <div class="recordsnone" v-else>
-            <img src="../common/images/bao.gif" />
+            <img src="../assets/images/bao.gif" />
             <p>{{$t("message.jinxin1")}}</p>
           </div>
         </cube-scroll>
@@ -212,24 +212,24 @@
 <script>
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters,mapMutations} from 'vuex';
-import {get} from '../api'
+import {post} from '../api'
 import {SET_LOADING,SET_THISJULU} from "@store/mutation-types"
 import {changedata} from "@common/js"
 export default {
   created(){
     // 获取红包id
-    this.packetId = this.$route.params.txId
+    this.packetId = this.$route.params.packetId
     this.name = this.$route.params.name
     this.num = this.$route.params.num
     this.time = this.$route.params.time
-    let data = {
-      outid:this.packetId
-    }
+    this.sum = this.$route.params.sum
+    this.status = this.$route.params.status
     // 获取当前红包抽奖信息
     this.SET_LOADING(true)
-    get('/red_packet',data).then((obj)=>{
+    post('/grab_hb_record',{packetId:this.packetId}).then(json=>{
       this.SET_LOADING(false)
-      console.log(obj)
+      this.data = json.data
+      return false
       this.data = obj
       this.data.data = obj.data.map((val,i)=>{
         return {
@@ -239,7 +239,6 @@ export default {
       })
     }).catch(()=>{
       this.SET_LOADING(false)
-      // console.log(e)
     })
   },
   data(){
@@ -258,11 +257,11 @@ export default {
     ]),
     // 红包获奖状态判断
     typeImg(){
-      return ['',require('../common/images/icon22.png'),require('../common/images/icon23.png'),require('../common/images/icon27.png'),require('../common/images/icon25.png'),require('../common/images/icon24.png')]
+      return ['',require('../assets/images/icon22.png'),require('../assets/images/icon23.png'),require('../assets/images/icon27.png'),require('../assets/images/icon25.png'),require('../assets/images/icon24.png')]
     },
     // 转换时间
     timer(){
-      return changedata(this.time,'hh:mm:ss')
+      return changedata(this.time,'MM-dd hh:mm')
     }
   },
   methods:{

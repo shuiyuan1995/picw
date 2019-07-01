@@ -1,8 +1,9 @@
 <style lang="stylus" scoped>
+  @import "../common/styl/index";
   .home
     position absolute
     width 100%
-    top 0
+    top 0vh
     height 100%
   .hometop
     height 1.64rem
@@ -13,7 +14,11 @@
     .gonggao
       font-size 0.56rem
       line-height 1.64rem
-      &:before
+      display flex
+      align-items center
+      img 
+        width 0.88rem
+        height 1.56rem
         margin-right 0.16rem
     .rules
       font-size 0.56rem
@@ -45,16 +50,39 @@
       right 0
       width 4.96rem
       height 1.44rem
-      background-color #fafafa
+      background-color #eb0000
       border-radius 0.72rem 0 0 0.72rem
       border solid 1px #e5e5e5
       padding-left 0.8rem
       line-height 1.44rem
-      color #16b900
-      font-size 0.48rem
+      color #ffffff
+      font-size 0.56rem
       z-index 3
       &:before
         margin-right 0.24rem
+      .deng
+        &:before
+          content ""
+          position absolute
+          width 0.88rem
+          height 1.56rem
+          background url("../assets/images/chun12.png") no-repeat center
+          background-size contain
+          top 1.44rem
+          right 2.84rem
+          transform-origin top center
+          animation moveleft 3s ease-in-out 0.2s infinite
+        &:after
+          content ""
+          position absolute
+          width 2.08rem
+          height 2.2rem
+          background url("../assets/images/chun12.png") no-repeat center
+          background-size contain
+          top 1.44rem
+          right 1.08rem
+          transform-origin top center
+          animation moveleft 3s ease-in-out infinite
   .sendbtn
     width 100%
     max-width 16rem
@@ -90,13 +118,24 @@
     .btn
       flex 1
       height 1.44rem
-      background url("../common/images/btn.png") no-repeat
+      background url("../assets/images/btn.png") no-repeat
       background-size 100% 100%
       border none
       font-size 0.64rem
       color #ffffff
       font-weight bold
       outline none
+  @keyframes moveleft
+    0%
+      transform rotate(0deg)
+    30%
+      transform rotate(45deg)
+    45%
+      transform rotate(15deg)
+    70%
+      transform rotate(45deg)
+    100%
+      transform rotate(0deg)
 </style>
 
 
@@ -104,31 +143,32 @@
   <div class="home">
     <smallhead left="rule" center="logo" right="menu"></smallhead>
     <div class="hometop">
-      <span class="gonggao icon icon-gonggao" @click="openrule(2)">{{$t("message.newgonggao")}}</span>
+      <span class="gonggao" @click="openrule(2)"><img src="../assets/images/chun8.png" alt="">{{$t("message.newgonggao")}}</span>
       <span class="rules icon"  @click="openrule(0)">{{$t("message.how")}}</span>
     </div>
     <mynav :allroomred="allroomred"></mynav>
     <div class="content">
       <!-- 红包数据展示 -->
       <cube-scroll class="contentinfo" :options="options" ref="scroll" :scroll-events="['scroll']" @scroll="onScrollHandle">
-        <div :is="item.type==1?'boxlist':item.type==2?'results':'dantiao'" ref="scrollitem" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList" @myshow="myshow"></div>
+        <div :is="item.type==1?'boxlist':item.type==2?'results':'dantiao'" ref="scrollitem" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList"></div>
       </cube-scroll>
-      <div class="inforight icon icon-shang" v-show="outn>0&&userInfo.name" @click="scrollto(activeRedHeight[0].tops)">{{outn}}个红包</div>
+      <div class="inforight icon icon-shang" v-show="outn>0&&userInfo.name" @click="scrollto(activeRedHeight[0].tops)"><i class="deng"></i>{{outn}}个红包</div>
     </div>
     <!-- 底部按钮 -->
     <div class="sendbtn">
       <div class="send">
         <p>{{$t("message.leifa")}}</p>
-        <p>{{allInfo.out_packet_count}}</p>
+        <p>{{allInfo.user_send_num}}</p>
       </div>
       <button class="btn" @click="send">{{$t("message.sendbtn")}}</button>
       <div class="send">
         <p class="icon" @click="openrule(1)">{{$t("message.lucky")}}</p>
-        <p>{{allInfo.xinyunjiangchi}}</p>
+        <p>{{allInfo.jackpot}}</p>
       </div>
     </div>
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
     <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao>
+    <loadingbao v-show="loadingbao" :loadingbaodata="loadingbaodata" @myshow="myshow"></loadingbao>
   </div>
 </template>
 
@@ -138,6 +178,7 @@ import boxlist from '@/components/boxlist.vue'
 import results from '@/components/results.vue'
 import mynav from '@/components/mynav.vue'
 import dantiao from '@/components/dantiao.vue'
+import loadingbao from '@/components/loadingbao.vue'
 import gobao from '@/components/gobao.vue'
 import smallhead from "@/components/smallhead.vue";
 import rules from "@/components/rules.vue";
@@ -153,33 +194,14 @@ export default {
         probeType:3
       },
       inshow:false,
-      win:{
-        num:1234,
-        eos:2,
-        packetId:344,
-        outid:'334555',
-        name:'qwerqr',
-        print:123242,
-        is_chailei:1,
-        reward:1,
-        rewardsum:23421,
-        own:2342
-      },
       scrollTop:0,
+      win:{},
       outn:0,
-      itemH:0, // 单个红包高度
       therules: 1,
       rules: false,
-      room:['0.1','1','5','20']
+      loadingbao:false,
+      loadingbaodata:{}
     }
-  },
-  mounted(){
-    this.$nextTick(()=>{
-      this.scrollbottom()
-    })
-  },
-  activated(){
-    this.scrollbottom()
   },
   components: {
     smallhead,
@@ -188,7 +210,8 @@ export default {
     rules,
     mynav,
     dantiao,
-    gobao
+    gobao,
+    loadingbao
   },
   computed:{
     ...mapGetters([
@@ -198,7 +221,6 @@ export default {
       "hairRedEnvelopeCount",
       "prizeCount",
       "allInfo",
-      "token",
       "mysend",
       "roomId"
     ]),
@@ -230,9 +252,9 @@ export default {
         return []
       }
       let arr = []
-      this.roomRedEnvelopeList.map((v,i)=>{
-        if(v){
-          v.map((v1)=>{
+      Object.keys(this.roomRedEnvelopeList).map((v,i)=>{
+        if(this.roomRedEnvelopeList[v]){
+          this.roomRedEnvelopeList[v].map(v1=>{
             if(v1.type==1&&!v1.isgo&&!v1.none){
               arr[i]?arr[i] += 1:arr[i] = 1
             }
@@ -242,93 +264,12 @@ export default {
       return arr
     },
   },
-  // socket维护
-  sockets: {
-    // 发红包通知
-    issus_packet(data) {
-      console.log("接收")
-      console.log(data)
-      const {info, name, out_packet} = data;
-      const {eosid, blocknumber, tail_number, issus_sum, created_at} = out_packet;
-      const index = this.room.indexOf(String(data.index))
-      // 设置展示数据
-      this.SET_ALL_INFO(info);
-      // 如果是自己发的红包不做处理,只同步展示数据;
-      // return false
-      if (this.mysend.indexOf(blocknumber) > -1) return false;
-      // 红包数据
-      let packetData = {
-        name,
-        packetId: eosid,
-        txId: blocknumber,
-        num: tail_number,
-        eos: issus_sum,
-        time: created_at,
-        type: 1,
-        none: false
-      }
-      // 更新所有红包数据
-      this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData, index})
-    },
-    // 抢红包通知
-    income_packet(data) {
-      console.log(data)
-      const {info, in_packet_data, dantiao_in_packet, out_packet, type, name} = data;
-      const index = this.room.indexOf(String(data.index))
-      // 更新展示数据
-      this.SET_ALL_INFO(info);
-      this.SET_RED_RESULTS(dantiao_in_packet)
-
-      const {blocknumber, eosid, created_at, tail_number} = out_packet;
-      if(type == 2||(type == 3&&dantiao_in_packet.name == this.userInfo.name)){
-        let _roomItemEnvelopeList = this.roomRedEnvelopeList[index];
-        if(_roomItemEnvelopeList=='undefined'||!_roomItemEnvelopeList){
-          return false
-        }
-        // 找到对应抢完的红包，改变状态
-        for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
-          if (_roomItemEnvelopeList[i].txId === blocknumber && eosid === _roomItemEnvelopeList[i].packetId) {
-            console.log(index)
-            console.log(i)
-            console.log(_roomItemEnvelopeList[i])
-            // 修改红包展示状态
-            this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i],type:type});
-          }
-        }
-      }
-      let item = {
-          name:name,
-          name1:dantiao_in_packet.name,
-          is_chailei:dantiao_in_packet.is_chailei,
-          reward_type:dantiao_in_packet.reward_type,
-          type:3
-        }
-      // 添加表格信息
-      this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData:item, index});
-      // 判断是否为抢完红包
-      if (type === 2) {
-        if (JSON.stringify(in_packet_data) === "{}") return false;
-        let item = {
-          name:name,
-          num:tail_number,
-          time:created_at,
-          in_packet_data:in_packet_data,
-          type:2
-        }
-        if(in_packet_data.length<=0){
-          return false
-        }
-        // 添加表格信息
-        this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData:item, index});
-      }
-    }
-  },
   methods: {
     changeE(index) {
-      this.initialSlide = index;
       let roomid = index;
       // 修改焦点数据
-      this.SET_CLICK_ROOMID_RED_EVELOPE_LIST({roomid, redEnvelopeList: this.roomRedEnvelopeList[index]})
+      let data = this.roomRedEnvelopeList[index]
+      this.SET_CLICK_ROOMID_RED_EVELOPE_LIST({roomid, redEnvelopeList: data})
       this.$nextTick(()=>{
         this.scrollbottom()
       })
@@ -379,7 +320,9 @@ export default {
     scrollbottom(){
       let x = 0
       let y = this.$refs.scroll.scroll.maxScrollY
-      this.$refs.scroll.scrollTo(x,y,1)
+      if(y){
+        this.$refs.scroll.scrollTo(x,y,1)
+      }
       this.thisgobao()
     },
     // 获取vuex方法
@@ -391,7 +334,16 @@ export default {
     ...mapMutations({
       SET_ALL_INFO,
       SET_RED_RESULTS
-    })
+    }),
+    // 打开红包loading
+    openloadingbao(loadingbaodata){
+      this.loadingbaodata = loadingbaodata
+      this.loadingbao = !this.loadingbao
+    },
+    // 关闭红包
+    closeloadingbao(){
+      this.loadingbao = !this.loadingbao
+    }
   },
   watch:{
     redEnvelopeList(newlist,oldlist){

@@ -6,10 +6,11 @@
     transform translate(-50%,-50%)
     z-index 99
     width 13.4rem
-    min-height 17.48rem
+    min-height 18rem
     max-height 24.8rem
     background-color #ffffff
     border-radius 0.08rem
+    border-top 0.12rem solid #de2910
     padding 0.88rem 0.6rem
     box-sizing border-box
   .top
@@ -54,7 +55,8 @@
     .title
       flex 1
       font-size 0.72rem
-      color #222222
+      color #850000
+      font-weight bold
       text-align center
     .icon-close 
       flex 1
@@ -63,7 +65,7 @@
       font-size 0.96rem
   .center
     height 3.52rem
-    background url("../common/images/bg8.png") no-repeat center
+    background url("../assets/images/chun4.png") no-repeat center
     background-size 100% auto
     padding-top 0.96rem
     box-sizing border-box

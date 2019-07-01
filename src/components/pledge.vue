@@ -33,7 +33,7 @@
         font-size 21px
   .banner
     height 5.36rem
-    background url("../common/images/bg7.png") no-repeat center
+    background url("../assets/images/bg7.png") no-repeat center
     background-size 100% 100%
     display flex
     flex-direction column
@@ -108,7 +108,7 @@
       </div>
       <div class="banner">
         <p class="pledgenum">OWN{{$t("message.pledgeallnum")}}</p>
-        <img src="../common/images/icon29.png">
+        <img src="../assets/images/icon29.png">
         <p class="num"><span class="orange">{{Number(data.allOWN).toFixed(4)}}</span> OWN</p>
         <!-- <p class="txt">({{$t("message.zhan")}} 236467758 OWN 87.90%)</p> -->
       </div>

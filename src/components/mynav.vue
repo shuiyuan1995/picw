@@ -49,7 +49,7 @@
 <template>
   <div class="nav">
     <div class="item" v-for="(item, index) in roomList" :key="index">
-      <div @click="changeE(index)" class="btn-item" :class="roomId === index ?'active':''">{{item>=1?item+' EOS':item+$t("message.tiyan")}}</div>
+      <div @click="changeE(item)" class="btn-item" :class="roomId === item ?'active':''">{{item>=1?item+' EOS':item+$t("message.tiyan")}}</div>
       <span class="more" v-show="roomId != index&&allroomred[index]>0">{{allroomred[index]}}</span>
     </div>
   </div>
@@ -63,14 +63,10 @@ export default {
       type:Array
     }
   },
-  data(){
-    return{
-      roomList: ["0.1","1", "5","20"],
-    }
-  },
   computed:{
     ...mapGetters([
-      "roomId"
+      "roomId",
+      "roomList",
     ]),
   },
   methods:{

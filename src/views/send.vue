@@ -1,9 +1,14 @@
 <style lang="stylus" scoped>
+  .fullscreen
+    position fixed
+    top 0px
+    width 100%
+    height 100%
   .flex
     display flex
   .home
-    z-index 2000
-    background #ffffff
+    background #ffffff url("../assets/images/chun.png") center bottom no-repeat
+    background-size contain
     max-width 16rem
     margin 0 auto
   .nav
@@ -44,7 +49,7 @@
       height 1.8rem
       width 100%
       margin-top 2.08rem
-      background url("../common/images/btn1.png") no-repeat
+      background url("../assets/images/btn1.png") no-repeat
       background-size 100% 100%
       border 0
       color #ffffff
@@ -151,6 +156,7 @@
     <div class="btn">
       <button class="gobtn" @click="send">{{$t("message.sendbtn1")}}</button>
     </div>
+    <loadingbao v-show="loadingbao" :loadingbaodata="loadingbaodata"></loadingbao>
   </div>
 </template>
 
@@ -158,6 +164,7 @@
 import smallhead from '@/components/smallhead.vue'
 import {mapGetters,mapActions,mapMutations} from 'vuex';
 import mynav from '@/components/mynav.vue'
+import loadingbao from '@/components/loadingbao.vue'
 import {login, scatcreateRedPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
 import {SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_MY_SEND,SET_ROOMID,SET_CLICK_ROOMID_RED_EVELOPE_LIST} from "@store/mutation-types";
 import {post} from '../api'
@@ -166,12 +173,17 @@ export default {
     return{
       number:Math.floor(Math.random()*9), //尾数
       eosnum:[0.1,1,5,20], //房间钱数
-      allroomred:[]
+      allroomred:[],
+      loadingbao:false,
+      loadingbaodata:{
+        intype:1
+      }
     }
   },
   components: {
     smallhead,
-    mynav
+    mynav,
+    loadingbao
   },
   methods:{
     ...mapActions({
@@ -193,94 +205,26 @@ export default {
     },
     // 发红包
     send(){
-      // console.log([1,2,3,4].indexOf(3))
       // 判断登录
       if (JSON.stringify(this.userInfo) === "{}") return login();
-      // 提示信息
-      const errObje = {
-        "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
-        "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
-        "3040005": "交易超时",
-        "3123456": "找不到对应红包",
-        "3123457": "发送失败",
-        "3123458": "取消操作",
-        "3050003": "余额不足",
-        "3080001": "Account using more than allotted RAM usage"
+      this.loadingbaodata = {
+        ...this.loadingbaodata,
+        eos:this.roomId,
+        num:this.number
       }
-      // 创建红包
-      console.log(this.eosnum[this.roomId], Number(this.number))
-      scatcreateRedPacket(this.eosnum[this.roomId], Number(this.number))
-      .then(response=>{
-        console.log(response)
-        // 判断参数是否正确
-        if(!response.packetId||!response.txId){
-          const toast = this.$createToast({
-            txt: '发送失败',
-            time: 2000,
-            type: 'txt'
-          })
-          toast.show()
-          return false
-        }
-        // 添加自己发红包id
-        this.SET_MY_SEND(response.txId)
-        // 用户cpu查询
-        scatGetAccount()
-        // 查询EosBalance同步vuex， 查询OwnBalance
-        scatGetAllBalance()
-        // 展示上传红包data
-        this.updata(response)
-
-        const toast = this.$createToast({
-          txt: '发送成功',
-          time: 2000,
-          type: 'txt'
-        })
-        toast.show()
-        this.$router.push('/')
-      }).catch(code => {
-        const toast = this.$createToast({
-          txt: errObje[code] || "发送失败",
-          time: 2000,
-          type: 'txt'
-        })
-        toast.show()
-        // 用户cpu查询
-        scatGetAccount()
-        // 查询EosBalance同步vuex， 查询OwnBalance
-        scatGetAllBalance()
-      });
+      this.loadingbao = !this.loadingbao
     },
-    // 展示上传红包data
-    updata(response){
-      let packetData = {
-        name:this.userInfo.name,
-        packetId:response.packetId,
-        txId:response.txId,
-        type:1,
-        num:this.number,
-        eos:this.eosnum[this.roomId],
-        time:new Date().getTime()/1000,
-        none:false
-      }
-      let data1 ={
-        issus_sum:this.eosnum[this.roomId],
-        tail_number:this.number,
-        count:10,
-        eosid:response.packetId,
-        blocknumber:response.txId,
-        addr:this.inviteName
-      }
-      let index = this.roomId
-      // 更新所有红包数据
-      this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData, index})
-      // 上传红包信息
-      post('/issus_packet',data1).then(()=>{})
-    },
+    closeloadingbao(){
+      this.loadingbao = !this.loadingbao
+    }
   },
   computed:{
     ...mapGetters([
-      "roomId","userInfo","inviteName","redEnvelopeList","roomRedEnvelopeList"
+      "roomId",
+      "userInfo",
+      "inviteName",
+      "redEnvelopeList",
+      "roomRedEnvelopeList"
     ])
   },
 }

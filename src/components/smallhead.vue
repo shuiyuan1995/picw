@@ -1,10 +1,12 @@
 <style lang="stylus" scoped>
+@import "../common/styl/index";
 .smallhead
   height 2rem
   max-width 16rem
   width 100%
   margin 0 auto
-  background #e51c23
+  background #e51c23 url("../assets/images/chun11.jpg") no-repeat center
+  background-size 100% 100%
   color #ffffff
   display flex
   justify-content space-between
@@ -70,13 +72,13 @@
 .moneyeos
   width 0.64rem
   height 0.94rem
-  background url('../common/images/icon28.png')
+  background url('../assets/images/icon28.png')
   background-size 100% 100%
   margin-right 0.16rem
 .moneyown
   width 0.94rem
   height 0.94rem
-  background url('../common/images/icon29.png')
+  background url('../assets/images/icon29.png')
   background-size 100% 100%
   margin-right 0.16rem
 .moneydown
@@ -102,7 +104,7 @@
 <template>
   <div class="smallhead">
     <div class="left">
-      <div class="logo"><img @click="$router.push('/')" src="../common/images/logo.png"></div>
+      <div class="logo"><img @click="$router.push('/')" src="../assets/images/logo.png"></div>
       <span @click="$router.push('/')" v-if="left=='guanbi'" class="guanbi icon">{{$t("message.close")}}</span>
     </div>
     <div class="right">

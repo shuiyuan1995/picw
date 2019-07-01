@@ -1,4 +1,5 @@
 <style lang="stylus" scoped>
+  @import "../common/styl/index";
   .flex
     display flex
   .drawer
@@ -14,14 +15,16 @@
     right 0rem
     width 12rem
     height 100%
-    background #f5f5f5
+    background #ffffff
   .bigtop
     border-top: 0.38rem solid #f7f7f7;
   .smalltop
     border-top: 0.08rem solid #f7f7f7;
   .bigin
     height: 2rem;
-    background: #ffffff;
+    background #ffffff url($imgUrl+"chun3.png") no-repeat right top
+    background-size 135% auto
+    padding-top 2rem
     align-items: center;
     padding-left: 1.36rem;
     .bigining
@@ -117,15 +120,16 @@
     padding 0.32rem 0 0.32rem 1.36rem
     background #ffffff
     div
-      width 1.52rem
-      height 1.52rem
-      background url('../common/images/icon30.png')
+      width 52px
+      height 52px
+      background url('../assets/images/chun13.png')
       background-size 100% 100%
-      padding-top 0.16rem
+      padding-top 0.24rem
+      box-sizing border-box
       margin-right 0.56rem
       p
         font-size 0.48rem
-        color #ffffff
+        color #ffd200
         text-align center
         line-height 0.56rem
   .tolanguage
@@ -181,34 +185,38 @@
       <!-- 余额 -->
       <div class="yue flex">
         <div>
-          <p>EOS</p>
-          <p>{{eosbalance}}</p>
+          <p>余额</p>
         </div>
         <div>
+          <p>EOS</p>
+          <p>{{allInfo.user_money}}</p>
+        </div>
+        <!-- <div>
           <p>OWN</p>
           <p>{{ownbalance}}</p>
-        </div>
+        </div> -->
       </div>
       <!--  分享 -->
       <div class="share flex">
         <span @click="openu('https://www.facebook.com/profile.php?id=100030822884805')" class="icon icon-fecebook"></span>
         <span @click="openu('https://t.me/gtbredlotto')" class="biyong">
-          <img src="../common/images/icon21.png">
+          <img src="../assets/images/icon21.png">
         </span>
         <span @click="openu('https://t.me/gtbredlotto')" class="icon icon-telegram"></span>
       </div>
       <!-- 路由切换 -->
       <ul class="topage smalltop">
+        <li @click="recharge">充值提现</li>
         <li :class="page == 0?'active':''" @click="thepage(0)">{{$t("message.board")}}</li>
         <li :class="page == 1?'active':''" @click="thepage(1)">{{$t("message.record")}}</li>
-        <li :class="page == 2?'active':''" @click="thepage(2)">{{$t("message.invitation")}}</li>
+        <!-- <li :class="page == 2?'active':''" @click="thepage(2)">{{$t("message.invitation")}}</li> -->
         <li @click="openu('https://assets.pickown.com/PickOwnV1.pdf')">{{$t("message.bai")}}</li>
-        <li :class="page == 4?'active':''" @click="thepage(4)">{{$t("message.lin")}}</li>
-        <li :class="page == 5?'active':''" @click="thepage(5)">{{$t("message.contact")}}</li>
-        <li :class="page == 6?'active':''" @click="thepage(6)">{{$t("message.hezuo")}}</li>
+        <!-- <li :class="page == 4?'active':''" @click="thepage(4)">{{$t("message.lin")}}</li> -->
+        <li :class="page == 4?'active':''" @click="thepage(4)">{{$t("message.contact")}}</li>
+        <!-- <li :class="page == 5?'active':''" @click="thepage(5)">{{$t("message.hezuo")}}</li> -->
       </ul>
       <!-- cpu -->
-      <div class="cpu smalltop">
+      <!-- <div class="cpu smalltop">
         <div>
           <p class="knobp">{{cpu}}%</p>
           <p class="knobp">CPU</p>
@@ -217,33 +225,33 @@
           <p class="knobp">{{net}}%</p>
           <p class="knobp">NET</p>
         </div>
-      </div>
+      </div> -->
       <!-- 语言切换 -->
       <ul class="tolanguage smalltop flex">
         <div class="langitem" :class="changeI == 'zhCHS'?'active':''" @click="changeL('zhCHS')">
-          <img src="../common/images/icon9.png">
+          <img src="../assets/images/icon9.png">
         </div>
         <div class="langitem" :class="changeI == 'en'?'active':''" @click="changeL('en')">
-          <img src="../common/images/icon1.png">
+          <img src="../assets/images/icon1.png">
         </div>
         <div class="langitem" :class="changeI == 'zhCHT'?'active':''" @click="changeL('zhCHT')">
-          <img src="../common/images/icon33.png">
+          <img src="../assets/images/icon33.png">
         </div>
       </ul>
       <ul class="topbox smalltop flex">
         <li>
-          <img :src="icon12">
-          <p>{{allInfo.out_packet_count}}</p>
+          <img src="../assets/images/icon12.png">
+          <p>{{allInfo.hb_num}}</p>
           <p>{{$t("message.packet")}}</p>
         </li>
         <li>
-          <img :src="icon13">
-          <p>{{allInfo.transaction_info_count}}</p>
+          <img src="../assets/images/icon13.png">
+          <p>{{allInfo.sum_money}}</p>
           <p>EOS</p>
         </li>
         <li>
-          <img :src="icon14">
-          <p>{{allInfo.user_count}}</p>
+          <img src="../assets/images/icon14.png">
+          <p>{{allInfo.sum_user}}</p>
           <p>{{$t("message.player")}}</p>
         </li>
       </ul>
@@ -256,7 +264,7 @@
 <script>
 import invitation from "@/components/invitation.vue";
 import { mapGetters, mapMutations } from "vuex";
-import {scatGameLoginOut, login,imgUrl} from "@common/js"
+import {scatGameLoginOut,arbitrarySignature , login,imgUrl} from "@common/js"
 import {SET_GOOGLE_MENU} from "@store/mutation-types"
 export default {
   data(){
@@ -298,9 +306,19 @@ export default {
     // 登陆
     login() {
       login(()=>{
+        this.$socket.emit('login', this.userInfo.name);
+      },()=>{
         this.$parent.openrule(9)
       });
       this.SET_GOOGLE_MENU(false)
+    },
+    // 充值提现
+    recharge(){
+      this.SET_GOOGLE_MENU(false)
+      this.$parent.close(true)
+      // arbitrarySignature().then(json=>{
+      //   console.log('json: ',json)
+      // })
     },
     // 跳转页面
     thepage(i) {
@@ -316,7 +334,7 @@ export default {
       };
       this.page = i;
       this.SET_GOOGLE_MENU(false)
-      let list = ["/mylist", "/record-hair", "/invitation", "", "/record-jiang","/contant","/cooperation"];
+      let list = ["/mylist", "/record-hair", "/invitation", "","/contant","/cooperation"];
       this.$router.push(list[i]);
     },
     // 打开白皮书

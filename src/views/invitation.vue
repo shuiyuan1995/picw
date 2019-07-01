@@ -36,7 +36,7 @@
     h3
       width 5.76rem
       height 3rem
-      background url("../common/images/icon32.png") no-repeat center
+      background url("../assets/images/icon32.png") no-repeat center
       background-size 100% 100%
       margin 0 auto
       text-align center
@@ -70,7 +70,7 @@
     .receive
       height 1.44rem
       min-width 4rem
-      background url("../common/images/btn.png") no-repeat center
+      background url("../assets/images/btn.png") no-repeat center
       background-size 100% 100%
       border none 
       outline none

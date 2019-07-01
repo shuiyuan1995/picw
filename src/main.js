@@ -4,8 +4,16 @@ import App from './App.vue'
 import router from './router'
 import store from "@store"
 import VueI18n from 'vue-i18n'
-import socket from "@socket"
+// import socket from "@socket"
 import '@common/styl/index.styl'
+import io from 'socket.io-client';
+// import VueSocketio from 'vue-socket.io';
+// import socketio from 'socket.io-client';
+// Vue.use(VueSocketio, socketio('http://192.168.2.50:2021'));
+
+const socket = io(process.env.NODE_ENV=="production"?`https://socket.pickown.com/`:'http://192.168.2.50:2021');
+// const socket = io(window.location.origin);
+Vue.prototype.$socket = socket
 
 Vue.config.productionTip = false
 
@@ -20,8 +28,9 @@ const i18n = new VueI18n({
   }
 })
 
+console.log(socket)
 // socket
-Vue.use(socket)
+// Vue.use(socket)
 
 import './common/styl/index.styl'
 

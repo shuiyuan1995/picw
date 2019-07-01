@@ -1,11 +1,11 @@
 import {addwlist,scatGameLogin, scatGetAllBalance, getMoneyListget, scatGetAccount, scatSelectPacket} from "./"
 import store from "@store"
-import {SET_USER_INFO, SET_TOKEN, SET_INVITE_NAME,SET_ACTIVE_RED_EVELOPE_LIST,SET_LOADING} from "@store/mutation-types";
+import {SET_USER_INFO, SET_ALL_INFO, SET_INVITE_NAME,SET_ACTIVE_RED_EVELOPE_LIST,SET_LOADING} from "@store/mutation-types";
 import { Toast } from 'cube-ui'
-import {get} from '@api';
+import {post} from '@api';
 
 // 登陆封装
-const login = (cp) => {
+const login = (cp,cb) => {
   store.commit(SET_LOADING, true);
   scatGameLogin("PickOwn").then(account => {
     const {publicKey, name} = account;
@@ -19,44 +19,67 @@ const login = (cp) => {
       ...account,
       islogin: true
     });
-    // 查询用户cpu
-    scatGetAccount();
-    // 获取EOSBALANCE,OWNBALANCE
-    scatGetAllBalance();
-    // 登陆后台
-    get("/login",{
+    post("/login",{
       name: name,
       publickey: publicKey,
       addr: inviteName
     }).then(json =>{
-      const {token} = json.data || {};
-      isbian(redEnvelopeList,true)
-      // 设置token
-      store.commit(SET_TOKEN, token);
-      // 登陆成功获取一次红包信息
+      const {user_money,user_send_num} = json.data
+      let data = {
+        ...store.state.allInfo,
+        user_money:user_money,
+        user_send_num:user_send_num
+      }
+      store.commit(SET_ALL_INFO, data);
       getMoneyListget();
-    }).catch(err => {
-      store.commit(SET_LOADING, false);
-      isbian(redEnvelopeList,false)
-      const toast = Toast.$create({
-        txt: "服务器繁忙，稍后再试！",
-        time: 2000,
-        type:'txt'
-      })
-      toast.show()
-    });
-  }).catch(err => {
-    store.commit(SET_LOADING, false);
-    if(err == 101){
       cp&&cp()
-      return false
-    }
-    const toast = Toast.$create({
-      txt: "服务器繁忙，稍后再试！",
-      time: 2000,
-      type:'txt'
+    }).catch(err =>{
+      store.commit(SET_LOADING, false);
+      cb&&cb()
+      console.log('err' ,err)
     })
-    toast.show()
+    // 查询用户cpu
+    // scatGetAccount();
+    // 获取EOSBALANCE,OWNBALANCE
+    // scatGetAllBalance();
+    // 登陆后台
+    // post("/login",{
+    //   name: name,
+    //   publickey: publicKey,
+    //   addr: inviteName
+    // }).then(json =>{
+    // store.commit(SET_LOADING, false);
+    // //   const {token} = json.data || {};
+    // //   isbian(redEnvelopeList,true)
+    // //   // 登陆成功获取一次红包信息
+    //   getMoneyListget();
+    // // }).catch(err => {
+    // //   store.commit(SET_LOADING, false);
+    // //   isbian(redEnvelopeList,false)
+    // //   const toast = Toast.$create({
+    // //     txt: "服务器繁忙，稍后再试！",
+    // //     time: 2000,
+    // //     type:'txt'
+    // //   })
+    // //   toast.show()
+    // // });
+    // }).catch(err => {
+    //   console.log('err' ,err)
+    //   // store.commit(SET_LOADING, false);
+    //   // if(err == 101){
+    //   //   cp&&cp()
+    //   //   return false
+    //   // }
+    //   // const toast = Toast.$create({
+    //   //   txt: "服务器繁忙，稍后再试！",
+    //   //   time: 2000,
+    //   //   type:'txt'
+    //   // })
+    //   // toast.show()
+    // })
+  }).catch(err=>{
+    store.commit(SET_LOADING, false);
+    cb&&cb()
   })
 }
 

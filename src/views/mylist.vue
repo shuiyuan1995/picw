@@ -1,4 +1,5 @@
 <style lang="stylus" scoped>
+  @import "../common/styl/index";
   .fullscreen
     position absolute
     top 0rem
@@ -37,8 +38,12 @@
       flex 1
       font-size 0.56rem
       line-height 1.64rem
-      &:before
-        margin-right 0.16rem
+      display flex
+      align-items center
+      img 
+        width 0.56rem
+        height 0.72rem
+        margin-right 0.1rem
     .rules
       flex 1
       text-align right 
@@ -50,10 +55,14 @@
         content '\e63d'
         margin-left 0.1667rem
         font-size 0.64rem
+  .homecenter
+    padding-top 0.8rem
+    background url($imgUrl+"chun3.png") no-repeat center top
+    background-size contain
   .banner 
-    margin 0.6rem 0.8rem 0.52rem
+    margin 0 0.8rem 0.52rem
     height 3.8rem
-    background url("../common/images/bg8.png") no-repeat center
+    background url($imgUrl+"chun4.png") no-repeat center
     background-size 100% 100%
     padding-top 1rem
     box-sizing border-box
@@ -82,7 +91,7 @@
     .info
       height 8rem
       margin 0 0.8rem
-      background url("../common/images/bg9.png") no-repeat center
+      background url("../assets/images/bg9.png") no-repeat center
       background-size 100% auto
       position relative
     .infotop
@@ -147,21 +156,21 @@
       &:nth-of-type(1) > span
         margin 0 1.2rem 
         height 1.04rem
-        background url("../common/images/one.png") no-repeat
+        background url("../assets/images/one.png") no-repeat
         background-size 100% 100%
         padding-top 0.08rem
         color #ea1f1f
       &:nth-of-type(2) > span
         margin 0 1.2rem
         height 1.04rem
-        background url("../common/images/two.png") no-repeat
+        background url("../assets/images/two.png") no-repeat
         background-size 100% 100%
         padding-top 0.08rem
         color #4a68d3
       &:nth-of-type(3) > span
         margin 0 1.2rem
         height 1.04rem
-        background url("../common/images/three.png") no-repeat
+        background url("../assets/images/three.png") no-repeat
         background-size 100% 100%
         padding-top 0.08rem
         color #a94e17
@@ -238,59 +247,61 @@
     <cube-scroll class="homescroll">
       <div class="hometop">
         <span class="gonggao"></span>
-        <!-- <span class="gonggao icon icon-gonggao" @click="openlist">{{$t("message.myjiang")}}</span> -->
+        <!-- <span class="gonggao" @click="openlist"><img src="../assets/images/chun5.png">{{$t("message.myjiang")}}</span> -->
         <span class="title">{{$t("message.paijiang")}}</span>
         <span class="rules icon"  @click="openrule(4)">{{$t("message.how1")}}</span>
       </div>
-      <div class="banner">
-        <p class="bannernum"><span>{{Number(jiangchi).toFixed(4)}}</span> EOS</p>
-        <p class="bannertime">{{$t("message.jiesuan")}}:&nbsp;&nbsp;&nbsp;{{`${hr}:${min}:${sec}`}}</p>
-      </div>
-      <div class="top">
-        <div class="title">
-          <img src="../common/images/btn2.png">
-          <span>{{$t("message.board")}}</span>
-          <img src="../common/images/btn3.png">
+      <div class="homecenter">
+        <div class="banner">
+          <p class="bannernum"><span>{{Number(jackpot).toFixed(4)}}</span> EOS</p>
+          <p class="bannertime">{{$t("message.jiesuan")}}:&nbsp;&nbsp;&nbsp;{{`${hr}:${min}:${sec}`}}</p>
         </div>
-        <div class="info">
-          <p class="infotop">
-            <span>{{items2[1]?items2[1].user:''}}</span>
-            <span>{{items2[0]?items2[0].user:''}}</span>
-            <span>{{items2[2]?items2[2].user:''}}</span>
-          </p>
-          <p class="infocenter">
-            <span class="orange">{{items2[1]?Number(items2[1].balance/10000).toFixed(4):'0.0000'}}</span>
-            <span class="orange">{{items2[0]?Number(items2[0].balance/10000).toFixed(4):'0.0000'}}</span>
-            <span class="orange">{{items2[2]?Number(items2[2].balance/10000).toFixed(4):'0.0000'}}</span>
-          </p>
-          <p class="infofoot">
-            <span class="green">{{items2[1]?Number(items2[1].prize/10000).toFixed(4):'0.0000'}}</span>
-            <span class="green">{{items2[0]?Number(items2[0].prize/10000).toFixed(4):'0.0000'}}</span>
-            <span class="green">{{items2[2]?Number(items2[2].prize/10000).toFixed(4):'0.0000'}}</span>
-          </p>
-        </div>
-      </div>
-      <div>
-        <div class="listtitle paititle flex">
-          <span>{{$t("message.rank")}}</span>
-          <span>{{$t("message.user")}}</span>
-          <span>{{$t("message.amount")}}</span>
-          <span>{{$t("message.prize")}}</span>
-        </div>
-        <cube-scroll class="pailist column" v-if="items2 && items2.length>0">
-          <div class="paiitem flex" :key="index" v-for="(item,index) in items2">
-            <span class="num" :class="index<3?`${index+1}`:''">{{index+1}}</span>
-            <p>{{item.user}}</p>
-            <p><span>{{(item.balance/10000).toFixed(4)}}</span> EOS</p>
-            <p><span>{{(item.prize/10000).toFixed(4)}}</span> EOS</p>
+        <div class="top">
+          <div class="title">
+            <img src="../assets/images/btn2.png">
+            <span>{{$t("message.board")}}</span>
+            <img src="../assets/images/btn3.png">
           </div>
-        </cube-scroll>
-        <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
-        <div class="allpaiitem">
-          <span class="num">{{mypai?mypai.index:'-'}}</span>
-          <p class="grey">{{mypai?mypai.user:'-----'}}</p>
-          <p><span class="orange">{{mypai?(mypai.balance/10000).toFixed(4):'0.0000'}}</span> EOS</p>
-          <p><span class="green">{{mypai?(mypai.prize/10000).toFixed(4):'0.0000'}}</span> EOS</p>
+          <div class="info">
+            <p class="infotop">
+              <span>{{ranking[1]?ranking[1].account:''}}</span>
+              <span>{{ranking[0]?ranking[0].account:''}}</span>
+              <span>{{ranking[2]?ranking[2].account:''}}</span>
+            </p>
+            <p class="infocenter">
+              <span class="orange">{{ranking[1]?Number(ranking[1].jackpot/10000).toFixed(4):'0.0000'}}</span>
+              <span class="orange">{{ranking[0]?Number(ranking[0].jackpot/10000).toFixed(4):'0.0000'}}</span>
+              <span class="orange">{{ranking[2]?Number(ranking[2].jackpot/10000).toFixed(4):'0.0000'}}</span>
+            </p>
+            <p class="infofoot">
+              <span class="green">{{ranking[1]?Number(ranking[1].sum/10000).toFixed(4):'0.0000'}}</span>
+              <span class="green">{{ranking[0]?Number(ranking[0].sum/10000).toFixed(4):'0.0000'}}</span>
+              <span class="green">{{ranking[2]?Number(ranking[2].sum/10000).toFixed(4):'0.0000'}}</span>
+            </p>
+          </div>
+        </div>
+        <div>
+          <div class="listtitle paititle flex">
+            <span>{{$t("message.rank")}}</span>
+            <span>{{$t("message.user")}}</span>
+            <span>{{$t("message.amount")}}</span>
+            <span>{{$t("message.prize")}}</span>
+          </div>
+          <cube-scroll class="pailist column" v-if="ranking && ranking.length>0">
+            <div class="paiitem flex" :key="index" v-for="(item,index) in ranking">
+              <span class="num" :class="index<3?`${index+1}`:''">{{index+1}}</span>
+              <p>{{item.account}}</p>
+              <p><span>{{(item.jackpot/10000).toFixed(4)}}</span> EOS</p>
+              <p><span>{{(item.sum/10000).toFixed(4)}}</span> EOS</p>
+            </div>
+          </cube-scroll>
+          <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
+          <div class="allpaiitem">
+            <span class="num">{{me?me.no:'-'}}</span>
+            <p class="grey">{{me?me.user:'-----'}}</p>
+            <p><span class="orange">{{me?(me.jackpot/10000).toFixed(4):'0.0000'}}</span> EOS</p>
+            <p><span class="green">{{me?(me.sum/10000).toFixed(4):'0.0000'}}</span> EOS</p>
+          </div>
         </div>
       </div>
     </cube-scroll>
@@ -313,19 +324,7 @@ import {SET_LOADING} from "@store/mutation-types"
 export default {
   created(){
     // // 获取排行榜列表
-    // this.SET_LOADING(true)
-    // scatRedPacketList().then(val => {
-    //   this.SET_LOADING(false)
-    //   this.items2 = val
-    // }).catch(()=>{
-    //   this.SET_LOADING(false)
-    //   const toast = this.$createToast({
-    //     txt: "服务器繁忙，请稍后再试",
-    //     time: 2000,
-    //     type: 'txt'
-    //   })
-    //   toast.show()
-    // })
+    this.SET_LOADING(true)
     this.getlist()
   },
   mounted(){
@@ -333,13 +332,13 @@ export default {
   },
   components: {
     smallhead,
-    // mylist,
     rules
   },
   data(){
     return{
-      jiangchi:0,
-      items2:[], //排行榜数组
+      jackpot:0,
+      ranking:[], //排行榜数组
+      me:'',
       mypai:null,
       listshow:false,
       rules:false,
@@ -369,44 +368,14 @@ export default {
     },
     // 获取排行榜数据
     getlist(){
-      this.SET_LOADING(true)
-      scatRedPacketList().then(val => {
+      get('/ranking').then(json=>{
         this.SET_LOADING(false)
-        if(val&&val.length>0){
-          this.items2 = val
-          this.jiangchi = (val[0].prize/10000)*5
-          // 获取自己排行
-          this.getmypai()
-        }
-      }).catch(()=>{
-        this.SET_LOADING(false)
-        const toast = this.$createToast({
-          txt: "服务器繁忙，请稍后再试",
-          time: 2000,
-          type: 'txt'
-        })
-        toast.show()
+        const {jackpot,ranking,me} = json.data
+        this.jackpot = jackpot
+        this.ranking = ranking
+        this.me = me
+        console.log(json)
       })
-      // get('/get_paihangbang').then(json=>{
-      //   this.SET_LOADING(false)
-      //   console.log(json)
-      //   if(json.data&&json.data.length>0){
-      //     this.items2 = json.data
-      //     this.jiangchi = (json.data[0].prize/10000)*5
-      //     // 获取自己排行
-      //     this.getmypai()
-      //   }
-      // })
-    },
-    getmypai(){
-      for (let i = 0; i < this.items2.length; i++) {
-        if(this.userInfo.name == this.items2[i].user){
-          this.mypai = {
-            index:i+1,
-            ...this.items2[i]
-          }
-        }
-      }
     },
     // 倒计时
     countdown: function () {

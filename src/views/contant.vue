@@ -44,8 +44,8 @@
       <p>telegram{{$t("message.lianjie")}}：https://t.me/gtbredlotto</p>
       <p>{{$t("message.kefu")}}</p>
       <div class="topinfo flex">
-        <img src="../common/images/icon17.png" @click.stop="open(0)">
-        <img src="../common/images/icon18.png" @click.stop="open(1)">
+        <img src="../assets/images/icon17.png" @click.stop="open(0)">
+        <img src="../assets/images/icon18.png" @click.stop="open(1)">
       </div>
     </div>
     <transition

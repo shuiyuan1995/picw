@@ -1,20 +1,18 @@
 import axios from "axios";
 import qs from "qs";
 import store from "@store";
-import {SET_LOADING} from "@store/mutation-types";
+import {SET_LOADING,SET_TOKEN} from "@store/mutation-types";
 import { Toast } from 'cube-ui'
 
 // 请求配置参数
 const http = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "https://manage.pickown.com/api"
-      : "http://pickown.test/api", // 基础路径
-      // https://test.pickown.com/api
-      // http://pickown.test/api
-      // https://manage.pickown.com/api
+      ? "https://admin.pickown.com/api"
+      : "http://192.168.2.50/api", // 基础路径
     timeout: 15000 // 请求延时
 });
+http.defaults.withCredentials = true;
 
 // 请求拦截
 http.interceptors.request.use(config => {
@@ -25,10 +23,9 @@ http.interceptors.request.use(config => {
   // 数据类型
   config.headers["Accept"] = "application/json";
   // token
-  config.headers["token"] =
-    process.env.NODE_ENV !== "production"
-      ? `${store.state.token}`
-      : `${store.state.token}`;
+  if(store.state.token){
+    config.headers.token = store.state.token;
+  }
   return config;
 });
 
@@ -36,13 +33,16 @@ http.interceptors.request.use(config => {
 http.interceptors.response.use(response => {
   const { data } = response;
   if (response.status === 200 && data.code === 200) {
+    if(data.data.token){
+      store.commit(SET_TOKEN, data.data.token)
+    }
     return Promise.resolve(data);
   } else {
     // 返回错误提示
-    const {message} = data;
+    const {msg} = data;
     store.commit(SET_LOADING, false);
     const toast = Toast.$create({
-      txt: message || "服务器繁忙，稍后再试！",
+      txt: msg || "服务器繁忙，稍后再试！",
       time: 2000,
       type:'txt'
     })
@@ -50,6 +50,7 @@ http.interceptors.response.use(response => {
     return Promise.reject(data);
   }
 },error=>{
+  store.commit(SET_LOADING, false);
   if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {
     const toast = Toast.$create({
       txt: "请求超时，请重新请求",

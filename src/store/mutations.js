@@ -33,8 +33,13 @@ const mutations = {
   [types.SET_ROOMID](state, roomId) {
     state.roomId = roomId;
   },
+  // 设置房间列表
+  [types.SET_ROOMLIST](state, roomList) {
+    state.roomList = roomList;
+  },
   // 设置红包焦点列表
   [types.SET_ACTIVE_RED_EVELOPE_LIST](state, redEnvelopeList) {
+    // state.redEnvelopeList = [];
     state.redEnvelopeList = redEnvelopeList;
   },
   // 设置所有房间红包列表

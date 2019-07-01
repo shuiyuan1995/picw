@@ -1,4 +1,5 @@
 <style lang="stylus" scoped>
+  @import "../common/styl/index";
   .fullscreen
     position absolute
     top 0
@@ -22,9 +23,10 @@
     width 13.4rem
     max-height 100%
     box-sizing border-box
-    min-height: 13.92rem;
-    background-color: #303551;
-    border-radius: 0.3333rem;
+    min-height: 17.92rem;
+    background: #303551 url($imgUrl+"chun6.png") no-repeat center top
+    background-size 70% auto
+    border-top 0.12rem solid #de2910;
     padding-bottom 1.52rem
     z-index 1000
     &.first
@@ -34,9 +36,10 @@
       h4,h5,p
         color #222222
     h4
-      color: #f7f7f7;
       font-size: 0.72rem;
       text-align center
+      font-weight bold
+      color #850000 !important
       margin 0.8542rem 0 0.5833rem
     h5
       margin-left 0.5108rem
@@ -115,12 +118,13 @@
     overflow-y auto
     text-align center
     h5:not(:last-of-type)
-      height 1.76rem
+      min-width 4rem
+      height 1.52rem
       display inline-block
-      line-height 1.76rem
+      line-height 1.4rem
       padding 0 20px
       color #ffffff !important
-      background url('../common/images/icon31.png')
+      background url($imgUrl+'chun7.png')
       background-size 100% 100%
     h5:last-of-type
       margin-top 1.4rem
@@ -136,6 +140,25 @@
     margin-bottom 0.4rem
     &.next
       text-indent 1rem
+  .banner
+    height 3.52rem
+    background url($imgUrl+"chun9.png") no-repeat center
+    background-size 100% auto
+    box-sizing border-box
+    margin 0.4rem
+    .centerN
+      font-size 0.88rem
+      font-weight bold
+      text-align center 
+      line-height 3.52rem
+      color #ffffff !important
+      span 
+        font-weight bold
+        color #ffc000
+  .xinyunbg
+    position absolute
+    bottom 0
+    width 100%
 </style>
 
 <template>
@@ -160,6 +183,9 @@
     </div>
     <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''"  v-else-if="therules == 1">
       <h4>{{$t("message.lucky")}}</h4>
+      <div class="banner">
+        <p class="centerN"><span class="orange">{{allInfo.xinyunjiangchi}}</span> EOS</p>
+      </div>
       <p>{{$t("message.luckytxt")}}</p>
       <div class="rulebox">
         <div class="title flex">
@@ -187,6 +213,7 @@
           <p>{{$t("message.jiangchi")}} 3 %</p>
         </div>
       </div>
+      <img class="xinyunbg" src="../assets/images/chun10.png" alt="">
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
     <div class="rulesin fixed-center yougonggao" :class="bgc == 'white'?'white':''" v-else-if="therules == 2">
@@ -237,6 +264,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
+import {imgUrl} from "@common/js";
 export default {
   props:{
     // 背景
@@ -247,6 +275,11 @@ export default {
     therules:{
       type:Number,
       default:0
+    }
+  },
+  data(){
+    return{
+      chun10:''
     }
   },
   methods:{
@@ -260,7 +293,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "thislang","packages"
+      "thislang","packages","allInfo"
     ])
   }
 }

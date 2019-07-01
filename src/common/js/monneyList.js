@@ -1,6 +1,6 @@
 import {get} from "@api";
 import store from "@store";
-import {SET_LOADING,SET_ROOM_RED_EVELOPE_LIST, SET_CLICK_ROOMID_RED_EVELOPE_LIST} from "@store/mutation-types";
+import {SET_LOADING,SET_ROOM_RED_EVELOPE_LIST, SET_CLICK_ROOMID_RED_EVELOPE_LIST,SET_ROOMLIST} from "@store/mutation-types";
 import { Toast } from 'cube-ui'
 // import {Notify, Loading} from 'quasar'
 // 获取红包列表接口
@@ -11,10 +11,11 @@ const getMoneyListget = (once = false) => get('/get_money_list').then(json => {
   const {roomId} = store.state;
   // 判断是不是第一次加载红包
   if (once) {
-    // 第一次加载红包列表
-    _roomid = 0;
+    // 从新加载房间数
+    store.commit(SET_ROOMLIST, Object.keys(data));
+    // 焦点房间数
+    _roomid = Object.keys(data)[0]
   }else {
-    // 非第一次加载
     _roomid = roomId
   }
   // 焦点列表
@@ -28,12 +29,12 @@ const getMoneyListget = (once = false) => get('/get_money_list').then(json => {
 })
 .catch(() => {
   store.commit(SET_LOADING, false);
-  const toast = Toast.$create({
-    txt: '服务器错误，稍后再试！',
-    time: 2000,
-    type:'txt'
-  })
-  toast.show()
+  // const toast = Toast.$create({
+  //   txt: '服务器错误，稍后再试！',
+  //   time: 2000,
+  //   type:'txt'
+  // })
+  // toast.show()
   // Notify.create({
   //   message: "服务器错误，稍后再试！",
   //   timeout: 1500,

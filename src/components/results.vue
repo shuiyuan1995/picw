@@ -101,13 +101,13 @@
         <span>
           <img v-if="it.reward_type != 0" :src="typetxt[it.reward_type]">
           <!-- <i class="jiangimg zhen"></i> -->
-          <img class="lei" v-if="it.is_chailei == 1" src="../common/images/lei.png">
+          <img class="lei" v-if="it.is_chailei == 1" src="../assets/images/lei.png">
         </span>
       </div>
     </div>
-    <!-- <p class="txtinfo" :key="index" v-for="(it,index) in item.in_packet_data"><img class="img" src="../common/images/bao.png">{{it.name}}领取了红包，获得{{it.income_sum}} EOS</p>
+    <!-- <p class="txtinfo" :key="index" v-for="(it,index) in item.in_packet_data"><img class="img" src="../assets/images/bao.png">{{it.name}}领取了红包，获得{{it.income_sum}} EOS</p>
     <p class="txtinfo" :key="`v-${index}`" v-for="(it,index) in item.reward_data">{{it.name}}抽中：{{typetxt[it.reward_type]}}，获得{{it.reward_sum}} EOS</p>
-    <p class="txtinfo" v-if="cailei.show"><img class="img1" src="../common/images/lei.png">{{cailei.name}} 踩雷，{{item.name}}获得{{cailei.num}} EOS</p> -->
+    <p class="txtinfo" v-if="cailei.show"><img class="img1" src="../assets/images/lei.png">{{cailei.name}} 踩雷，{{item.name}}获得{{cailei.num}} EOS</p> -->
   </div>
 </template>
 
@@ -120,7 +120,7 @@ export default {
   },
   data(){
     return{
-      typetxt:['',require('../common/images/icon7.png'),require('../common/images/icon10.png'),require('../common/images/icon16.png'),require('../common/images/icon11.png'),require('../common/images/icon15.png')]
+      typetxt:['',require('../assets/images/icon7.png'),require('../assets/images/icon10.png'),require('../assets/images/icon16.png'),require('../assets/images/icon11.png'),require('../assets/images/icon15.png')]
     }
   },
   props:{

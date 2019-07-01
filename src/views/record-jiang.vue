@@ -21,7 +21,7 @@
     .banner
       min-width 13.4rem
       height 5.36rem
-      background url("../common/images/bg6.png") no-repeat center
+      background url("../assets/images/bg6.png") no-repeat center
       background-size 100% 100%
       padding-top 0.84rem
     .title

@@ -48,8 +48,8 @@
     <p class="sendname">{{item.name}} <span class="time">({{timer}})</span></p>
     <div class="box">
       <div class="box-top">
-        <img v-if="item.none||item.isgo" src="../common/images/bao1.png">
-        <img v-else src="../common/images/bao.png">
+        <img v-if="item.none||item.isgo" src="../assets/images/bao1.png">
+        <img v-else src="../assets/images/bao.png">
         <div class="bao">
           <p>{{$t("message.wei")}}:{{item.num}}</p>
           <p>{{item.none?$t("message.linwan"):(item.isgo?$t("message.linqu"):$t("message.baotxt1"))}}</p>
@@ -92,155 +92,29 @@ export default {
     // 抢红包
     go(){
       if (JSON.stringify(this.userInfo) === "{}") return login();
-      const {isgo, none, txId, packetId, eos} = this.item;
+      const {isgo, none, packetId, eos} = this.item;
       // 判断时候可抢，不能抢跳转详情
       if (isgo || none) {
         this.SET_THISJULU(1)
         return this.$router.push({
           name: 'record-this',
           params: {
-            txId:this.item.txId,
+            packetId:this.item.packetId,
             name:this.item.name,
             num:this.item.num,
-            time:this.item.time*1000
+            time:this.item.time*1000,
+            sum:this.item.eos,
+            status:this.item.none?0:1
           }
         });
       }
-      // 提示信息
-      const errObje = {
-        "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
-        "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
-        "3040005": "交易超时",
-        "3123455": "房间金额与押金不一致",
-        "3123456": "找不到对应红包",
-        "3123458": "取消操作",
-        "3123457": "发送失败",
-        "3050003": "余额不足",
-        "3080001": "Account using more than allotted RAM usage"
+      let loadingbaodata = {
+        item:this.item,
+        index:this.index,
+        intype:0
       }
-      this.SET_LOADING(true)
-      console.log(Number(this.item.packetId), `${Number(eos).toFixed(4)} EOS`, this.inviteName)
-      scatSelectPacket(Number(this.item.packetId), `${Number(eos).toFixed(4)} EOS`, this.inviteName)
-      .then(() => {
-        // 向后台请求结果
-        this._getid()
-      })
-      .catch(code => {
-        this.SET_LOADING(false)
-        // 用户cpu查询
-        scatGetAccount()
-        // 查询EosBalance同步vuex， 查询OwnBalance
-        scatGetAllBalance()
-        if(code == 3123456){
-          let win = {
-            num:this.item.num,
-            eos:this.item.eos,
-            packetId:Number(this.item.packetId),
-            outid:this.item.txId,
-            guang:true
-          }
-          this.redcss('1')
-          // 展示抢红包结果
-          this.$emit('myshow',win)
-          // 上传红包结果
-          post('/close_packet',win).then(()=>{})
-          return false
-        }
-        this.$createToast({
-          txt: errObje[code] || "发送失败",
-          time: 2000,
-          type:'txt'
-        }).show()
-      });
-    },
-    // 向后台请求结果
-    _getid(){
-      post('/post_income_packet',{packetId:this.item.packetId}).then(json=>{
-        console.log(json)
-        const {type,in_packet,is_last} = json.data
-        switch (type) {
-          case 1:
-            this.redcss(is_last)
-            this.updata(in_packet)
-            break;
-          case 2:
-            let win = {
-              num:this.item.num,
-              eos:this.item.eos,
-              packetId:Number(this.item.packetId),
-              outid:this.item.txId,
-              guang:true
-            }
-            this.redcss('1')
-            // 展示抢红包结果
-            this.$emit('myshow',win)
-            // 上传红包结果
-            post('/close_packet',win).then(()=>{})
-            break;
-          case 3:
-            this.txid = in_packet.id
-            this.redcss()
-            time = setTimeout(()=>{
-              this.SET_LOADING(false)
-              this.txid = ""
-              this.$createToast({
-                txt: "本次交易与EOS主网同步较慢，交易结果以主网结果为准，请至主网查询",
-                time: 2000,
-                type:'txt'
-              }).show()
-            },10000)
-            break;
-          default:
-            break;
-        }
-      })
-    },
-    // 红包样式调整
-    redcss(islast){
-      let item = {}
-      // 热点红包
-      let _redEnvelopeList = [
-        ...this.redEnvelopeList
-      ] 
-      // 所有红包
-      let _roomRedEnvelopeList = [
-        ...this.roomRedEnvelopeList,
-      ]
-      // 判断是否为最后一个
-      if(islast == '1'){
-        _redEnvelopeList[this.index] = {
-          ..._redEnvelopeList[this.index],
-          isgo: 1,
-          none: 1
-        }
-      }else{
-        _redEnvelopeList[this.index] = {
-          ..._redEnvelopeList[this.index],
-          isgo: 1,
-        }
-      }
-      _roomRedEnvelopeList[this.roomId] = _redEnvelopeList;
-      this.SET_ROOM_RED_EVELOPE_LIST(_roomRedEnvelopeList)
-      this.SET_ACTIVE_RED_EVELOPE_LIST(_redEnvelopeList)
-    },
-    // 展示红包data
-    updata(json){
-      this.SET_LOADING(false)
-      let win = {
-        name:this.item.name,
-        print:json.income_sum,
-        is_chailei:json.is_chailei,
-        reward:json.reward_type,
-        rewardsum:json.reward_sum,
-        num:this.item.num,
-        eos:this.item.eos,
-        packetId:Number(this.item.packetId),
-        outid:this.item.txId,
-        own:Number(json.own).toFixed(4)
-      }
-      // 展示抢红包结果
-      console.log(win)
-      this.$emit('myshow',win)
+      this.$parent.$parent.openloadingbao(loadingbaodata)
+      return false
     },
   },
   computed:{
@@ -258,26 +132,5 @@ export default {
       return changedata(this.item.time*1000,'hh:mm:ss')
     }
   },
-  watch:{
-    redresults(newobj){
-      
-      if(this.txid == ""){
-        return false
-      }
-      console.log(newobj)
-      if(newobj.id == this.txid){
-        console.log(newobj)
-        this.redcss(newobj.islast)
-        // 展示红包
-        this.updata(newobj)
-        // 用户cpu查询
-        scatGetAccount()
-        // 查询EosBalance同步vuex， 查询OwnBalance
-        scatGetAllBalance()
-        clearTimeout(time)
-        this.txid = ""
-      }
-    }
-  }
 }
 </script>

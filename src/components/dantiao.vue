@@ -37,8 +37,8 @@
 
 <template>
   <div class="dantiao">
-    <div class="bao"><p><img src="../common/images/bao.png"><span>{{item.name1}}领取了{{item.name}}的</span><span class="red">红包</span></p></div>
-    <div class="lei" v-if="item.is_chailei == 1"><p><span>{{item.name1}}</span><img src="../common/images/icon26.png"></p></div>
+    <div class="bao"><p><img src="../assets/images/bao.png"><span>{{item.name1}}领取了{{item.name}}的</span><span class="red">红包</span></p></div>
+    <div class="lei" v-if="item.is_chailei == 1"><p><span>{{item.name1}}</span><img src="../assets/images/icon26.png"></p></div>
     <div class="lei" v-if="item.reward_type > 0"><p><span>{{item.name1}}抽中了</span><img :src="typeImg[item.reward_type]"></p></div>
   </div>
 </template>
@@ -52,7 +52,7 @@ export default {
   },
   computed:{
     typeImg(){
-      return ['',require('../common/images/icon22.png'),require('../common/images/icon23.png'),require('../common/images/icon27.png'),require('../common/images/icon25.png'),require('../common/images/icon24.png')]
+      return ['',require('../assets/images/icon22.png'),require('../assets/images/icon23.png'),require('../assets/images/icon27.png'),require('../assets/images/icon25.png'),require('../assets/images/icon24.png')]
     }
   }
 }

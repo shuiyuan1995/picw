@@ -31,15 +31,25 @@ const state = {
   // 焦点红包列表
   redEnvelopeList: [],
   // 房间id
-  roomId: 0,
+  roomId: 1,
+  // 房间列表
+  roomList:["0.1","1", "5","20"],
   // 侧边栏状态
   menuStatus: false,
   // 展示数据,累计发红包，幸运奖池，玩家数，交易金额
   allInfo: {
-    out_packet_count: 0,
-    transaction_info_count: "0.0000",
-    user_count: 0,
-    xinyunjiangchi: "0.0000"
+    // 总红包数
+    hb_num:0,
+    // 幸运奖池
+    jackpot:0.0000,
+    // 总钱数
+    sum_money:0.0000,
+    // 总人数
+    sum_user:0,
+    // 用户余额
+    user_money:0,
+    // 用户发红包数
+    user_send_num:0
   },
   // 自己发红包id列表
   mysend:[],

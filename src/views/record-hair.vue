@@ -44,11 +44,14 @@
   .banner
     height 3.8rem
     margin 0 0.8rem
-    background url("../common/images/bg8.png") no-repeat center
+    background url($imgUrl+"chun1.png") no-repeat center
     background-size 100% 100%
     padding-top 1.12rem
     box-sizing border-box
     margin-top 0.6rem
+    &.bannerq
+      background url($imgUrl+"chun2.png") no-repeat center
+      background-size 100% 100%
     .bannertxt
       font-size 0.48rem
       color #ffffff
@@ -73,9 +76,12 @@
       p:first-of-type
         font-size 0.96rem
         font-weight bold
+        color #eb0000
       p:last-of-type
         font-size 0.48rem
         margin-top 0.1rem
+      &:last-of-type p:first-of-type
+        color #ff8400
   .recordHair
     position absolute
     top 10.88rem
@@ -148,34 +154,34 @@
     <div v-show="thisjilu==0">
       <div class="banner">
         <p class="bannertxt">{{userInfo.name}} {{$t("message.issued")}}</p>
-        <p class="bannernum"><span>{{data.out_packet_sum}}</span> EOS</p>
+        <p class="bannernum"><span>{{send_money}}</span> EOS</p>
       </div>
       <div class="top">
         <div>
-          <p>{{data.out_packet_count}}</p>
+          <p>{{send_num}}</p>
           <p>{{$t("message.fabao")}}</p>
         </div>
         <div>
-          <p>{{data.out_chailei_count}}</p>
+          <p>{{send_lei}}</p>
           <p>{{$t("message.shoucai")}}</p>
         </div>
       </div>
       <cube-scroll class="recordHair" ref="scroll">
-        <ul v-if="outlist&&outlist.length>0">
-          <li class="recordlist" :key="index" v-for="(item,index) in outlist" @click="golist(item)">
+        <ul v-if="send_data&&send_data.length>0">
+          <li class="recordlist" :key="index" v-for="(item,index) in send_data" @click="golist(item)">
             <p>
-              <span class="name">{{item.issus_sum}}EOS</span>
+              <span class="name">{{item.money}}EOS</span>
               <span class="num">{{item.status==1?`${$t("message.jinxin")}...`:`10/10${$t("message.packet")}`}}</span>
             </p>
             <p>
-              <span class="time">{{item.created_at1}}</span>
-              <span class="img" v-if="item.status!=1&&item.chailei_count>0">
-                <img src="../common/images/icon26.png">
-                <b v-if="item.chailei_count>1">x{{item.chailei_count}}</b>
+              <span class="time">{{item.time}}</span>
+              <span class="img" v-if="item.status!=1&&item.lei_num>0">
+                <img src="../assets/images/icon26.png">
+                <b v-if="item.lei_num>1">x{{item.lei_num}}</b>
               </span>
             </p>
           </li>
-          <p class="itemtxt"  v-if="inlist&&inlist.length>=20">{{$t("message.baoliu")}}</p>
+          <p class="itemtxt"  v-if="send_data&&send_data.length>=20">{{$t("message.baoliu")}}</p>
         </ul>
         <div v-else class="recordnone">
           <p>{{$t("message.sendbtn")}}>></p>
@@ -183,41 +189,41 @@
       </cube-scroll>
     </div>
     <div v-show="thisjilu==1">
-      <div class="banner">
+      <div class="banner bannerq">
         <p class="bannertxt">{{userInfo.name}} {{$t("message.gohuo")}}</p>
-        <p class="bannernum"><span>{{data.in_packet_sum}}</span> EOS</p>
+        <p class="bannernum"><span>{{get_money}}</span> EOS</p>
       </div>
       <div class="top">
         <div>
-          <p>{{data.in_packet_count}}</p>
+          <p>{{get_num}}</p>
           <p>{{$t("message.qiangdao")}}</p>
         </div>
         <div>
-          <p>{{data.in_chailei_count}}</p>
+          <p>{{get_lei}}</p>
           <p>{{$t("message.steptitle")}}</p>
         </div>
       </div>
       <cube-scroll class="recordHair" ref="scroll">
-        <ul v-if="inlist&&inlist.length>0">
-          <li class="recordlist" :key="index" v-for="(item,index) in inlist" @click="golist(item)">
+        <ul v-if="get_data&&get_data.length>0">
+          <li class="recordlist" :key="index" v-for="(item,index) in get_data" @click="golist(item)">
             <div>
               <p class="name">
-                {{item.fa_name}}
+                {{item.account}}
                 <span>{{$t("message.debao")}}</span>
               </p>
               <p class="money">
-                <span class="orange">{{item.income_sum}}</span>&nbsp;EOS+<span class="orange">{{item.own}}</span>&nbsp;OWN
+                <span class="orange">{{item.money}}</span>&nbsp;EOS+<span class="orange">{{item.own}}</span>&nbsp;OWN
               </p>
             </div>
             <p>
-              <span class="time">{{item.created_at1}}</span>
+              <span class="time">{{item.time}}</span>
               <span class="img">
-                <img v-if="item.is_chailei == 1" src="../common/images/icon26.png">
+                <img v-if="item.is_lei" src="../assets/images/icon26.png">
                 <img v-if="item.reward_type > 0" :src="typeImg[item.reward_type]">
               </span>
             </p>
           </li>
-          <p v-if="inlist&&inlist.length>=20" class="itemtxt">{{$t("message.baoliu")}}</p>
+          <p v-if="get_data&&get_data.length>=20" class="itemtxt">{{$t("message.baoliu")}}</p>
         </ul>
         <div v-else class="recordnone">
           <p>{{$t("message.qiangbtn")}}>></p>
@@ -240,14 +246,15 @@ export default {
   },
   data(){
     return{
-      data:{
-        out_packet_sum: "0.0000",
-        out_packet_count: 0,
-        out_chailei_count: 0,
-        in_packet_sum: "0.0000",
-        in_packet_count: 0,
-        in_chailei_count: 0
-      }, //信息
+      //信息
+      send_lei:0,
+      send_num:0,
+      get_lei:0,
+      get_num:0,
+      get_money:0.0000,
+      send_money:0.0000,
+      send_data:[],
+      get_data:[],
       outlist:[],
       inlist:[],
       qingqiu:false //是否在请求数据
@@ -270,9 +277,18 @@ export default {
     // 获取列表信息
     getinfo(time){
       this.qingqiu = true
-      get('/my_packet').then(json=>{
+      get('/recode').then(json=>{
         this.SET_LOADING(false)
-        console.log(json)
+        const {send_lei,send_num,get_lei,get_num,get_money,send_money,send_data,get_data} = json.data
+        this.send_lei = send_lei;
+        this.send_num = send_num;
+        this.get_lei = get_lei;
+        this.get_num = get_num;
+        this.get_money = get_money;
+        this.send_money = send_money;
+        this.send_data = send_data;
+        this.get_data = get_data;
+        return false
         this.data = json.data
         if(Object.keys(json.data.out_list).length != 0){
           this.outlist = json.data.out_list.map((val,i)=>{
@@ -296,15 +312,19 @@ export default {
       this.$router.push({
         name: 'record-this',
         params: this.thisjilu==0?{
-          txId:item.blocknumber,
-          name:item.user.name,
-          num:item.tail_number,
-          time:item.created_at*1000
+          packetId:item.packetId,
+          name:this.userInfo.name,
+          num:item.num,
+          time:item.time,
+          sum:item.money,
+          status:item.status
         }:{
-          txId:item.outblocknumber,
-          name:item.fa_name,
-          num:item.tail_number,
-          time:item.created_at*1000
+          packetId:item.packetId,
+          name:item.account,
+          num:item.num,
+          time:item.time,
+          sum:item.sum,
+          status:item.status
         }
       })
     },
@@ -315,7 +335,7 @@ export default {
       "thisjilu"
     ]),
     typeImg(){
-      return ['',require('../common/images/icon22.png'),require('../common/images/icon23.png'),require('../common/images/icon27.png'),require('../common/images/icon25.png'),require('../common/images/icon24.png')]
+      return ['',require('../assets/images/icon22.png'),require('../assets/images/icon23.png'),require('../assets/images/icon27.png'),require('../assets/images/icon25.png'),require('../assets/images/icon24.png')]
     }
   }
 }
