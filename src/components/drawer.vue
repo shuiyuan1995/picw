@@ -188,7 +188,7 @@
           <p>余额</p>
         </div>
         <div>
-          <p>EOS</p>
+          <p>{{thismoney.name}}</p>
           <p>{{allInfo.user_money}}</p>
         </div>
         <!-- <div>
@@ -210,7 +210,7 @@
         <li :class="page == 0?'active':''" @click="thepage(0)">{{$t("message.board")}}</li>
         <li :class="page == 1?'active':''" @click="thepage(1)">{{$t("message.record")}}</li>
         <!-- <li :class="page == 2?'active':''" @click="thepage(2)">{{$t("message.invitation")}}</li> -->
-        <li @click="openu('https://assets.pickown.com/PickOwnV1.pdf')">{{$t("message.bai")}}</li>
+        <!-- <li @click="openu('https://assets.pickown.com/PickOwnV1.pdf')">{{$t("message.bai")}}</li> -->
         <!-- <li :class="page == 4?'active':''" @click="thepage(4)">{{$t("message.lin")}}</li> -->
         <li :class="page == 4?'active':''" @click="thepage(4)">{{$t("message.contact")}}</li>
         <!-- <li :class="page == 5?'active':''" @click="thepage(5)">{{$t("message.hezuo")}}</li> -->
@@ -247,7 +247,7 @@
         <li>
           <img src="../assets/images/icon13.png">
           <p>{{allInfo.sum_money}}</p>
-          <p>EOS</p>
+          <p>{{thismoney.name}}</p>
         </li>
         <li>
           <img src="../assets/images/icon14.png">
@@ -265,7 +265,7 @@
 import invitation from "@/components/invitation.vue";
 import { mapGetters, mapMutations } from "vuex";
 import {scatGameLoginOut,arbitrarySignature , login,imgUrl} from "@common/js"
-import {SET_GOOGLE_MENU} from "@store/mutation-types"
+import {SET_GOOGLE_MENU,SET_ALL_INFO} from "@store/mutation-types"
 export default {
   data(){
     return{
@@ -286,6 +286,7 @@ export default {
       "net",
       "menuStatus",
       "allInfo",
+      "thismoney"
     ]),
   },
   components:{
@@ -293,7 +294,8 @@ export default {
   },
   methods:{
     ...mapMutations({
-      SET_GOOGLE_MENU
+      SET_GOOGLE_MENU,
+      SET_ALL_INFO
     }),
     close(){
       this.SET_GOOGLE_MENU(false)
@@ -302,6 +304,12 @@ export default {
     scatGameLoginOut() {
       scatGameLoginOut();
       this.$router.push("/");
+      let data = {
+        ...this.allInfo,
+        user_money:0,
+        user_send_num:0
+      }
+      this.SET_ALL_INFO(data);
     },
     // 登陆
     login() {
@@ -316,9 +324,6 @@ export default {
     recharge(){
       this.SET_GOOGLE_MENU(false)
       this.$parent.close(true)
-      // arbitrarySignature().then(json=>{
-      //   console.log('json: ',json)
-      // })
     },
     // 跳转页面
     thepage(i) {

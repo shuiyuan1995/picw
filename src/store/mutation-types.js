@@ -35,6 +35,10 @@ export const SET_RED_RESULTS = "SET_RED_RESULTS";
 export const SET_THISMONEY = "SET_THISMONEY"
 // 修改发抢红包记录状态
 export const SET_THISJULU = "SET_THISJULU"
+//设置广告开关
+export const SET_IFENTRY = "SET_IFENTRY"
+//设置广告lianjie
+export const SET_IFENTRYURL = "SET_IFENTRYURL"
 
 /* --------------- action type ------------------ */
 // 设置用户cpu，net

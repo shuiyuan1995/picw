@@ -154,7 +154,7 @@
     <div v-show="thisjilu==0">
       <div class="banner">
         <p class="bannertxt">{{userInfo.name}} {{$t("message.issued")}}</p>
-        <p class="bannernum"><span>{{send_money}}</span> EOS</p>
+        <p class="bannernum"><span>{{send_money}}</span> {{thismoney.name}}</p>
       </div>
       <div class="top">
         <div>
@@ -170,7 +170,7 @@
         <ul v-if="send_data&&send_data.length>0">
           <li class="recordlist" :key="index" v-for="(item,index) in send_data" @click="golist(item)">
             <p>
-              <span class="name">{{item.money}}EOS</span>
+              <span class="name">{{item.money}}{{thismoney.name}}</span>
               <span class="num">{{item.status==1?`${$t("message.jinxin")}...`:`10/10${$t("message.packet")}`}}</span>
             </p>
             <p>
@@ -191,7 +191,7 @@
     <div v-show="thisjilu==1">
       <div class="banner bannerq">
         <p class="bannertxt">{{userInfo.name}} {{$t("message.gohuo")}}</p>
-        <p class="bannernum"><span>{{get_money}}</span> EOS</p>
+        <p class="bannernum"><span>{{get_money}}</span> {{thismoney.name}}</p>
       </div>
       <div class="top">
         <div>
@@ -212,7 +212,7 @@
                 <span>{{$t("message.debao")}}</span>
               </p>
               <p class="money">
-                <span class="orange">{{item.money}}</span>&nbsp;EOS+<span class="orange">{{item.own}}</span>&nbsp;OWN
+                <span class="orange">{{item.money}}</span>&nbsp;{{thismoney.name}}+<span class="orange">{{item.own}}</span>&nbsp;OWN
               </p>
             </div>
             <p>
@@ -332,7 +332,8 @@ export default {
   computed:{
     ...mapGetters([
       "userInfo",
-      "thisjilu"
+      "thisjilu",
+      "thismoney"
     ]),
     typeImg(){
       return ['',require('../assets/images/icon22.png'),require('../assets/images/icon23.png'),require('../assets/images/icon27.png'),require('../assets/images/icon25.png'),require('../assets/images/icon24.png')]

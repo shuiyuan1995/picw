@@ -157,6 +157,7 @@
       <button class="gobtn" @click="send">{{$t("message.sendbtn1")}}</button>
     </div>
     <loadingbao v-show="loadingbao" :loadingbaodata="loadingbaodata"></loadingbao>
+    <recharge v-show="recharge"></recharge>
   </div>
 </template>
 
@@ -165,6 +166,7 @@ import smallhead from '@/components/smallhead.vue'
 import {mapGetters,mapActions,mapMutations} from 'vuex';
 import mynav from '@/components/mynav.vue'
 import loadingbao from '@/components/loadingbao.vue'
+import recharge from "@/components/recharge.vue";
 import {login, scatcreateRedPacket, scatGetAccount, scatGetAllBalance} from "@common/js"
 import {SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_MY_SEND,SET_ROOMID,SET_CLICK_ROOMID_RED_EVELOPE_LIST} from "@store/mutation-types";
 import {post} from '../api'
@@ -177,13 +179,15 @@ export default {
       loadingbao:false,
       loadingbaodata:{
         intype:1
-      }
+      },
+      recharge:false
     }
   },
   components: {
     smallhead,
     mynav,
-    loadingbao
+    loadingbao,
+    recharge
   },
   methods:{
     ...mapActions({
@@ -216,6 +220,10 @@ export default {
     },
     closeloadingbao(){
       this.loadingbao = !this.loadingbao
+    },
+    // 充值提现
+    close(b){
+      this.recharge = b
     }
   },
   computed:{

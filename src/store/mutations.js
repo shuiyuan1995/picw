@@ -76,6 +76,14 @@ const mutations = {
   //设置发抢红包记录状态
   [types.SET_THISJULU](state, num) {
     state.thisjilu = num;
+  },
+  //设置广告开关
+  [types.SET_IFENTRY](state, num) {
+    state.ifentry = num;
+  },
+  //设置广告lianjie
+  [types.SET_IFENTRYURL](state, list) {
+    state.ifentryurl = list;
   }
 };
 

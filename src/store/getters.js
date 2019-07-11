@@ -36,4 +36,8 @@ export const loading = state => state.loading;
 export const thismoney = state => state.thismoney;
 // 获取发抢红包记录状态
 export const thisjilu = state => state.thisjilu;
+// 获取广告开关
+export const ifentry = state => state.ifentry;
+// 获取广告链接
+export const ifentryurl = state => state.ifentryurl;
 

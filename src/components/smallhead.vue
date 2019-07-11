@@ -65,29 +65,25 @@
   margin-right 0.4rem
   display flex
   align-items center
-  position relative
   cursor pointer
-  &:hover .moneydown
-    display block
 .moneyeos
-  width 0.64rem
-  height 0.94rem
-  background url('../assets/images/icon28.png')
-  background-size 100% 100%
+  width 0.96rem
+  height 0.96rem
   margin-right 0.16rem
-.moneyown
-  width 0.94rem
-  height 0.94rem
-  background url('../assets/images/icon29.png')
-  background-size 100% 100%
-  margin-right 0.16rem
+.moneydownbg
+  position absolute
+  top 0px
+  left 0px
+  width 100%
+  height 100%
+  z-index 2
 .moneydown
   position absolute
-  display none
   background red
-  top 2rem
-  left -1.52rem
-  width 5.1rem
+  font-size 0.56rem
+  top 1.92rem
+  right 2rem
+  width 4.48rem
   z-index 2
   border-radius 0px 0rem 0.12rem 0.12rem
   li
@@ -95,7 +91,7 @@
     height 1.6rem
     align-items center
     cursor pointer
-    justify-content center
+    padding-left 0.88rem
     border-top 0.04rem solid #b70000
     div 
       margin-right 0.36rem
@@ -109,28 +105,28 @@
     </div>
     <div class="right">
       <span class="menu icon icon-menu" @click="openright"></span>
-      <!-- <div class="money">
-        <div :class="thismoney=='EOS'?'moneyeos':'moneyown'"></div>
-        <span>{{thismoney}}</span>
+      <div class="money" @click="openchangemoney">
+        <img class="moneyeos" :src="thismoney.img" :alt="thismoney.name">
+        <span>{{thismoney.name}}</span>
         <i class="icon icon-xiangxia"></i>
+      </div>
+      <div class="moneydownbg" v-show="moneydownbg" @click="openchangemoney">
         <ul class="moneydown">
-          <li @click="changemoney(0)">
-            <div class="moneyeos"></div>
-            <span>EOS</span>
-          </li>
-          <li @click="changemoney(1)">
-            <div class="moneyown"></div>
-            <span>OWN</span>
+          <li v-for="(item,index) in this.allInfo.coin_list" :key="index" @click="changemoney(item)">
+            <img class="moneyeos" :src="item.img" :alt="item.name">
+            <span>{{item.name}}</span>
           </li>
         </ul>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import {SET_GOOGLE_MENU,SET_THISMONEY} from "@store/mutation-types"
+import {SET_GOOGLE_MENU,SET_THISMONEY,SET_ALL_INFO,SET_LOADING} from "@store/mutation-types"
+import {getMoneyListget} from "@common/js";
+import {post} from '@api';
 export default {
   props:{
     left:{
@@ -146,29 +142,42 @@ export default {
       default:''
     }
   },
+  inject:['reload'],
+  data(){
+    return{
+      moneydownbg:false
+    }
+  },
   computed:{
     ...mapGetters([
-      "thismoney"
+      "thismoney",
+      "allInfo"
     ])
   },
   methods:{
     ...mapMutations({
       SET_GOOGLE_MENU,
-      SET_THISMONEY
+      SET_THISMONEY,
+      SET_ALL_INFO,
+      SET_LOADING
     }),
     openright(){
       this.SET_GOOGLE_MENU(true)
     },
+    // 打开切换币列表
+    openchangemoney(){
+      this.moneydownbg = !this.moneydownbg
+    },
     // 切换币种
-    changemoney(i){
-      switch (i) {
-        case 0:
-          this.SET_THISMONEY('EOS')
-          break;
-        default:
-          this.SET_THISMONEY('OWN')
-          break;
-      }
+    changemoney(item){
+      this.SET_LOADING(true)
+      post('/coin_switch',{coin:item.name}).then(json=>{
+        this.SET_THISMONEY(item)
+        const {data} = json.data.data;
+        this.SET_ALL_INFO(data)
+        this.reload()
+        getMoneyListget(null,item.name)
+      })
     },
     tomore(){
       this.$createActionSheet({

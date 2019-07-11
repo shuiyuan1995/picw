@@ -89,12 +89,12 @@
       </ul>
       <div class="input-wrap">
         <input v-model="money" type="text" autocomplete="off" placeholder="请输入金额" class="el-input__inner">
-        <em>EOS</em>
+        <em>{{thismoney.name}}</em>
       </div>
       <div v-show="thetable==1" style=" text-align: center; font-size: 13px;">
         <span>最多可提现:</span>
         <span style="padding: 0px 6px; font-size: 1.05em;">{{allInfo.user_money}}</span>
-        <span>EOS</span>
+        <span>{{thismoney.name}}</span>
       </div>
       <div class="purse-btn" @click="thechange">{{thetable==0?'充值':'提现'}}</div>
 
@@ -102,7 +102,7 @@
       <div v-show="thetable==0" style=" text-align: center; font-size: 13px;">
         <span>可用余额:</span>
         <span style="padding: 0px 6px; font-size: 1.05em;">{{allInfo.user_money}}</span>
-        <span>EOS</span>
+        <span>{{thismoney.name}}</span>
       </div>
     </div>
   </div>
@@ -122,6 +122,7 @@ export default {
   computed:{
     ...mapGetters([
       "allInfo",
+      "thismoney"
     ]),
   },
   methods:{
@@ -141,7 +142,7 @@ export default {
         })
       }else{
         this.money = Number(this.money).toFixed(4)
-        let amount = this.money + ' EOS'
+        let amount = `${this.money} ${this.thismoney.name}`
         arbitrarySignature(amount).then(json=>{
           console.log('json: ',json.transaction_id)
           this.$createToast({
@@ -162,6 +163,10 @@ export default {
     },
     close(){
       this.$parent.close(false)
+    },
+    // 获取钱包余额
+    getmone(){
+      
     }
   }
 };

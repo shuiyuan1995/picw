@@ -253,7 +253,7 @@
       </div>
       <div class="homecenter">
         <div class="banner">
-          <p class="bannernum"><span>{{Number(jackpot).toFixed(4)}}</span> EOS</p>
+          <p class="bannernum"><span>{{Number(jackpot).toFixed(4)}}</span> {{thismoney.name}}</p>
           <p class="bannertime">{{$t("message.jiesuan")}}:&nbsp;&nbsp;&nbsp;{{`${hr}:${min}:${sec}`}}</p>
         </div>
         <div class="top">
@@ -291,16 +291,16 @@
             <div class="paiitem flex" :key="index" v-for="(item,index) in ranking">
               <span class="num" :class="index<3?`${index+1}`:''">{{index+1}}</span>
               <p>{{item.account}}</p>
-              <p><span>{{(item.jackpot/10000).toFixed(4)}}</span> EOS</p>
-              <p><span>{{(item.sum/10000).toFixed(4)}}</span> EOS</p>
+              <p><span>{{(item.jackpot/10000).toFixed(4)}}</span> {{thismoney.name}}</p>
+              <p><span>{{(item.sum/10000).toFixed(4)}}</span> {{thismoney.name}}</p>
             </div>
           </cube-scroll>
           <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
           <div class="allpaiitem">
             <span class="num">{{me?me.no:'-'}}</span>
             <p class="grey">{{me?me.user:'-----'}}</p>
-            <p><span class="orange">{{me?(me.jackpot/10000).toFixed(4):'0.0000'}}</span> EOS</p>
-            <p><span class="green">{{me?(me.sum/10000).toFixed(4):'0.0000'}}</span> EOS</p>
+            <p><span class="orange">{{me?(me.jackpot/10000).toFixed(4):'0.0000'}}</span> {{thismoney.name}}</p>
+            <p><span class="green">{{me?(me.sum/10000).toFixed(4):'0.0000'}}</span> {{thismoney.name}}</p>
           </div>
         </div>
       </div>
@@ -350,7 +350,8 @@ export default {
   },
   computed:{
     ...mapGetters([
-      "userInfo"
+      "userInfo",
+      "thismoney"
     ]),
   },
   methods:{

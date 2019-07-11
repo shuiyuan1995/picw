@@ -44,7 +44,7 @@
     justify-content space-between
     .contentinfo
       width 100%
-      height 100%
+      height auto
     .inforight
       position absolute
       right 0
@@ -149,8 +149,8 @@
     <mynav :allroomred="allroomred"></mynav>
     <div class="content">
       <!-- 红包数据展示 -->
-      <cube-scroll class="contentinfo" :options="options" ref="scroll" :scroll-events="['scroll']" @scroll="onScrollHandle">
-        <div :is="item.type==1?'boxlist':item.type==2?'results':'dantiao'" ref="scrollitem" :index="index" :item="item" :key="index" v-for="(item,index) in redEnvelopeList"></div>
+      <cube-scroll class="contentinfo" :options="options" :ref="key" :scroll-events="['scroll']" @scroll="onScrollHandle" :key="index" v-for="(items,key,index) in roomRedEnvelopeList" v-show="roomId==key">
+        <div :is="item.type==1?'boxlist':item.type==2?'results':'dantiao'" ref="scrollitem" :index="index" :item="item" :key="index" v-for="(item,index) in items"></div>
       </cube-scroll>
       <div class="inforight icon icon-shang" v-show="outn>0&&userInfo.name" @click="scrollto(activeRedHeight[0].tops)"><i class="deng"></i>{{outn}}个红包</div>
     </div>
@@ -169,7 +169,6 @@
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
     <gobao :win="win" v-show="inshow" @myshow="myshow"></gobao>
     <loadingbao v-show="loadingbao" :loadingbaodata="loadingbaodata" @myshow="myshow"></loadingbao>
-    <recharge v-show="recharge"></recharge>
   </div>
 </template>
 
@@ -183,7 +182,6 @@ import loadingbao from '@/components/loadingbao.vue'
 import gobao from '@/components/gobao.vue'
 import smallhead from "@/components/smallhead.vue";
 import rules from "@/components/rules.vue";
-import recharge from "@/components/recharge.vue";
 import {mapGetters,mapMutations, mapActions} from 'vuex';
 import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED,SET_RED_RESULTS} from "@store/mutation-types"
 import {login} from "@common/js"
@@ -202,17 +200,8 @@ export default {
       therules: 1,
       rules: false,
       loadingbao:false,
-      loadingbaodata:{},
-      recharge:false
+      loadingbaodata:{}
     }
-  },
-  created(){
-    this.$nextTick(()=>{
-      setTimeout(()=>{
-        this.$refs.scroll.refresh()
-        this.scrollbottom()
-      },1000)
-    })
   },
   components: {
     smallhead,
@@ -222,8 +211,7 @@ export default {
     mynav,
     dantiao,
     gobao,
-    loadingbao,
-    recharge
+    loadingbao
   },
   computed:{
     ...mapGetters([
@@ -283,7 +271,6 @@ export default {
       let data = this.roomRedEnvelopeList[index]
       this.SET_CLICK_ROOMID_RED_EVELOPE_LIST({roomid, redEnvelopeList: data})
       this.$nextTick(()=>{
-        this.$refs.scroll.refresh()
         this.scrollbottom()
       })
     },
@@ -332,11 +319,12 @@ export default {
     // 滚到底部
     scrollbottom(){
       let x = 0
-      let y = this.$refs.scroll.scroll.maxScrollY
-      this.outn = 0
-      if(y){
+      // let y = this.$refs.scroll.scroll.maxScrollY
+      let y = this.$refs.scroll.scroll.scrollerHeight-this.$refs.scroll.scroll.scroller.clientHeight
+      if(y<0){
         this.$refs.scroll.scrollTo(x,y,1)
       }
+      this.thisgobao()
     },
     // 获取vuex方法
     ...mapActions({
@@ -356,10 +344,6 @@ export default {
     // 关闭红包
     closeloadingbao(){
       this.loadingbao = !this.loadingbao
-    },
-    // 充值提现
-    close(b){
-      this.recharge = b
     }
   },
   // watch:{

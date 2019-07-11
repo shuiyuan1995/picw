@@ -49,8 +49,8 @@
 <template>
   <div class="nav">
     <div class="item" v-for="(item, index) in roomList" :key="index">
-      <div @click="changeE(item)" class="btn-item" :class="roomId === item ?'active':''">{{item>=1?item+' EOS':item+$t("message.tiyan")}}</div>
-      <span class="more" v-show="roomId != index&&allroomred[index]>0">{{allroomred[index]}}</span>
+      <div @click="changeE(item)" class="btn-item" :class="roomId === item ?'active':''">{{item>=1?`${item} ${thismoney.name}`:item+$t("message.tiyan")}}</div>
+      <span class="more" v-show="roomId != item&&allroomred[index]>0">{{allroomred[index]}}</span>
     </div>
   </div>
 </template>
@@ -67,6 +67,7 @@ export default {
     ...mapGetters([
       "roomId",
       "roomList",
+      "thismoney"
     ]),
   },
   methods:{

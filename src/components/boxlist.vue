@@ -82,6 +82,21 @@ export default {
       txid:""
     }
   },
+  computed:{
+    ...mapGetters([
+      "roomRedEnvelopeList",
+      "redEnvelopeList",
+      "roomId",
+      "inviteName",
+      "userInfo",
+      "redresults",
+    ]),
+
+    // 转换时间
+    timer(){
+      return changedata(this.item.time*1000,'hh:mm:ss')
+    }
+  },
   methods:{
     ...mapMutations({
       SET_ROOM_RED_EVELOPE_LIST,
@@ -116,21 +131,6 @@ export default {
       this.$parent.$parent.openloadingbao(loadingbaodata)
       return false
     },
-  },
-  computed:{
-    ...mapGetters([
-      "roomRedEnvelopeList",
-      "redEnvelopeList",
-      "roomId",
-      "inviteName",
-      "userInfo",
-      "redresults"
-    ]),
-
-    // 转换时间
-    timer(){
-      return changedata(this.item.time*1000,'hh:mm:ss')
-    }
   },
 }
 </script>

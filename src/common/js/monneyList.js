@@ -4,7 +4,7 @@ import {SET_LOADING,SET_ROOM_RED_EVELOPE_LIST, SET_CLICK_ROOMID_RED_EVELOPE_LIST
 import { Toast } from 'cube-ui'
 // import {Notify, Loading} from 'quasar'
 // 获取红包列表接口
-const getMoneyListget = (once = false) => get('/get_money_list').then(json => {
+const getMoneyListget = (once = false,coin = 'EOS') => get('/get_money_list',{coin:coin}).then(json => {
   const {data} = json;
   let _roomid = 0;
   let redEnvelopeList = [];

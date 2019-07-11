@@ -31,31 +31,40 @@
 
 <template>
   <div id="app">
+    <!-- 主窗口 -->
     <transition name="transitionRouter">
       <keep-alive>
-        <router-view v-if="$route.meta.keepAlive"/>
+        <router-view v-if="$route.meta.keepAlive&&isRouterAlive"/>
       </keep-alive>
     </transition>
     <transition name="transitionRouter">
-      <router-view v-if="!$route.meta.keepAlive"/>
+      <router-view v-if="!$route.meta.keepAlive&&isRouterAlive"/>
     </transition>
+    <!-- 规则 -->
     <rules v-show="rules" bgc="white" @openrule="openrule" :therules="therules"></rules>
+    <!-- loading -->
     <loading v-show="loading"></loading>
+    <!-- 侧边栏 -->
     <transition name="faderight">
       <drawer v-show="menuStatus"></drawer>
     </transition>
+    <!-- 充值 -->
     <recharge v-show="recharge"></recharge>
+    <!-- 幕布 -->
     <div v-show="menuStatus" class="bg" @click="theclose"></div>
+    <!-- 广告 -->
+    <entry v-if="ifentry"></entry>
   </div>
 </template>
 
 <script>
 import {mapMutations, mapActions,mapGetters} from 'vuex';
-import {SET_LOADING,SET_ALL_INFO,SET_GOOGLE_MENU,SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types";
+import {SET_IFENTRYURL,SET_LOADING,SET_ALL_INFO,SET_GOOGLE_MENU,SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types";
 import {login, getMoneyListget,imgUrl} from "@common/js";
 import rules from "@/components/rules.vue";
 import {get} from '@api';
 import loading from "@/components/loading.vue";
+import entry from "@/components/entry.vue";
 import drawer from "@/components/drawer.vue";
 import recharge from "@/components/recharge.vue";
 export default {
@@ -67,6 +76,7 @@ export default {
     login(()=>{
       // this.openrule(9)
       this.$socket.emit('login', this.userInfo.name);
+      this.$children[0].scrollbottom()
     },()=>{
       this.openrule(9)
     });
@@ -108,11 +118,8 @@ export default {
       // 找到对应抢完的红包，改变状态
       if(data.type||data.get_user==this.userInfo.name){
         for (let i = 0; i < _roomItemEnvelopeList.length; i++) {
-          console.log(_roomItemEnvelopeList[i].type,data.packetId,_roomItemEnvelopeList[i].packetId)
-          console.log(_roomItemEnvelopeList[i].type==1&&data.packetId === _roomItemEnvelopeList[i].packetId)
           if (_roomItemEnvelopeList[i].type==1&&data.packetId === _roomItemEnvelopeList[i].packetId) {
             // 修改红包展示状态
-            console.log(index,i,_roomItemEnvelopeList[i],data.type?2:1)
             this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: index, index: i, packetData: _roomItemEnvelopeList[i],type:data.type?2:1});
             break;
           }
@@ -143,7 +150,8 @@ export default {
       rules: false,
       therules:2,
       num:0,
-      recharge:false
+      recharge:false,
+      isRouterAlive: true,
     }
   },
   computed:{
@@ -152,14 +160,16 @@ export default {
       "userInfo",
       "loading",
       "menuStatus",
-      "roomRedEnvelopeList"
+      "roomRedEnvelopeList",
+      "ifentry"
     ])
   },
   components:{
     loading,
     rules,
     drawer,
-    recharge
+    recharge,
+    entry
   },
   methods:{
     // 获取vuex方法
@@ -171,7 +181,8 @@ export default {
     ...mapMutations({
       SET_LOADING,
       SET_ALL_INFO,
-      SET_GOOGLE_MENU
+      SET_GOOGLE_MENU,
+      SET_IFENTRYURL
     }),
     theclose(){
       this.SET_GOOGLE_MENU(false)
@@ -179,8 +190,10 @@ export default {
     // 获取展示数据，只展示一次
     _getInfo() {
       get("/get_info").then(json => {
-        const {data} = json;
+        const {data,imgs} = json.data;
         this.SET_ALL_INFO(data)
+        this.SET_IFENTRYURL(imgs)
+        this.preload(imgs)
       })
     },
     //打开关闭游戏介绍
@@ -189,44 +202,7 @@ export default {
       this.rules = !this.rules;
     },
     //预加载图片
-    preload(){
-      let imgs = [
-        imgUrl+"img.png",
-        imgUrl+"img1.png",
-        imgUrl+"img2.png",
-        imgUrl+"img3.png",
-        imgUrl+"img4.png",
-        imgUrl+"img5.png",
-        imgUrl+"img6.png",
-        imgUrl+"img7.png",
-        imgUrl+"img8.png",
-        imgUrl+"img9.png",
-        imgUrl+"img10.png",
-        imgUrl+"img11.png",
-        imgUrl+"img12.png",
-        imgUrl+"img13.png",
-        imgUrl+"img14.png",
-        imgUrl+"img15.png",
-        imgUrl+"img16.png",
-        imgUrl+"img17.png",
-        imgUrl+"img18.png",
-        imgUrl+"img19.png",
-        imgUrl+"img20.png",
-        imgUrl+"img21.png",
-        imgUrl+"img22.png",
-        imgUrl+"chun.png",
-        imgUrl+"chun1.png",
-        imgUrl+"chun2.png",
-        imgUrl+"chun3.png",
-        imgUrl+"chun4.png",
-        imgUrl+"chun5.png",
-        imgUrl+"chun6.png",
-        imgUrl+"chun7.png",
-        imgUrl+"chun8.png",
-        imgUrl+"chun9.png",
-        imgUrl+"chun10.png",
-        imgUrl+"chun11.png",
-      ]
+    preload(imgs){
       imgs.map((img,i)=>{
         let image = new Image()
         image.src = img
@@ -237,7 +213,19 @@ export default {
     },
     close(b){
       this.recharge = b
+    },
+    reload() {
+      this.isRouterAlive = false;
+      this.$nextTick(function() {
+        this.isRouterAlive = true;
+      });
     }
-  }
+  },
+  // 刷新页面
+  provide() {
+    return {
+      reload: this.reload
+    };
+  },
 }
 </script>

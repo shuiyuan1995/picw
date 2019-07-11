@@ -125,7 +125,7 @@
 import {login, scatSelectPacket,scatcreateRedPacket, scatGetAccount, scatGetAllBalance,changedata} from "@common/js"
 import {mapGetters,mapActions,mapMutations} from 'vuex';
 import {post} from '@/api'
-import {SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST,SET_LOADING,SET_THISJULU,SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_MY_SEND,SET_ROOMID,SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types";
+import {SET_IFENTRY,SET_ROOM_RED_EVELOPE_LIST,SET_ACTIVE_RED_EVELOPE_LIST,SET_LOADING,SET_THISJULU,SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_MY_SEND,SET_ROOMID,SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types";
 let time = null
 export default {
   props:{
@@ -147,7 +147,8 @@ export default {
       "roomId",
       "inviteName",
       "userInfo",
-      "redresults"
+      "redresults",
+      "allInfo"
     ]),
   },
   methods:{
@@ -161,45 +162,61 @@ export default {
       SET_LOADING,
       SET_THISJULU,
       SET_MY_SEND,
-      SET_ROOMID
+      SET_ROOMID,
+      SET_IFENTRY
     }),
     go(){
-      console.log(this.loadingbaodata.index)
       if(this.thisgoto) return false
+      const {packetId,name,num,eos} = this.loadingbaodata.item;
+      // 判断余额
+      if(eos>this.allInfo.user_money){
+        this.$createToast({
+          txt: "余额不足，请充值",
+          time: 1000,
+          type:'txt',
+          onTimeout: () => {
+            this.$parent.closeloadingbao()
+            this.$parent.close(true)
+          }
+        }).show()
+        return false
+      }
       this.thisgoto = true
       this.animationPlayState = 'running'
-      const {packetId,name,num,eos} = this.loadingbaodata.item;
-      post('/grab_hb',{packetId:packetId}).then(json=>{
-        this.animationPlayState = 'paused'
-        this.$parent.closeloadingbao()
-        this.thisgoto = false
-        console.log(json)
-        let win = json.data.guang?{
-          num:num,
-          eos:eos,
-          packetId:Number(packetId),
-          guang:true
-        }:{
-          name:name,
-          print:json.data.print,
-          is_chailei:json.data.is_chailei,
-          reward:json.data.reward,
-          rewardsum:json.data.rewardsum,
-          num:num,
-          eos:eos,
-          packetId:Number(packetId),
-          own:Number(json.data.own).toFixed(4)
-        }
-        console.log(win)
-        // 修改红包展示状态
-        this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: eos, index: this.loadingbaodata.index, packetData: this.redEnvelopeList[this.loadingbaodata.index],type:1});
-        // 展示抢红包结果
-        this.$emit('myshow',win)
-      }).catch(err=>{
-        this.animationPlayState = 'paused'
-        this.$parent.closeloadingbao()
-        this.thisgoto = false
-      })
+      this.SET_IFENTRY(true)
+      // setTimeout(()=>{
+        post('/grab_hb',{packetId:packetId}).then(json=>{
+          this.animationPlayState = 'paused'
+          this.$parent.closeloadingbao()
+          this.thisgoto = false
+          console.log(json)
+          let win = json.data.guang?{
+            num:num,
+            eos:eos,
+            packetId:Number(packetId),
+            guang:true
+          }:{
+            name:name,
+            print:json.data.print,
+            is_chailei:json.data.is_chailei,
+            reward:json.data.reward,
+            rewardsum:json.data.rewardsum,
+            num:num,
+            eos:eos,
+            packetId:Number(packetId),
+            own:Number(json.data.own).toFixed(4)
+          }
+          console.log(win)
+          // 修改红包展示状态
+          this.SET_ROOM_RED_EVELOPE_EXPIRED({roomId: eos, index: this.loadingbaodata.index, packetData: this.redEnvelopeList[this.loadingbaodata.index],type:1});
+          // 展示抢红包结果
+          this.$emit('myshow',win)
+        }).catch(err=>{
+          this.animationPlayState = 'paused'
+          this.$parent.closeloadingbao()
+          this.thisgoto = false
+        })
+      // },2000)
     },
     // 向后台请求结果
     _getid(){
@@ -287,90 +304,44 @@ export default {
         own:Number(json.own).toFixed(4)
       }
       // 展示抢红包结果
-      console.log(win)
       this.$emit('myshow',win)
     },
     // 发红包
     gosend(){
+      // 判断余额
+      if(this.loadingbaodata.eos>this.allInfo.user_money){
+        this.$createToast({
+          txt: "余额不足，请充值",
+          time: 1000,
+          type:'txt',
+          onTimeout: () => {
+            this.$parent.closeloadingbao()
+            this.$parent.close(true)
+          }
+        }).show()
+        return false
+      }
       let data = {
         num:this.loadingbaodata.num,
         money:this.loadingbaodata.eos
       }
       this.sending = !this.sending
-      post('/fahb',data).then(json=>{
-        console.log(json)
-        // 展示上传红包data
-        // this.sendupdata(json.data.data)
-        this.$createToast({
-          txt: '发送成功',
-          time: 2000,
-          type: 'txt'
-        }).show()
-        this.sending = true
-        this.$parent.closeloadingbao()
-        this.$router.push('/')
-      })
-      return false
-      this.sending = !this.sending
-      // 提示信息
-      const errObje = {
-        "3081001": "Transaction reached the deadline set due to leeway on account CPU limits",
-        "3080004": "Transaction exceeded the current CPU usage limit imposed on the transaction",
-        "3040005": "交易超时",
-        "3123456": "找不到对应红包",
-        "3123457": "发送失败",
-        "3123458": "取消操作",
-        "3050003": "余额不足",
-        "3080001": "Account using more than allotted RAM usage"
-      }
-      // 创建红包
-      console.log(this.loadingbaodata.eos, Number(this.loadingbaodata.num))
-      scatcreateRedPacket(this.loadingbaodata.eos, Number(this.loadingbaodata.num))
-      .then(response=>{
-        // 判断参数是否正确
-        if(!response.packetId||!response.txId){
-          const toast = this.$createToast({
-            txt: '发送失败',
+      this.SET_IFENTRY(true)
+      // setTimeout(()=>{
+        post('/fahb',data).then(json=>{
+          console.log(json)
+          // 展示上传红包data
+          // this.sendupdata(json.data.data)
+          this.$createToast({
+            txt: '发送成功',
             time: 2000,
             type: 'txt'
-          })
-          toast.show()
+          }).show()
           this.sending = true
           this.$parent.closeloadingbao()
-          return false
-        }
-        // 添加自己发红包id
-        this.SET_MY_SEND(response.txId)
-        // 用户cpu查询
-        scatGetAccount()
-        // 查询EosBalance同步vuex， 查询OwnBalance
-        scatGetAllBalance()
-        // 展示上传红包data
-        this.sendupdata(response)
-        const toast = this.$createToast({
-          txt: '发送成功',
-          time: 2000,
-          type: 'txt'
+          this.$router.push('/')
         })
-        toast.show()
-        this.sending = true
-        this.$parent.closeloadingbao()
-        this.$router.push('/')
-      }).catch(code => {
-        return false
-        const toast = this.$createToast({
-          txt: errObje[code] || "发送失败",
-          time: 2000,
-          type: 'txt'
-        })
-        toast.show()
-        // 用户cpu查询
-        scatGetAccount()
-        // 查询EosBalance同步vuex， 查询OwnBalance
-        scatGetAllBalance()
-        this.sending = true
-        this.$parent.closeloadingbao()
-      });
+      // },1000)
     },
     // 展示上传红包data
     sendupdata(response){

@@ -49,16 +49,25 @@ const state = {
     // 用户余额
     user_money:0,
     // 用户发红包数
-    user_send_num:0
+    user_send_num:0,
+    // 币种列表
+    coin_list:[]
   },
   // 自己发红包id列表
   mysend:[],
   // 抢红包结果
   redresults:{},
   // 当前币种
-  thismoney:'EOS',
+  thismoney:{
+    name:'EOS',
+    img:'https://www.ppown.com/merchants/0ecd55754c800c3876ee18da923ecce.png'
+  },
   // 发抢红包记录状态
-  thisjilu:0
+  thisjilu:0,
+  // 广告开关
+  ifentry:false,
+  // 广告链接
+  ifentryurl:[]
 };
 
 export default state;
