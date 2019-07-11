@@ -8,8 +8,8 @@ module.exports = {
   extends: ["plugin:vue/essential", "@vue/prettier"],
 
   rules: {
-    // 'no-console': 'off',
-    // 'no-debugger': 'off'
+    'no-console': 'warn',
+    'no-debugger': 'error'
   },
 
   parserOptions: {

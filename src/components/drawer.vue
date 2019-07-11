@@ -344,7 +344,6 @@ export default {
     },
     // 打开白皮书
     openu(i){
-      console.log(i)
       window.open(i,'_blank');   
       // window.location.href = i
     },
