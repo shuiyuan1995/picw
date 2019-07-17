@@ -114,7 +114,7 @@
       <p class="congratulations">恭喜发财</p>
       <p class="mantissa">尾数 {{loadingbaodata.item?loadingbaodata.item.num:0}}</p>
       <div class="go" @click="go" :style="{animationPlayState:animationPlayState}"></div>
-      <p class="explain">领红包获得数量随机的 EOS<br />必定挖矿 {{loadingbaodata.item?Number(loadingbaodata.item.eos*3).toFixed(4):'0.0000'}} OWN</p>
+      <p class="explain">领红包获得数量随机的 EOS</p>
       <i class="icon icon-close" @click="$parent.closeloadingbao"></i>
       <i class="icon icon-fenxiang3"></i>
     </div>

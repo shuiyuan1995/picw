@@ -85,26 +85,32 @@
         font-weight bold
         color: #ff8200;
   .share
-    height: 2rem;
+    height: 80px;
     background: #ffffff;
     align-items: center;
     padding-left: 1.34rem;
-    span
-      width: 1.3rem;
-      height: 1.3rem;
-      border-radius: 50%;
-      background-color: #bd0d13;
-      margin: 0 0.38rem;
+    div
+      margin: 0 10px;
       text-align: center;
       line-height: 1.3rem;
       cursor: pointer;
-      img
-        width 1rem
-        height 1rem
-        margin-top 0.1rem
-      &:before
-        font-size: 0.56rem;
-        color: #ffffff;
+      span 
+        display block;
+        width: 1.3rem;
+        height: 1.3rem;
+        border-radius: 50%;
+        padding 1px
+        margin 0 auto
+        background-color: #bd0d13;
+        img
+          display block
+          box-sizing border-box
+          width 60%
+          height 60%
+          margin 20%
+      p 
+        font-size 12px;
+        line-height 16px
   .topage
     background: #ffffff;
     padding: 0.24rem 0;
@@ -198,11 +204,14 @@
       </div>
       <!--  分享 -->
       <div class="share flex">
-        <span @click="openu('https://www.facebook.com/profile.php?id=100030822884805')" class="icon icon-fecebook"></span>
-        <span @click="openu('https://t.me/gtbredlotto')" class="biyong">
-          <img src="../assets/images/icon21.png">
-        </span>
-        <span @click="openu('https://t.me/gtbredlotto')" class="icon icon-telegram"></span>
+        <div @click="openu('https://www.ppown.com')" class="biyong">
+          <span><img src="../assets/images/icon21.png"></span>
+          <p>ppown.com</p>
+        </div>
+        <div @click="openu('https://www.ownbt.com')" class="biyong">
+          <span><img src="../assets/images/icon21.png"></span>
+          <p>ownbt.com</p>
+        </div>
       </div>
       <!-- 路由切换 -->
       <ul class="topage smalltop">

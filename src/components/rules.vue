@@ -178,7 +178,7 @@
       <p>{{$t("message.wa")}}</p>
       <h5>{{$t("message.jiangtitle")}}</h5>
       <p>{{$t("message.jiang")}}</p>
-      <h5 @click="openu('https://assets.pickown.com/PickOwnV1.pdf')">{{$t("message.morerule")}}>></h5>
+      <!-- <h5 @click="openu('https://assets.pickown.com/PickOwnV1.pdf')">{{$t("message.morerule")}}>></h5> -->
       <button class="close absolute-top-right icon icon-close" @click.stop="closein"></button>
     </div>
     <div class="rulesin fixed-center" :class="bgc == 'white'?'white':''"  v-else-if="therules == 1">

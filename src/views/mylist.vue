@@ -28,7 +28,7 @@
     justify-content space-between
     padding 0 0.8rem
     .title
-      flex 1
+      flex 2
       line-height 1.64rem
       font-size 0.64rem
       color #333333
@@ -134,7 +134,7 @@
       font-size 12px
       color: #000000;
       font-weight bold
-      flex 0 0 25%
+      flex 0 0 33%
   .bannertime
     color #ffffff
     font-size 0.48rem
@@ -175,7 +175,7 @@
         padding-top 0.08rem
         color #a94e17
     span,p
-      flex 0 0 25%
+      flex 0 0 33%
       font-size 0.48rem
       text-align center
     .num
@@ -245,23 +245,25 @@
   <div class="fullscreen column home">
     <smallhead left="huitui" :center='$t("message.board")'></smallhead>
     <cube-scroll class="homescroll">
+      <!-- 头部 -->
       <div class="hometop">
-        <span class="gonggao"></span>
+        <!-- <span class="gonggao"></span> -->
         <!-- <span class="gonggao" @click="openlist"><img src="../assets/images/chun5.png">{{$t("message.myjiang")}}</span> -->
-        <span class="title">{{$t("message.paijiang")}}</span>
-        <span class="rules icon"  @click="openrule(4)">{{$t("message.how1")}}</span>
+        <span class="title">{{$t("message.board")}}</span>
+        <!-- <span class="rules icon"  @click="openrule(4)">{{$t("message.how1")}}</span> -->
       </div>
       <div class="homecenter">
-        <div class="banner">
+        <!-- <div class="banner">
           <p class="bannernum"><span>{{Number(jackpot).toFixed(4)}}</span> {{thismoney.name}}</p>
           <p class="bannertime">{{$t("message.jiesuan")}}:&nbsp;&nbsp;&nbsp;{{`${hr}:${min}:${sec}`}}</p>
-        </div>
+        </div> -->
+        <!-- 前三名 -->
         <div class="top">
-          <div class="title">
+          <!-- <div class="title">
             <img src="../assets/images/btn2.png">
             <span>{{$t("message.board")}}</span>
             <img src="../assets/images/btn3.png">
-          </div>
+          </div> -->
           <div class="info">
             <p class="infotop">
               <span>{{ranking[1]?ranking[1].account:''}}</span>
@@ -273,26 +275,27 @@
               <span class="orange">{{ranking[0]?Number(ranking[0].jackpot).toFixed(4):'0.0000'}}</span>
               <span class="orange">{{ranking[2]?Number(ranking[2].jackpot).toFixed(4):'0.0000'}}</span>
             </p>
-            <p class="infofoot">
+            <!-- <p class="infofoot">
               <span class="green">{{ranking[1]?Number(ranking[1].sum).toFixed(4):'0.0000'}}</span>
               <span class="green">{{ranking[0]?Number(ranking[0].sum).toFixed(4):'0.0000'}}</span>
               <span class="green">{{ranking[2]?Number(ranking[2].sum).toFixed(4):'0.0000'}}</span>
-            </p>
+            </p> -->
           </div>
         </div>
+        <!-- 排行列表 -->
         <div>
           <div class="listtitle paititle flex">
             <span>{{$t("message.rank")}}</span>
             <span>{{$t("message.user")}}</span>
             <span>{{$t("message.amount")}}</span>
-            <span>{{$t("message.prize")}}</span>
+            <!-- <span>{{$t("message.prize")}}</span> -->
           </div>
           <cube-scroll class="pailist column" v-if="ranking && ranking.length>0">
             <div class="paiitem flex" :key="index" v-for="(item,index) in ranking">
               <span class="num" :class="index<3?`${index+1}`:''">{{index+1}}</span>
               <p>{{item.account}}</p>
               <p><span>{{item.jackpot}}</span> {{thismoney.name}}</p>
-              <p><span>{{item.sum}}</span> {{thismoney.name}}</p>
+              <!-- <p><span>{{item.sum}}</span> {{thismoney.name}}</p> -->
             </div>
           </cube-scroll>
           <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
@@ -300,7 +303,7 @@
             <span class="num">{{me?me.no:'-'}}</span>
             <p class="grey">{{me?me.user:'-----'}}</p>
             <p><span class="orange">{{me?me.jackpot:'0.0000'}}</span> {{thismoney.name}}</p>
-            <p><span class="green">{{me?me.sum:'0.0000'}}</span> {{thismoney.name}}</p>
+            <!-- <p><span class="green">{{me?me.sum:'0.0000'}}</span> {{thismoney.name}}</p> -->
           </div>
         </div>
       </div>

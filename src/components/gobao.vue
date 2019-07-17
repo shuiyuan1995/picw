@@ -107,8 +107,6 @@
       <div v-if="!win.guang" class="baotop column">
         <h2>{{$t("message.goodtitle")}}</h2>
         <p>{{win.print}} EOS</p>
-        <h2>{{$t("message.wakuang")}}</h2>
-        <p class="kuang">{{win.own}} OWN</p>
       </div>
       <div v-if="!win.guang" class="baobottom">
         <div class="ewai flex">

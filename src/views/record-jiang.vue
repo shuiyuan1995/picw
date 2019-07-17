@@ -138,7 +138,7 @@
         </div>
         <p class="annotation">{{$t("message.annotation")}}</p>
         <p class="annotation">{{$t("message.annotation1")}}：<span>0.06374778</span> EOS</p>
-        <p class="annotation">{{$t("message.annotation2")}}<a href="https://assets.pickown.com/PickOwnV1.pdf" target="_blank">{{$t("message.bai")}}</a></p>
+        <!-- <p class="annotation">{{$t("message.annotation2")}}<a href="https://assets.pickown.com/PickOwnV1.pdf" target="_blank">{{$t("message.bai")}}</a></p> -->
       </div>
       <div class="center">
         <div class="allmoney">

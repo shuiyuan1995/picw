@@ -212,7 +212,7 @@
                 <span>{{$t("message.debao")}}</span>
               </p>
               <p class="money">
-                <span class="orange">{{item.money}}</span>&nbsp;{{thismoney.name}}+<span class="orange">{{item.own}}</span>&nbsp;OWN
+                <span class="orange">{{item.money}}</span>&nbsp;{{thismoney.name}}
               </p>
             </div>
             <p>
