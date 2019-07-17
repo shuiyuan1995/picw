@@ -59,7 +59,7 @@
 
 <script>
 import {mapMutations, mapActions,mapGetters} from 'vuex';
-import {SET_IFENTRYURL,SET_LOADING,SET_ALL_INFO,SET_GOOGLE_MENU,SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types";
+import {SET_THISMONEY,SET_IFENTRYURL,SET_LOADING,SET_ALL_INFO,SET_GOOGLE_MENU,SET_ROOM_RED_EVELOPE_LIST_UPDATA,SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types";
 import {login, getMoneyListget,imgUrl} from "@common/js";
 import rules from "@/components/rules.vue";
 import {get} from '@api';
@@ -182,7 +182,8 @@ export default {
       SET_LOADING,
       SET_ALL_INFO,
       SET_GOOGLE_MENU,
-      SET_IFENTRYURL
+      SET_IFENTRYURL,
+      SET_THISMONEY
     }),
     theclose(){
       this.SET_GOOGLE_MENU(false)
@@ -192,6 +193,7 @@ export default {
       get("/get_info").then(json => {
         const {data,imgs} = json.data;
         this.SET_ALL_INFO(data)
+        this.SET_THISMONEY(data.coin_list[0])
         this.SET_IFENTRYURL(imgs)
         this.preload(imgs)
       })

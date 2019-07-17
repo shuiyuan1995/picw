@@ -147,7 +147,6 @@ export default {
       "roomId",
       "inviteName",
       "userInfo",
-      "redresults",
       "allInfo"
     ]),
   },
@@ -360,25 +359,5 @@ export default {
       this.SET_ROOM_RED_EVELOPE_LIST_UPDATA({packetData, index})
     },
   },
-  watch:{
-    redresults(newobj){
-      if(this.txid == ""){
-        return false
-      }
-      console.log(newobj)
-      if(newobj.id == this.txid){
-        console.log(newobj)
-        this.redcss(newobj.islast)
-        // 展示红包
-        this.updata(newobj)
-        // 用户cpu查询
-        scatGetAccount()
-        // 查询EosBalance同步vuex， 查询OwnBalance
-        scatGetAllBalance()
-        clearTimeout(time)
-        this.txid = ""
-      }
-    }
-  }
 }
 </script>

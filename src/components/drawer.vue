@@ -264,8 +264,8 @@
 <script>
 import invitation from "@/components/invitation.vue";
 import { mapGetters, mapMutations } from "vuex";
-import {scatGameLoginOut,arbitrarySignature , login,imgUrl} from "@common/js"
-import {SET_GOOGLE_MENU,SET_ALL_INFO} from "@store/mutation-types"
+import {scatGameLoginOut,arbitrarySignature , login,imgUrl,getBalance} from "@common/js"
+import {SET_GOOGLE_MENU,SET_ALL_INFO,SET_EOSBALANCE} from "@store/mutation-types"
 export default {
   data(){
     return{
@@ -295,7 +295,8 @@ export default {
   methods:{
     ...mapMutations({
       SET_GOOGLE_MENU,
-      SET_ALL_INFO
+      SET_ALL_INFO,
+      SET_EOSBALANCE
     }),
     close(){
       this.SET_GOOGLE_MENU(false)
@@ -324,6 +325,10 @@ export default {
     recharge(){
       this.SET_GOOGLE_MENU(false)
       this.$parent.close(true)
+      getBalance(this.thismoney.name, this.
+      thismoney.token).then(json=>{
+        this.SET_EOSBALANCE(json)
+      })
     },
     // 跳转页面
     thepage(i) {

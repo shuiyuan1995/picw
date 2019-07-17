@@ -100,8 +100,8 @@
 
       <i class="icon icon-close" @click="close"></i>
       <div v-show="thetable==0" style=" text-align: center; font-size: 13px;">
-        <span>可用余额:</span>
-        <span style="padding: 0px 6px; font-size: 1.05em;">{{allInfo.user_money}}</span>
+        <span>可充值余额:</span>
+        <span style="padding: 0px 6px; font-size: 1.05em;">{{eosbalance}}</span>
         <span>{{thismoney.name}}</span>
       </div>
     </div>
@@ -122,7 +122,8 @@ export default {
   computed:{
     ...mapGetters([
       "allInfo",
-      "thismoney"
+      "thismoney",
+      "eosbalance"
     ]),
   },
   methods:{

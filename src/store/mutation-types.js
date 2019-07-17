@@ -29,8 +29,6 @@ export const SET_GOOGLE_MENU = "SET_GOOGLE_MENU";
 export const SET_INVITE_NAME = "SET_INVITE_NAME";
 // 设置自己发红包id
 export const SET_MY_SEND = "SET_MY_SEND";
-//设置抢红包结果
-export const SET_RED_RESULTS = "SET_RED_RESULTS";
 // 修改当前币种
 export const SET_THISMONEY = "SET_THISMONEY"
 // 修改发抢红包记录状态

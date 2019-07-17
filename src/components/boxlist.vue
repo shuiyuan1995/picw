@@ -89,7 +89,6 @@ export default {
       "roomId",
       "inviteName",
       "userInfo",
-      "redresults",
     ]),
 
     // 转换时间

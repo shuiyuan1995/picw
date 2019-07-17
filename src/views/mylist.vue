@@ -269,14 +269,14 @@
               <span>{{ranking[2]?ranking[2].account:''}}</span>
             </p>
             <p class="infocenter">
-              <span class="orange">{{ranking[1]?Number(ranking[1].jackpot/10000).toFixed(4):'0.0000'}}</span>
-              <span class="orange">{{ranking[0]?Number(ranking[0].jackpot/10000).toFixed(4):'0.0000'}}</span>
-              <span class="orange">{{ranking[2]?Number(ranking[2].jackpot/10000).toFixed(4):'0.0000'}}</span>
+              <span class="orange">{{ranking[1]?Number(ranking[1].jackpot).toFixed(4):'0.0000'}}</span>
+              <span class="orange">{{ranking[0]?Number(ranking[0].jackpot).toFixed(4):'0.0000'}}</span>
+              <span class="orange">{{ranking[2]?Number(ranking[2].jackpot).toFixed(4):'0.0000'}}</span>
             </p>
             <p class="infofoot">
-              <span class="green">{{ranking[1]?Number(ranking[1].sum/10000).toFixed(4):'0.0000'}}</span>
-              <span class="green">{{ranking[0]?Number(ranking[0].sum/10000).toFixed(4):'0.0000'}}</span>
-              <span class="green">{{ranking[2]?Number(ranking[2].sum/10000).toFixed(4):'0.0000'}}</span>
+              <span class="green">{{ranking[1]?Number(ranking[1].sum).toFixed(4):'0.0000'}}</span>
+              <span class="green">{{ranking[0]?Number(ranking[0].sum).toFixed(4):'0.0000'}}</span>
+              <span class="green">{{ranking[2]?Number(ranking[2].sum).toFixed(4):'0.0000'}}</span>
             </p>
           </div>
         </div>
@@ -291,16 +291,16 @@
             <div class="paiitem flex" :key="index" v-for="(item,index) in ranking">
               <span class="num" :class="index<3?`${index+1}`:''">{{index+1}}</span>
               <p>{{item.account}}</p>
-              <p><span>{{(item.jackpot/10000).toFixed(4)}}</span> {{thismoney.name}}</p>
-              <p><span>{{(item.sum/10000).toFixed(4)}}</span> {{thismoney.name}}</p>
+              <p><span>{{item.jackpot}}</span> {{thismoney.name}}</p>
+              <p><span>{{item.sum}}</span> {{thismoney.name}}</p>
             </div>
           </cube-scroll>
           <p class="bottomtxt" v-else>{{$t("message.wu")}}</p>
           <div class="allpaiitem">
             <span class="num">{{me?me.no:'-'}}</span>
             <p class="grey">{{me?me.user:'-----'}}</p>
-            <p><span class="orange">{{me?(me.jackpot/10000).toFixed(4):'0.0000'}}</span> {{thismoney.name}}</p>
-            <p><span class="green">{{me?(me.sum/10000).toFixed(4):'0.0000'}}</span> {{thismoney.name}}</p>
+            <p><span class="orange">{{me?me.jackpot:'0.0000'}}</span> {{thismoney.name}}</p>
+            <p><span class="green">{{me?me.sum:'0.0000'}}</span> {{thismoney.name}}</p>
           </div>
         </div>
       </div>
@@ -375,7 +375,7 @@ export default {
         this.jackpot = jackpot
         this.ranking = ranking
         this.me = me
-        console.log(json)
+        console.log(this.ranking)
       })
     },
     // 倒计时

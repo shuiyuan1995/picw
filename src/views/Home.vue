@@ -185,7 +185,7 @@ import smallhead from "@/components/smallhead.vue";
 import rules from "@/components/rules.vue";
 import recharge from "@/components/recharge.vue";
 import {mapGetters,mapMutations, mapActions} from 'vuex';
-import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED,SET_RED_RESULTS} from "@store/mutation-types"
+import {SET_CLICK_ROOMID_RED_EVELOPE_LIST, SET_ROOM_RED_EVELOPE_LIST_UPDATA, SET_ALL_INFO, SET_ROOM_RED_EVELOPE_EXPIRED} from "@store/mutation-types"
 import {login} from "@common/js"
 export default {
   data(){
@@ -345,8 +345,7 @@ export default {
       SET_ROOM_RED_EVELOPE_EXPIRED
     }),
     ...mapMutations({
-      SET_ALL_INFO,
-      SET_RED_RESULTS
+      SET_ALL_INFO
     }),
     // 打开红包loading
     openloadingbao(loadingbaodata){

@@ -55,13 +55,8 @@ const state = {
   },
   // 自己发红包id列表
   mysend:[],
-  // 抢红包结果
-  redresults:{},
   // 当前币种
-  thismoney:{
-    name:'EOS',
-    img:'https://www.ppown.com/merchants/0ecd55754c800c3876ee18da923ecce.png'
-  },
+  thismoney:{},
   // 发抢红包记录状态
   thisjilu:0,
   // 广告开关

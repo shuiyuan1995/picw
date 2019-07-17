@@ -28,8 +28,6 @@ export const roomList = state => state.roomList;
 export const inviteName = state => state.inviteName;
 // 获取自己发红包id列表
 export const mysend = state => state.mysend;
-// 获取抢红包结果
-export const redresults = state => state.redresults;
 // 获取loading开关
 export const loading = state => state.loading;
 // 获取当前币种

@@ -65,10 +65,6 @@ const mutations = {
       id
     ];
   },
-  //设置抢红包结果
-  [types.SET_RED_RESULTS](state, obj) {
-    state.redresults = obj;
-  },
   //设置当前币种
   [types.SET_THISMONEY](state, str) {
     state.thismoney = str;
